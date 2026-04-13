@@ -78,7 +78,7 @@ export function Launcher({ open, onClose }: Props) {
             className="flex-1 bg-transparent text-sm text-[var(--color-text)] outline-none placeholder:text-[var(--color-muted)]"
             aria-label="Search apps"
             autoComplete="off"
-            spellcheck={false as unknown as undefined}
+            spellCheck={false}
           />
           <span className="font-mono text-[10px] text-[var(--color-muted)]">Esc</span>
         </div>
