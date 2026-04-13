@@ -1,0 +1,21 @@
+---
+import '../styles/global.css';
+import OSShell from '../components/os/OSShell';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#0b0d12" />
+		<title>CortechOS · shell test</title>
+		<meta name="robots" content="noindex" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+	</head>
+	<body class="ct-backdrop min-h-screen overflow-hidden text-[var(--color-text)] antialiased">
+		<OSShell client:only="react" />
+	</body>
+</html>
