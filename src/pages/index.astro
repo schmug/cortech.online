@@ -1,42 +1,58 @@
 ---
-import '../styles/global.css';
+import Base from '../layouts/Base.astro';
 import { apps } from '../apps/registry.ts';
+
+const flagships = apps.filter((a) => a.type === 'iframe');
+const support = apps.find((a) => a.id === 'support');
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Cortech — Cory Schmug</title>
-		<meta name="description" content="Cortech is the work of Cory Schmug — a small studio of one, building email-security tools, contact-card utilities, AI tooling, and playful experiments." />
-	</head>
-	<body class="min-h-screen bg-neutral-950 text-neutral-100 font-sans antialiased">
-		<main class="mx-auto max-w-3xl px-6 py-16">
-			<h1 class="text-3xl font-bold tracking-tight">Cortech — Cory Schmug</h1>
-			<p class="mt-4 text-neutral-300">
-				CortechOS is booting. This page will hydrate into an interactive desktop where you can open each project in a window. For now, here's the static manifest.
-			</p>
+<Base title="Cortech" canonical="https://cortech.online/">
+	<section class="mx-auto max-w-4xl px-6 pt-16 pb-8">
+		<p class="font-mono text-xs uppercase tracking-[0.3em] text-amber-300">cortech.online</p>
+		<h1 class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
+			Hi, I'm Cory. I build small, useful things.
+		</h1>
+		<p class="mt-5 max-w-2xl text-lg text-neutral-300">
+			Email security, contact-card utilities, AI tooling, and the occasional piece of generative art. This site is about to boot into <span class="font-mono">CortechOS</span> — a tiny desktop where you can open each project in a window and actually use it.
+		</p>
+		<div class="mt-8 flex flex-wrap gap-3 text-sm">
+			<a href="/projects" class="rounded-md bg-amber-300 px-4 py-2 font-medium text-neutral-950 hover:bg-amber-200">See all projects →</a>
+			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-neutral-700 px-4 py-2 font-medium text-neutral-100 hover:border-amber-300 hover:text-amber-300">Sponsor on GitHub</a>
+			<a href="/about" class="rounded-md border border-transparent px-4 py-2 font-medium text-neutral-400 hover:text-neutral-100">About me</a>
+		</div>
+	</section>
 
-			<h2 class="mt-10 text-lg font-semibold">Projects</h2>
-			<ul class="mt-4 space-y-3">
-				{apps.map((app) => (
-					<li class="rounded border border-neutral-800 p-4">
-						<div class="flex items-center gap-3">
-							<span class="text-2xl" aria-hidden="true">{app.icon}</span>
-							<div>
-								<div class="font-medium">{app.name}{app.paid ? ' · paid' : ''}</div>
-								<div class="text-sm text-neutral-400">{app.description}</div>
-							</div>
-						</div>
-					</li>
-				))}
-			</ul>
+	<section class="mx-auto max-w-4xl px-6 py-8">
+		<h2 class="font-mono text-xs uppercase tracking-[0.2em] text-neutral-500">Flagship products</h2>
+		<ul class="mt-4 grid gap-4 sm:grid-cols-2">
+			{flagships.map((app) => (
+				<li class="group rounded-lg border border-neutral-800 bg-neutral-900/40 p-5 transition hover:border-amber-300/60">
+					<div class="flex items-center gap-3">
+						<span class="text-2xl" aria-hidden="true">{app.icon}</span>
+						<h3 class="font-medium">
+							<a href={app.url} rel="noopener" class="group-hover:text-amber-300">{app.name}</a>
+							{app.paid && <span class="ml-2 rounded bg-amber-300/15 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-300">paid</span>}
+						</h3>
+					</div>
+					<p class="mt-2 text-sm text-neutral-400">{app.description}</p>
+					<div class="mt-3 flex gap-3 text-xs text-neutral-500">
+						<a href={app.url} rel="noopener" class="hover:text-amber-300">Open ↗</a>
+						{app.githubRepo && (
+							<a href={`https://github.com/${app.githubRepo}`} rel="noopener" class="hover:text-amber-300">Source ↗</a>
+						)}
+					</div>
+				</li>
+			))}
+		</ul>
+	</section>
 
-			<p class="mt-10 text-sm text-neutral-500">
-				Scaffolding in progress — milestone M0 complete.
-			</p>
-		</main>
-	</body>
-</html>
+	<section class="mx-auto max-w-4xl px-6 py-8">
+		<h2 class="font-mono text-xs uppercase tracking-[0.2em] text-neutral-500">Support</h2>
+		<p class="mt-4 max-w-2xl text-neutral-300">{support?.description}</p>
+		<div class="mt-5 flex flex-wrap gap-3 text-sm">
+			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-neutral-700 px-4 py-2 text-neutral-100 hover:border-amber-300 hover:text-amber-300">GitHub Sponsors</a>
+			<a href="https://github.com/schmug" rel="noopener" class="rounded-md border border-neutral-700 px-4 py-2 text-neutral-100 hover:border-amber-300 hover:text-amber-300">Star on GitHub</a>
+			<span class="rounded-md border border-dashed border-neutral-800 px-4 py-2 text-neutral-500">Stripe tip link — pending</span>
+		</div>
+	</section>
+</Base>

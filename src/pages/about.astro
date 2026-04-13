@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+---
+
+<Base title="About" description="Cory Schmug — indie builder, small-tool maker, Cloudflare-native." canonical="https://cortech.online/about">
+	<section class="mx-auto max-w-2xl px-6 pt-16 pb-10">
+		<p class="font-mono text-xs uppercase tracking-[0.3em] text-amber-300">About</p>
+		<h1 class="mt-4 text-3xl font-bold tracking-tight sm:text-4xl">Cory Schmug</h1>
+
+		<div class="prose prose-invert mt-6 max-w-none text-neutral-300 space-y-5">
+			<p>
+				I'm a builder. I like making small, well-scoped things that do one job well and ship. My work lives mostly on Cloudflare (Workers, Pages) and tends to be TypeScript-first.
+			</p>
+			<p>
+				Current focus areas: DNS and email security (<a href="https://dmarc.mx" rel="noopener" class="text-amber-300 hover:underline">dmarc.mx</a>), contact-card utilities (<a href="https://q-r.contact" rel="noopener" class="text-amber-300 hover:underline">q-r.contact</a>), AI/Claude Code tooling (cclog, claude-view, claudzibit), and the occasional piece of generative art (AntArt, RepoGotchi).
+			</p>
+			<p>
+				This page is about to turn into <span class="font-mono">CortechOS</span> — a tiny branded desktop where every icon is one of those projects, running live in a window. Until then, here's the static version.
+			</p>
+		</div>
+
+		<div class="mt-10 grid gap-3 text-sm sm:grid-cols-2">
+			<a href="https://github.com/schmug" rel="noopener" class="rounded-md border border-neutral-800 p-4 transition hover:border-amber-300/60">
+				<div class="font-mono text-xs uppercase tracking-wider text-neutral-500">GitHub</div>
+				<div class="mt-1 text-neutral-100">github.com/schmug</div>
+			</a>
+			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-neutral-800 p-4 transition hover:border-amber-300/60">
+				<div class="font-mono text-xs uppercase tracking-wider text-neutral-500">Sponsor</div>
+				<div class="mt-1 text-neutral-100">github.com/sponsors/schmug</div>
+			</a>
+		</div>
+
+		<p class="mt-10 text-xs text-neutral-500">
+			Bio copy + avatar will be filled in before launch — see the open items in the design doc.
+		</p>
+	</section>
+</Base>
