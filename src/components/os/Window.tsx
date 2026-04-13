@@ -1,5 +1,6 @@
 import { Rnd } from 'react-rnd';
 import type { ReactNode } from 'react';
+import { useEffect, useRef } from 'react';
 import { useOS, type WindowState } from './store';
 
 type Props = {
@@ -17,6 +18,14 @@ export function Window({ window: win, viewport, children, minSize }: Props) {
   const toggleMaximize = useOS((s) => s.toggleMaximize);
   const moveWindow = useOS((s) => s.moveWindow);
   const resizeWindow = useOS((s) => s.resizeWindow);
+
+  const sectionRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    if (focused && !win.minimized) {
+      sectionRef.current?.focus({ preventScroll: true });
+    }
+  }, [focused, win.minimized, win.id]);
 
   if (win.minimized) return null;
 
@@ -40,9 +49,12 @@ export function Window({ window: win, viewport, children, minSize }: Props) {
       style={{ zIndex: win.z, position: 'absolute' }}
     >
       <section
+        ref={sectionRef}
+        tabIndex={-1}
+        role="group"
         aria-label={`${win.title} window`}
         className={[
-          'flex h-full w-full flex-col overflow-hidden rounded-[10px] border',
+          'flex h-full w-full flex-col overflow-hidden rounded-[10px] border outline-none',
           focused
             ? 'border-[var(--color-amber)]/70 shadow-[0_24px_60px_-18px_rgba(0,0,0,0.9),0_0_0_1px_var(--color-amber)_inset]'
             : 'border-[var(--color-border)] shadow-[0_18px_40px_-20px_rgba(0,0,0,0.85)]',

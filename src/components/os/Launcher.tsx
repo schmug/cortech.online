@@ -52,6 +52,10 @@ export function Launcher({ open, onClose }: Props) {
         openApp(target);
         onClose();
       }
+    } else if (e.key === 'Tab') {
+      // Focus trap — keep the search input focused, walk the result list with arrows.
+      e.preventDefault();
+      inputRef.current?.focus();
     }
   };
 
