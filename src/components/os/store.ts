@@ -24,7 +24,7 @@ export type OSState = {
   focusedId: string | null;
   nextZ: number;
   hasBooted: boolean;
-  openApp: (app: AppManifest) => void;
+  openApp: (app: AppManifest, opts?: { x?: number; y?: number; focus?: boolean }) => void;
   closeWindow: (id: string) => void;
   focusWindow: (id: string) => void;
   minimizeWindow: (id: string) => void;
@@ -52,7 +52,7 @@ export const useOS = create<OSState>()(
       nextZ: 1,
       hasBooted: false,
 
-      openApp: (app) => {
+      openApp: (app, opts) => {
         const state = get();
         if (app.allowMultiple === false) {
           const existing = state.windows.find((w) => w.appId === app.id);
@@ -66,7 +66,10 @@ export const useOS = create<OSState>()(
           app.allowMultiple === false
             ? app.id
             : `${app.id}#${Date.now().toString(36)}`;
-        const { x, y } = nextCascade(state.windows.length);
+        const cascade = nextCascade(state.windows.length);
+        const x = opts?.x ?? cascade.x;
+        const y = opts?.y ?? cascade.y;
+        const shouldFocus = opts?.focus !== false;
         const z = state.nextZ;
         set({
           windows: [
@@ -85,7 +88,7 @@ export const useOS = create<OSState>()(
               maximized: false,
             },
           ],
-          focusedId: instanceId,
+          focusedId: shouldFocus ? instanceId : state.focusedId,
           nextZ: z + 1,
         });
       },
