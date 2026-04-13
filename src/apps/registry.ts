@@ -31,7 +31,7 @@ export const apps: AppManifest[] = [
   {
     id: 'donthype-me',
     name: 'donthype.me',
-    description: 'TBD — add tagline during M6.',
+    description: 'RSS feed explorer — read without the hype cycle.',
     icon: '📣',
     type: 'iframe',
     url: 'https://donthype.me',
@@ -64,7 +64,8 @@ export const apps: AppManifest[] = [
     description: 'Bio, what I build, how to reach me.',
     icon: '👋',
     type: 'native',
-    defaultSize: { w: 560, h: 480 },
+    component: () => import('../components/os/apps/AboutApp'),
+    defaultSize: { w: 560, h: 560 },
     allowMultiple: false,
   },
   {
@@ -73,7 +74,8 @@ export const apps: AppManifest[] = [
     description: 'Sponsor, tip, or star my work.',
     icon: '💛',
     type: 'native',
-    defaultSize: { w: 560, h: 560 },
+    component: () => import('../components/os/apps/SupportApp'),
+    defaultSize: { w: 640, h: 620 },
     allowMultiple: false,
   },
   {
@@ -82,6 +84,7 @@ export const apps: AppManifest[] = [
     description: 'Everything I have shipped on GitHub.',
     icon: '📁',
     type: 'native',
+    component: () => import('../components/os/apps/ProjectsApp'),
     defaultSize: { w: 760, h: 560 },
     allowMultiple: false,
   },
