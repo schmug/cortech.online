@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Logo from '../components/Logo.astro';
 
 export type Props = {
   title: string;
@@ -17,6 +18,7 @@ const meta = description ?? 'Cortech is the work of Cory Schmug — a small stud
 		<meta charset="utf-8" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#0b0d12" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{fullTitle}</title>
 		<meta name="description" content={meta} />
@@ -25,17 +27,22 @@ const meta = description ?? 'Cortech is the work of Cory Schmug — a small stud
 		<meta property="og:description" content={meta} />
 		<meta property="og:type" content="website" />
 		<meta name="twitter:card" content="summary" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 	</head>
-	<body class="min-h-screen bg-neutral-950 text-neutral-100 antialiased selection:bg-amber-300 selection:text-neutral-950">
-		<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-amber-300 focus:px-3 focus:py-1 focus:text-neutral-950">Skip to content</a>
+	<body class="ct-backdrop min-h-screen text-[var(--color-text)] antialiased selection:bg-[var(--color-amber)] selection:text-[var(--color-void)]">
+		<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-[var(--color-amber)] focus:px-3 focus:py-1 focus:text-[var(--color-void)]">Skip to content</a>
 
-		<header class="border-b border-neutral-900">
-			<div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4 text-sm">
-				<a href="/" class="font-mono font-semibold tracking-tight hover:text-amber-300">cortech.online</a>
-				<nav aria-label="Primary" class="flex items-center gap-5 text-neutral-400">
-					<a href="/about" class="hover:text-neutral-100">About</a>
-					<a href="/projects" class="hover:text-neutral-100">Projects</a>
-					<a href="https://github.com/schmug" class="hover:text-neutral-100" rel="noopener">GitHub ↗</a>
+		<header class="border-b border-[var(--color-border)] bg-[var(--color-void)]/80 backdrop-blur supports-[backdrop-filter]:bg-[var(--color-void)]/60">
+			<div class="mx-auto flex max-w-4xl items-center justify-between gap-4 px-6 py-4 text-sm">
+				<a href="/" class="transition hover:text-[var(--color-amber)]">
+					<Logo size={22} label="cortech.online" />
+				</a>
+				<nav aria-label="Primary" class="flex items-center gap-5 text-[var(--color-muted)]">
+					<a href="/about" class="transition hover:text-[var(--color-text)]">About</a>
+					<a href="/projects" class="transition hover:text-[var(--color-text)]">Projects</a>
+					<a href="https://github.com/schmug" class="transition hover:text-[var(--color-text)]" rel="noopener">GitHub ↗</a>
 				</nav>
 			</div>
 		</header>
@@ -44,8 +51,8 @@ const meta = description ?? 'Cortech is the work of Cory Schmug — a small stud
 			<slot />
 		</main>
 
-		<footer class="mt-20 border-t border-neutral-900">
-			<div class="mx-auto flex max-w-4xl flex-col gap-2 px-6 py-6 text-xs text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
+		<footer class="mt-20 border-t border-[var(--color-border)]">
+			<div class="mx-auto flex max-w-4xl flex-col gap-2 px-6 py-6 text-xs text-[var(--color-muted)] sm:flex-row sm:items-center sm:justify-between">
 				<span>© {new Date().getFullYear()} Cory Schmug · cortech.online</span>
 				<span class="font-mono">CortechOS v1.0 · pre-release</span>
 			</div>

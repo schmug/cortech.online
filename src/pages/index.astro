@@ -7,39 +7,50 @@ const support = apps.find((a) => a.id === 'support');
 ---
 
 <Base title="Cortech" canonical="https://cortech.online/">
-	<section class="mx-auto max-w-4xl px-6 pt-16 pb-8">
-		<p class="font-mono text-xs uppercase tracking-[0.3em] text-amber-300">cortech.online</p>
-		<h1 class="mt-4 text-4xl font-bold tracking-tight sm:text-5xl">
-			Hi, I'm Cory. I build small, useful things.
+	<section class="mx-auto max-w-4xl px-6 pt-20 pb-10">
+		<p class="font-mono text-[11px] uppercase tracking-[0.35em] text-[var(--color-amber)]">CORTECHOS 1.0 · BOOTING</p>
+		<h1 class="mt-5 font-[var(--font-display)] text-4xl font-bold tracking-tight sm:text-5xl">
+			Hi, I'm Cory. I build <span class="text-[var(--color-amber)]">small, useful things</span>.
 		</h1>
-		<p class="mt-5 max-w-2xl text-lg text-neutral-300">
-			Email security, contact-card utilities, AI tooling, and the occasional piece of generative art. This site is about to boot into <span class="font-mono">CortechOS</span> — a tiny desktop where you can open each project in a window and actually use it.
+		<p class="mt-6 max-w-2xl text-lg text-[var(--color-dim)]">
+			Email security, contact-card utilities, AI tooling, and the occasional piece of generative art. This site is about to boot into <span class="font-mono text-[var(--color-amber)]">CortechOS</span> — a tiny desktop where you can open each project in a window and actually use it.
 		</p>
-		<div class="mt-8 flex flex-wrap gap-3 text-sm">
-			<a href="/projects" class="rounded-md bg-amber-300 px-4 py-2 font-medium text-neutral-950 hover:bg-amber-200">See all projects →</a>
-			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-neutral-700 px-4 py-2 font-medium text-neutral-100 hover:border-amber-300 hover:text-amber-300">Sponsor on GitHub</a>
-			<a href="/about" class="rounded-md border border-transparent px-4 py-2 font-medium text-neutral-400 hover:text-neutral-100">About me</a>
+		<div class="mt-9 flex flex-wrap gap-3 text-sm">
+			<a href="/projects" class="rounded-md bg-[var(--color-amber)] px-4 py-2 font-semibold text-[var(--color-void)] transition hover:bg-[var(--color-amber-hi)]">See all projects →</a>
+			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-[var(--color-border)] px-4 py-2 font-medium text-[var(--color-text)] transition hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]">Sponsor on GitHub</a>
+			<a href="/about" class="rounded-md border border-transparent px-4 py-2 font-medium text-[var(--color-muted)] transition hover:text-[var(--color-text)]">About me</a>
 		</div>
 	</section>
 
 	<section class="mx-auto max-w-4xl px-6 py-8">
-		<h2 class="font-mono text-xs uppercase tracking-[0.2em] text-neutral-500">Flagship products</h2>
+		<div class="flex items-baseline justify-between">
+			<h2 class="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-muted)]">Flagship products</h2>
+			<span class="font-mono text-[10px] text-[var(--color-muted)]">{flagships.length} apps</span>
+		</div>
 		<ul class="mt-4 grid gap-4 sm:grid-cols-2">
 			{flagships.map((app) => (
-				<li class="group rounded-lg border border-neutral-800 bg-neutral-900/40 p-5 transition hover:border-amber-300/60">
-					<div class="flex items-center gap-3">
-						<span class="text-2xl" aria-hidden="true">{app.icon}</span>
-						<h3 class="font-medium">
-							<a href={app.url} rel="noopener" class="group-hover:text-amber-300">{app.name}</a>
-							{app.paid && <span class="ml-2 rounded bg-amber-300/15 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-amber-300">paid</span>}
-						</h3>
+				<li class="group relative overflow-hidden rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]">
+					<div class="flex items-center gap-2 border-b border-[var(--color-border)] bg-[var(--color-shadow)] px-3 py-2">
+						<span class="inline-block h-2 w-2 rounded-full bg-[var(--color-hot)]"></span>
+						<span class="inline-block h-2 w-2 rounded-full bg-[var(--color-amber)]"></span>
+						<span class="inline-block h-2 w-2 rounded-full bg-[var(--color-cyan)]"></span>
+						<span class="ml-2 font-mono text-[11px] text-[var(--color-muted)]">/{app.id}</span>
+						{app.paid && <span class="ml-auto rounded bg-[var(--color-amber)]/15 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[var(--color-amber)]">paid</span>}
 					</div>
-					<p class="mt-2 text-sm text-neutral-400">{app.description}</p>
-					<div class="mt-3 flex gap-3 text-xs text-neutral-500">
-						<a href={app.url} rel="noopener" class="hover:text-amber-300">Open ↗</a>
-						{app.githubRepo && (
-							<a href={`https://github.com/${app.githubRepo}`} rel="noopener" class="hover:text-amber-300">Source ↗</a>
-						)}
+					<div class="p-5">
+						<div class="flex items-center gap-3">
+							<span class="text-2xl" aria-hidden="true">{app.icon}</span>
+							<h3 class="font-[var(--font-display)] text-lg font-semibold">
+								<a href={app.url} rel="noopener" class="transition group-hover:text-[var(--color-amber)]">{app.name}</a>
+							</h3>
+						</div>
+						<p class="mt-2 text-sm text-[var(--color-dim)]">{app.description}</p>
+						<div class="mt-4 flex gap-3 text-xs text-[var(--color-muted)]">
+							<a href={app.url} rel="noopener" class="transition hover:text-[var(--color-amber)]">Open ↗</a>
+							{app.githubRepo && (
+								<a href={`https://github.com/${app.githubRepo}`} rel="noopener" class="transition hover:text-[var(--color-amber)]">Source ↗</a>
+							)}
+						</div>
 					</div>
 				</li>
 			))}
@@ -47,12 +58,12 @@ const support = apps.find((a) => a.id === 'support');
 	</section>
 
 	<section class="mx-auto max-w-4xl px-6 py-8">
-		<h2 class="font-mono text-xs uppercase tracking-[0.2em] text-neutral-500">Support</h2>
-		<p class="mt-4 max-w-2xl text-neutral-300">{support?.description}</p>
+		<h2 class="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-muted)]">Support</h2>
+		<p class="mt-4 max-w-2xl text-[var(--color-dim)]">{support?.description} This portfolio and its products stay free to run because a few people chip in — your name or logo can show up here if that's something you want.</p>
 		<div class="mt-5 flex flex-wrap gap-3 text-sm">
-			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-neutral-700 px-4 py-2 text-neutral-100 hover:border-amber-300 hover:text-amber-300">GitHub Sponsors</a>
-			<a href="https://github.com/schmug" rel="noopener" class="rounded-md border border-neutral-700 px-4 py-2 text-neutral-100 hover:border-amber-300 hover:text-amber-300">Star on GitHub</a>
-			<span class="rounded-md border border-dashed border-neutral-800 px-4 py-2 text-neutral-500">Stripe tip link — pending</span>
+			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)] transition hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]">GitHub Sponsors</a>
+			<a href="https://github.com/schmug" rel="noopener" class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)] transition hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]">Star on GitHub</a>
+			<span class="rounded-md border border-dashed border-[var(--color-border)] px-4 py-2 text-[var(--color-muted)]">Stripe tip — pending</span>
 		</div>
 	</section>
 </Base>

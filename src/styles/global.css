@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-display: "Space Grotesk", var(--font-sans);
+
+  --color-void: #0b0d12;
+  --color-shadow: #0f1218;
+  --color-panel: #161a23;
+  --color-panel-hi: #1e2330;
+  --color-border: #252a36;
+  --color-rule: #343a49;
+  --color-text: #f2efe6;
+  --color-dim: #c9c7bf;
+  --color-muted: #7b7e8a;
+  --color-amber: #f6c34a;
+  --color-amber-hi: #ffdb74;
+  --color-amber-dim: #b98b1f;
+  --color-cyan: #5ee3d1;
+  --color-hot: #ff6a5c;
+}
+
+/* CortechOS brand — desktop backdrop pattern, shared across shell + static pages */
+.ct-backdrop {
+  background-color: var(--color-void);
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(246, 195, 74, 0.05) 0, transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(94, 227, 209, 0.04) 0, transparent 45%),
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 28px 28px, 28px 28px;
+  background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+}
+
+/* Window chrome tokens — applied via utilities in components */
+:root {
+  --ct-title-h: 34px;
+  --ct-radius: 10px;
+  --ct-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.85), 0 2px 0 rgba(246, 195, 74, 0.08) inset;
+  --ct-shadow-focus: 0 22px 60px -18px rgba(0, 0, 0, 0.9), 0 0 0 1px var(--color-amber) inset;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+}
+
+/* Respect reduced motion — gets real use in M5 boot splash and M3 windows */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}

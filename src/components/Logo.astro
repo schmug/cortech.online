@@ -1,0 +1,18 @@
+---
+export type Props = {
+  size?: number;
+  class?: string;
+  label?: string;
+};
+const { size = 24, class: className, label = 'CortechOS' } = Astro.props;
+---
+<span class:list={['inline-flex items-center gap-2 font-mono font-semibold tracking-tight', className]}>
+  <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
+    <rect x="3" y="3" width="26" height="26" rx="4" fill="#0b0d12" stroke="#f6c34a" stroke-width="2"/>
+    <path d="M3 10 H29" stroke="#f6c34a" stroke-width="2"/>
+    <circle cx="7" cy="6.5" r="1.25" fill="#f6c34a"/>
+    <circle cx="11" cy="6.5" r="1.25" fill="#5ee3d1"/>
+    <circle cx="15" cy="6.5" r="1.25" fill="#ff6a5c"/>
+  </svg>
+  <span>{label}</span>
+</span>
