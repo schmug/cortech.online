@@ -1,36 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
-import type { Repo } from '../../../lib/github';
-
-type Payload = { repos: Repo[]; fetchedAt: string };
-
-function relativeTime(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  const days = Math.round(diff / (1000 * 60 * 60 * 24));
-  if (days < 1) return 'today';
-  if (days < 30) return `${days}d ago`;
-  if (days < 365) return `${Math.round(days / 30)}mo ago`;
-  return `${Math.round(days / 365)}y ago`;
-}
+import { useMemo, useState } from 'react';
+import { useProjects, relativeTime } from '../../../hooks/useProjects';
 
 export default function ProjectsApp() {
-  const [payload, setPayload] = useState<Payload | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const { payload, error } = useProjects();
   const [query, setQuery] = useState('');
-
-  useEffect(() => {
-    let cancelled = false;
-    fetch('/api/projects.json')
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
-      .then((data: Payload) => {
-        if (!cancelled) setPayload(data);
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'failed to load');
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const filtered = useMemo(() => {
     if (!payload) return [];

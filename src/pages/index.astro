@@ -1,69 +1,94 @@
 ---
-import Base from '../layouts/Base.astro';
+import '../styles/global.css';
+import RootShell from '../components/RootShell.tsx';
 import { apps } from '../apps/registry.ts';
 
 const flagships = apps.filter((a) => a.type === 'iframe');
-const support = apps.find((a) => a.id === 'support');
 ---
 
-<Base title="Cortech" canonical="https://cortech.online/">
-	<section class="mx-auto max-w-4xl px-6 pt-20 pb-10">
-		<p class="font-mono text-[11px] uppercase tracking-[0.35em] text-[var(--color-amber)]">CORTECHOS 1.0 · BOOTING</p>
-		<h1 class="mt-5 font-[var(--font-display)] text-4xl font-bold tracking-tight sm:text-5xl">
-			Hi, I'm Cory. I build <span class="text-[var(--color-amber)]">small, useful things</span>.
-		</h1>
-		<p class="mt-6 max-w-2xl text-lg text-[var(--color-dim)]">
-			Email security, contact-card utilities, AI tooling, and the occasional piece of generative art. This site is about to boot into <span class="font-mono text-[var(--color-amber)]">CortechOS</span> — a tiny desktop where you can open each project in a window and actually use it.
-		</p>
-		<div class="mt-9 flex flex-wrap gap-3 text-sm">
-			<a href="/projects" class="rounded-md bg-[var(--color-amber)] px-4 py-2 font-semibold text-[var(--color-void)] transition hover:bg-[var(--color-amber-hi)]">See all projects →</a>
-			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-[var(--color-border)] px-4 py-2 font-medium text-[var(--color-text)] transition hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]">Sponsor on GitHub</a>
-			<a href="/about" class="rounded-md border border-transparent px-4 py-2 font-medium text-[var(--color-muted)] transition hover:text-[var(--color-text)]">About me</a>
-		</div>
-	</section>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#0b0d12" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Cortech — Cory Schmug</title>
+		<meta name="description" content="Cortech is the work of Cory Schmug — a small studio of one building email-security tools, contact-card utilities, AI tooling, and playful experiments. Boot into CortechOS." />
+		<link rel="canonical" href="https://cortech.online/" />
+		<meta property="og:title" content="Cortech — Cory Schmug" />
+		<meta property="og:description" content="CortechOS — a tiny desktop that showcases each of my projects as a live, openable window." />
+		<meta property="og:type" content="website" />
+		<meta name="twitter:card" content="summary" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+		<script is:inline>
+			document.documentElement.classList.add('js');
+		</script>
+		<style>
+			html.js #static-layer { display: none; }
+			html:not(.js) #root-shell { display: none; }
+		</style>
+	</head>
+	<body class="min-h-screen bg-[var(--color-void)] text-[var(--color-text)] antialiased">
+		<!-- Static content: visible to crawlers and no-JS fallback. Hidden on JS-enabled browsers. -->
+		<div id="static-layer" class="ct-backdrop min-h-screen">
+			<header class="border-b border-[var(--color-border)]">
+				<div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4 text-sm">
+					<span class="font-mono font-semibold">cortech.online</span>
+					<nav class="flex items-center gap-5 text-[var(--color-muted)]">
+						<a href="/about" class="hover:text-[var(--color-text)]">About</a>
+						<a href="/projects" class="hover:text-[var(--color-text)]">Projects</a>
+						<a href="https://github.com/schmug" rel="noopener" class="hover:text-[var(--color-text)]">GitHub</a>
+					</nav>
+				</div>
+			</header>
 
-	<section class="mx-auto max-w-4xl px-6 py-8">
-		<div class="flex items-baseline justify-between">
-			<h2 class="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-muted)]">Flagship products</h2>
-			<span class="font-mono text-[10px] text-[var(--color-muted)]">{flagships.length} apps</span>
-		</div>
-		<ul class="mt-4 grid gap-4 sm:grid-cols-2">
-			{flagships.map((app) => (
-				<li class="group relative overflow-hidden rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]">
-					<div class="flex items-center gap-2 border-b border-[var(--color-border)] bg-[var(--color-shadow)] px-3 py-2">
-						<span class="inline-block h-2 w-2 rounded-full bg-[var(--color-hot)]"></span>
-						<span class="inline-block h-2 w-2 rounded-full bg-[var(--color-amber)]"></span>
-						<span class="inline-block h-2 w-2 rounded-full bg-[var(--color-cyan)]"></span>
-						<span class="ml-2 font-mono text-[11px] text-[var(--color-muted)]">/{app.id}</span>
-						{app.paid && <span class="ml-auto rounded bg-[var(--color-amber)]/15 px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[var(--color-amber)]">paid</span>}
-					</div>
-					<div class="p-5">
-						<div class="flex items-center gap-3">
-							<span class="text-2xl" aria-hidden="true">{app.icon}</span>
-							<h3 class="font-[var(--font-display)] text-lg font-semibold">
-								<a href={app.url} rel="noopener" class="transition group-hover:text-[var(--color-amber)]">{app.name}</a>
-							</h3>
-						</div>
-						<p class="mt-2 text-sm text-[var(--color-dim)]">{app.description}</p>
-						<div class="mt-4 flex gap-3 text-xs text-[var(--color-muted)]">
-							<a href={app.url} rel="noopener" class="transition hover:text-[var(--color-amber)]">Open ↗</a>
-							{app.githubRepo && (
-								<a href={`https://github.com/${app.githubRepo}`} rel="noopener" class="transition hover:text-[var(--color-amber)]">Source ↗</a>
-							)}
-						</div>
-					</div>
-				</li>
-			))}
-		</ul>
-	</section>
+			<main class="mx-auto max-w-4xl px-6 py-16">
+				<p class="font-mono text-[11px] uppercase tracking-[0.35em] text-[var(--color-amber)]">CortechOS 1.0</p>
+				<h1 class="mt-4 font-[var(--font-display)] text-4xl font-bold tracking-tight sm:text-5xl">
+					Hi, I'm Cory. I build <span class="text-[var(--color-amber)]">small, useful things</span>.
+				</h1>
+				<p class="mt-5 max-w-2xl text-lg text-[var(--color-dim)]">
+					Email security, contact-card utilities, AI tooling, and the occasional piece of generative art. Enable JavaScript to boot into <span class="font-mono text-[var(--color-amber)]">CortechOS</span> — a tiny desktop where you can open each project in a window.
+				</p>
 
-	<section class="mx-auto max-w-4xl px-6 py-8">
-		<h2 class="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-muted)]">Support</h2>
-		<p class="mt-4 max-w-2xl text-[var(--color-dim)]">{support?.description} This portfolio and its products stay free to run because a few people chip in — your name or logo can show up here if that's something you want.</p>
-		<div class="mt-5 flex flex-wrap gap-3 text-sm">
-			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)] transition hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]">GitHub Sponsors</a>
-			<a href="https://github.com/schmug" rel="noopener" class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)] transition hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]">Star on GitHub</a>
-			<span class="rounded-md border border-dashed border-[var(--color-border)] px-4 py-2 text-[var(--color-muted)]">Stripe tip — pending</span>
+				<section class="mt-10">
+					<h2 class="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-muted)]">Products</h2>
+					<ul class="mt-4 grid gap-3 sm:grid-cols-2">
+						{flagships.map((app) => (
+							<li class="rounded-[var(--ct-radius)] border border-[var(--color-border)] p-4">
+								<div class="flex items-center gap-2">
+									<span class="text-xl">{app.icon}</span>
+									<a href={app.url} rel="noopener" class="font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]">{app.name}</a>
+									{app.paid && <span class="rounded bg-[var(--color-amber)]/15 px-1.5 py-0.5 font-mono text-[10px] uppercase text-[var(--color-amber)]">paid</span>}
+								</div>
+								<p class="mt-1 text-sm text-[var(--color-dim)]">{app.description}</p>
+							</li>
+						))}
+					</ul>
+				</section>
+
+				<section class="mt-10">
+					<h2 class="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-muted)]">Support</h2>
+					<div class="mt-4 flex flex-wrap gap-3 text-sm">
+						<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)]">GitHub Sponsors</a>
+						<a href="https://github.com/schmug" rel="noopener" class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)]">Star on GitHub</a>
+					</div>
+				</section>
+			</main>
+
+			<footer class="border-t border-[var(--color-border)] px-6 py-6 text-xs text-[var(--color-muted)]">
+				<div class="mx-auto max-w-4xl">
+					© {new Date().getFullYear()} Cory Schmug · cortech.online · CortechOS v1.0
+				</div>
+			</footer>
 		</div>
-	</section>
-</Base>
+
+		<!-- Interactive shell: mounts on JS. OSShell on >=768px, MobileShell on <768px. -->
+		<div id="root-shell">
+			<RootShell client:only="react" />
+		</div>
+	</body>
+</html>
