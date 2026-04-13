@@ -1,0 +1,42 @@
+---
+import '../styles/global.css';
+import { apps } from '../apps/registry.ts';
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Cortech — Cory Schmug</title>
+		<meta name="description" content="Cortech is the work of Cory Schmug — a small studio of one, building email-security tools, contact-card utilities, AI tooling, and playful experiments." />
+	</head>
+	<body class="min-h-screen bg-neutral-950 text-neutral-100 font-sans antialiased">
+		<main class="mx-auto max-w-3xl px-6 py-16">
+			<h1 class="text-3xl font-bold tracking-tight">Cortech — Cory Schmug</h1>
+			<p class="mt-4 text-neutral-300">
+				CortechOS is booting. This page will hydrate into an interactive desktop where you can open each project in a window. For now, here's the static manifest.
+			</p>
+
+			<h2 class="mt-10 text-lg font-semibold">Projects</h2>
+			<ul class="mt-4 space-y-3">
+				{apps.map((app) => (
+					<li class="rounded border border-neutral-800 p-4">
+						<div class="flex items-center gap-3">
+							<span class="text-2xl" aria-hidden="true">{app.icon}</span>
+							<div>
+								<div class="font-medium">{app.name}{app.paid ? ' · paid' : ''}</div>
+								<div class="text-sm text-neutral-400">{app.description}</div>
+							</div>
+						</div>
+					</li>
+				))}
+			</ul>
+
+			<p class="mt-10 text-sm text-neutral-500">
+				Scaffolding in progress — milestone M0 complete.
+			</p>
+		</main>
+	</body>
+</html>
