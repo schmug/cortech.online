@@ -6,8 +6,16 @@ import { Launcher } from './Launcher';
 import { BootSplash } from './BootSplash';
 import { useGlobalShortcuts } from './useKeyboard';
 import { useOS } from './store';
+import { apps } from '../../apps/registry';
 
 const TASKBAR_H = 56;
+const ABOUT_MARGIN = 32;
+
+function aboutStartPosition(viewport: { w: number; h: number }, w: number, h: number) {
+  const x = Math.max(8, Math.min(viewport.w - w - ABOUT_MARGIN, viewport.w - w - 8));
+  const y = Math.max(8, Math.min(ABOUT_MARGIN, viewport.h - h - 8));
+  return { x, y };
+}
 
 export default function OSShell() {
   const [viewport, setViewport] = useState({ w: 1200, h: 700 });
@@ -15,6 +23,9 @@ export default function OSShell() {
   const [announcement, setAnnouncement] = useState('');
   const lastWindowIds = useRef<string[]>([]);
   const windows = useOS((s) => s.windows);
+  const wasFirstBoot = useRef<boolean>(!useOS.getState().hasBooted);
+  const autoOpenedAbout = useRef(false);
+  const hasBooted = useOS((s) => s.hasBooted);
 
   const toggleLauncher = useCallback(() => setLauncherOpen((v) => !v), []);
   const closeLauncher = useCallback(() => setLauncherOpen(false), []);
@@ -45,6 +56,20 @@ export default function OSShell() {
     }
     lastWindowIds.current = curr;
   }, [windows]);
+
+  useEffect(() => {
+    if (!hasBooted) return;
+    if (!wasFirstBoot.current) return;
+    if (autoOpenedAbout.current) return;
+    if (viewport.w <= 0 || viewport.h <= 0) return;
+
+    const aboutApp = apps.find((a) => a.id === 'about');
+    if (!aboutApp) return;
+
+    const { x, y } = aboutStartPosition(viewport, aboutApp.defaultSize.w, aboutApp.defaultSize.h);
+    useOS.getState().openApp(aboutApp, { x, y, focus: false });
+    autoOpenedAbout.current = true;
+  }, [hasBooted, viewport]);
 
   return (
     <div
