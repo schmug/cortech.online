@@ -3,6 +3,7 @@ import { WindowManager } from './WindowManager';
 import { Desktop } from './Desktop';
 import { Taskbar } from './Taskbar';
 import { Launcher } from './Launcher';
+import { BootSplash } from './BootSplash';
 import { useGlobalShortcuts } from './useKeyboard';
 
 const TASKBAR_H = 56;
@@ -40,6 +41,7 @@ export default function OSShell() {
       </div>
       <Taskbar onOpenLauncher={toggleLauncher} />
       <Launcher open={launcherOpen} onClose={closeLauncher} />
+      <BootSplash />
     </div>
   );
 }
