@@ -18,13 +18,16 @@ async function main() {
   // 1. Keep favicon.svg lockstep with mark-sm.svg
   await copyFile(pub('mark-sm.svg'), pub('favicon.svg'));
 
-  // 2. Full-variant derivatives
+  // 2. Full-variant derivatives — flatten to void so transparent pixels
+  // don't render black on iOS or white in social previews.
   const fullSvg = await readFile(pub('mark.svg'));
-  await sharp(fullSvg, { density: 600 }).resize(460, 460).png().toFile(pub('mark-460.png'));
-  await sharp(fullSvg, { density: 600 }).resize(180, 180).png().toFile(pub('apple-touch-icon.png'));
+  const bg = { background: '#0b0d12' };
+  await sharp(fullSvg, { density: 600 }).resize(460, 460).flatten(bg).png().toFile(pub('mark-460.png'));
+  await sharp(fullSvg, { density: 600 }).resize(180, 180).flatten(bg).png().toFile(pub('apple-touch-icon.png'));
   await sharp(fullSvg, { density: 600 })
     .resize(460, 460)
-    .extend({ top: 85, bottom: 85, left: 370, right: 370, background: '#0b0d12' })
+    .flatten(bg)
+    .extend({ top: 85, bottom: 85, left: 370, right: 370, ...bg })
     .png()
     .toFile(pub('og-image.png'));
 
