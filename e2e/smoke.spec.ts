@@ -69,6 +69,10 @@ test.describe('desktop golden path', () => {
     await expect(page.locator('section[aria-label="About Cory window"]')).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('2-about-open.png') });
 
+    // Brand-mark regression: About window renders the mark as an <img>, not an emoji.
+    const aboutAvatar = page.locator('section[aria-label="About Cory window"] img').first();
+    await expect(aboutAvatar).toHaveAttribute('src', /\/mark(-sm)?\.svg$/);
+
     await page.locator('button[aria-label="Open launcher"]').click();
     const launcher = page.locator('[role="dialog"][aria-label="App launcher"]');
     await expect(launcher).toBeVisible();
