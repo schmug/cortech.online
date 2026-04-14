@@ -1,3 +1,5 @@
+import { bio, currentFocus, socialLinks, tagline } from '../../../data/about';
+
 export default function AboutApp() {
   return (
     <div className="h-full overflow-y-auto bg-[var(--color-void)] px-7 py-6 text-[var(--color-text)]">
@@ -11,38 +13,29 @@ export default function AboutApp() {
         <div>
           <div className="font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--color-amber)]">About</div>
           <h1 className="mt-1 font-[var(--font-display)] text-2xl font-semibold tracking-tight">Cory</h1>
-          <p className="mt-1 text-sm text-[var(--color-muted)]">
-            Indie builder · Cloudflare-native · studio-of-one
-          </p>
+          <p className="mt-1 text-sm text-[var(--color-muted)]">{tagline}</p>
         </div>
       </header>
 
       <section className="mt-6 space-y-3 text-sm leading-relaxed text-[var(--color-dim)]">
-        <p>
-          I make small, well-scoped software that does one job well and ships. Most of it lives on Cloudflare Workers and Pages, written in TypeScript, deployed continuously.
-        </p>
-        <p>
-          The constant threads: DNS and email security, RSS and feed discovery, contact utilities, AI / Claude Code tooling, and occasional generative-art experiments that exist mostly to make me smile.
-        </p>
-        <p>
-          <span className="font-mono text-[var(--color-amber)]">CortechOS</span> is my attempt at a single memorable home for all of it — every icon on this desktop opens one of the things I've built, running live.
-        </p>
+        {bio.map((paragraph, index) => (
+          <p key={index}>{paragraph}</p>
+        ))}
       </section>
 
       <section className="mt-6">
         <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--color-muted)]">Current focus</div>
         <ul className="mt-2 grid gap-2 text-xs">
-          <FocusRow badge="🛡️" title="dmarc.mx" note="DMARC, SPF, DKIM, BIMI, MTA-STS in one scan." />
-          <FocusRow badge="📣" title="donthype.me" note="RSS feed discovery and reading without the hype cycle." />
-          <FocusRow badge="📇" title="q-r.contact" note="Contact QR codes generated locally; no tracking." />
-          <FocusRow badge="🧠" title="Claude Code tooling" note="cclog, claude-view, claudzibit, karkinos — sharper agents." />
+          {currentFocus.map(({ badge, title, note }) => (
+            <FocusRow key={title} badge={badge} title={title} note={note} />
+          ))}
         </ul>
       </section>
 
       <section className="mt-6 grid gap-2 text-xs sm:grid-cols-3">
-        <LinkCard label="GitHub" href="https://github.com/schmug" value="github.com/schmug" />
-        <LinkCard label="LinkedIn" href="https://www.linkedin.com/in/cory-rankin/" value="linkedin.com/in/cory-rankin" />
-        <LinkCard label="Sponsor" href="https://github.com/sponsors/schmug" value="github.com/sponsors/schmug" />
+        {socialLinks.map(({ label, href, value }) => (
+          <LinkCard key={label} label={label} href={href} value={value} />
+        ))}
       </section>
     </div>
   );
