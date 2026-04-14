@@ -1,4 +1,9 @@
 import { test, expect, devices, type ConsoleMessage, type Page } from '@playwright/test';
+import { bio } from '../src/data/about';
+
+// Stable, distinctive prefix of the first bio paragraph. Sourcing from the
+// shared module keeps this assertion in sync with copy changes.
+const BIO_OPENER = bio[0].slice(0, 40);
 
 const IFRAME_APPS = [
   { id: 'dmarc-mx', name: 'dmarc.mx', url: 'https://dmarc.mx' },
@@ -67,7 +72,9 @@ test.describe('desktop golden path', () => {
 
     // About auto-opens on first boot; clicking the icon focuses the singleton.
     await page.locator('button[aria-label="Open About Cory"]').click();
-    await expect(page.locator('section[aria-label="About Cory window"]')).toBeVisible();
+    const aboutWindow = page.locator('section[aria-label="About Cory window"]');
+    await expect(aboutWindow).toBeVisible();
+    await expect(aboutWindow.getByText(BIO_OPENER)).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('2-about-open.png') });
 
     // Brand-mark regression: AboutApp header renders the full mark as an <img>, not an emoji.
@@ -97,6 +104,16 @@ test.describe('desktop golden path', () => {
       realErrors,
       `Unexpected console output:\n${realErrors.map((m) => `  [${m.type}] ${m.text}`).join('\n')}`
     ).toEqual([]);
+  });
+});
+
+test.describe('about static page', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test('renders shared bio on /about', async ({ page }) => {
+    await page.goto('/about', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('heading', { level: 1, name: 'Cory' })).toBeVisible();
+    await expect(page.getByText(BIO_OPENER)).toBeVisible();
   });
 });
 
