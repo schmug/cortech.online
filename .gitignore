@@ -25,3 +25,8 @@ pnpm-debug.log*
 
 # superpowers brainstorming session data
 .superpowers/
+
+# playwright
+test-results/
+playwright-report/
+playwright/.cache/
