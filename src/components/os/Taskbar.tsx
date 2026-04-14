@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { apps } from '../../apps/registry';
+import { renderIcon } from '../../apps/iconUtils';
 import { useOS } from './store';
 
 type Props = {
@@ -70,7 +71,7 @@ export function Taskbar({ onOpenLauncher }: Props) {
               ].join(' ')}
               title={app?.description ?? win.title}
             >
-              <span aria-hidden="true">{typeof win.icon === 'string' ? win.icon : '▫'}</span>
+              <span aria-hidden="true">{renderIcon(win.icon, 'h-4 w-4')}</span>
               <span className="max-w-[140px] truncate">{win.title}</span>
               {win.minimized && <span className="font-mono text-[9px] uppercase">min</span>}
             </button>

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { apps, type AppManifest } from '../../apps/registry';
+import { renderIcon } from '../../apps/iconUtils';
 import { useOS } from './store';
 
 type Props = {
@@ -111,7 +112,7 @@ export function Launcher({ open, onClose }: Props) {
                     : 'text-[var(--color-text)]',
                 ].join(' ')}
               >
-                <span className="text-xl" aria-hidden="true">{typeof app.icon === 'string' ? app.icon : '▫'}</span>
+                <span className="text-xl" aria-hidden="true">{renderIcon(app.icon, 'h-6 w-6')}</span>
                 <span className="flex-1 min-w-0">
                   <span className="flex items-center gap-2">
                     <span className="font-medium">{app.name}</span>

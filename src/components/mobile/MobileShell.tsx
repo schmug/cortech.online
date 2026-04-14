@@ -1,4 +1,5 @@
 import { apps } from '../../apps/registry';
+import { renderIcon } from '../../apps/iconUtils';
 import { useProjects, relativeTime } from '../../hooks/useProjects';
 
 export default function MobileShell() {
@@ -93,7 +94,7 @@ function Products({ items }: { items: App[] }) {
             </div>
             <div className="p-4">
               <div className="flex items-center gap-3">
-                <span aria-hidden="true" className="text-2xl">{typeof app.icon === 'string' ? app.icon : '▫'}</span>
+                <span aria-hidden="true" className="text-2xl">{renderIcon(app.icon, 'h-8 w-8')}</span>
                 <h3 className="font-[var(--font-display)] text-base font-semibold">{app.name}</h3>
               </div>
               <p className="mt-2 text-sm text-[var(--color-dim)]">{app.description}</p>
