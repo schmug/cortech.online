@@ -60,7 +60,9 @@ const flagships = apps.filter((a) => a.type === 'iframe');
 						{flagships.map((app) => (
 							<li class="rounded-[var(--ct-radius)] border border-[var(--color-border)] p-4">
 								<div class="flex items-center gap-2">
-									<span class="text-xl">{app.icon}</span>
+									{typeof app.icon === 'string' && app.icon.startsWith('/')
+										? <img src={app.icon} alt="" class="h-6 w-6" />
+										: <span class="text-xl">{app.icon}</span>}
 									<a href={app.url} rel="noopener" class="font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]">{app.name}</a>
 									{app.paid && <span class="rounded bg-[var(--color-amber)]/15 px-1.5 py-0.5 font-mono text-[10px] uppercase text-[var(--color-amber)]">paid</span>}
 								</div>
