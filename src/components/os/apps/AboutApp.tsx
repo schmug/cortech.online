@@ -39,14 +39,11 @@ export default function AboutApp() {
         </ul>
       </section>
 
-      <section className="mt-6 grid gap-2 text-xs sm:grid-cols-2">
+      <section className="mt-6 grid gap-2 text-xs sm:grid-cols-3">
         <LinkCard label="GitHub" href="https://github.com/schmug" value="github.com/schmug" />
+        <LinkCard label="LinkedIn" href="https://www.linkedin.com/in/cory-rankin/" value="linkedin.com/in/cory-rankin" />
         <LinkCard label="Sponsor" href="https://github.com/sponsors/schmug" value="github.com/sponsors/schmug" />
       </section>
-
-      <p className="mt-6 font-mono text-[10px] text-[var(--color-muted)]">
-        avatar + longer bio land before launch — see the CortechOS design doc.
-      </p>
     </div>
   );
 }

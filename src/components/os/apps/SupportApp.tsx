@@ -26,7 +26,7 @@ export default function SupportApp() {
         <Tier
           icon="☕"
           title="Tip jar (Stripe)"
-          note="One-time, any amount. Pending — a Stripe Payment Link lands before launch."
+          note="One-time, any amount. Coming soon."
           cta="Coming soon"
           href="#"
           disabled

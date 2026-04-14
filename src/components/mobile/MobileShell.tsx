@@ -238,7 +238,7 @@ function Support() {
               <span aria-hidden="true" className="text-lg">☕</span>
               <span>
                 <span className="block font-medium">Tip jar (Stripe)</span>
-                <span className="block text-xs text-[var(--color-muted)]">Stripe Payment Link lands before launch.</span>
+                <span className="block text-xs text-[var(--color-muted)]">Coming soon.</span>
               </span>
             </span>
             <span className="font-mono text-xs">soon</span>
