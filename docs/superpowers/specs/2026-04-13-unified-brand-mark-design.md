@@ -23,8 +23,9 @@ The site already ships a window-chrome logo (`public/favicon.svg`, `src/componen
 
 Render tests confirmed that at sizes below ~48px, the titlebar dots and divider become visual noise and starve the S of vertical room. The solution is a **tiered variant system** — standard practice (Apple, Linear, Vercel all ship tiered marks):
 
-- **Full variant** — window chrome + titlebar divider + 3 dots + amber S. Used at 48px and above.
+- **Full variant** — window chrome + titlebar divider + 3 dots + amber S. Used at 48px and above on square/rounded-rect surfaces.
 - **Small variant** — amber-stroked rounded tile + amber S, no dots or divider. Used below 48px.
+- **Circle variant** — amber ring + 3 arc-dots + amber S. Used for circle-cropping contexts (GitHub profile, Slack, Discord). Added 2026-04-13 after PR #13 shipped; the full variant's rounded-rect corners clip under circle-crop and the titlebar dots cluster off-center, breaking the "window" metaphor.
 
 ### Rejected alternatives
 - **Full mark at every size.** Rejected — unreadable at 16/32px favicon sizes; dots render as sub-pixel smudge.
@@ -59,7 +60,21 @@ Canvas 32×32. Background `#0b0d12` (`--color-void`). Stroke `#f6c34a` (`--color
 
 Drops the titlebar divider and three dots. Frame slightly larger (x/y=2 instead of 3) and more rounded (rx=6) to claim the pixels back. S is sized to fill the frame.
 
-### 3.3 Palette reference
+### 3.3 Circle variant (circle-cropping surfaces)
+
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <circle cx="16" cy="16" r="15" fill="#0b0d12" stroke="#f6c34a" stroke-width="2"/>
+  <circle cx="10.5" cy="6.47" r="1.25" fill="#f6c34a"/>
+  <circle cx="16"   cy="5"    r="1.25" fill="#5ee3d1"/>
+  <circle cx="21.5" cy="6.47" r="1.25" fill="#ff6a5c"/>
+  <text x="16" y="24" font-size="14" font-weight="900" fill="#f6c34a" text-anchor="middle">S</text>
+</svg>
+```
+
+Amber ring replaces the rounded-rect frame. Three colored dots sit on an inner arc at radius 11, angles −30°/0°/+30° from 12 o'clock (`(10.5, 6.47)`, `(16, 5)`, `(21.5, 6.47)`); left→right order preserves the existing mark's amber/cyan/hot sequence. S is centered and sized to dominate the interior. Every element stays inside the circle-crop radius with ≥4 units of clearance from the ring, so platforms that circle-crop (GitHub, Slack, Discord) never cut into content.
+
+### 3.4 Palette reference
 
 From `src/styles/global.css`:
 - `--color-void` `#0b0d12` — background
@@ -73,13 +88,14 @@ All assets live under `public/`. SVGs are authoritative; PNGs are generated arti
 
 | Path | Source variant | Dimensions | Purpose |
 |------|----------------|------------|---------|
-| `mark.svg` (new) | full | vector | Consumed by AboutApp tile, `/about` header, OG inline |
-| `mark-sm.svg` (new) | small | vector | Consumed by `registry.ts` as the About-app launcher icon |
-| `favicon.svg` (overwrite) | small (identical to `mark-sm.svg`) | vector | Primary browser tab favicon — kept at root path for convention |
-| `favicon.ico` (regenerate) | small | 32×32 | Legacy browser fallback |
-| `mark-460.png` (new) | full | 460×460 | Upload target for GitHub profile picture |
-| `apple-touch-icon.png` (new) | full | 180×180 | iOS home-screen icon |
-| `og-image.png` (new) | full, centered on `#0b0d12` | 1200×630 | Social link previews (Twitter/X, LinkedIn, Slack, Discord) |
+| `mark.svg` | full | vector | Consumed by AboutApp tile, `/about` header, OG inline |
+| `mark-sm.svg` | small | vector | Consumed by `registry.ts` as the About-app launcher icon |
+| `mark-circle.svg` | circle | vector | Source for `mark-460.png` (circle-cropping platforms) |
+| `favicon.svg` | small (identical to `mark-sm.svg`) | vector | Primary browser tab favicon — kept at root path for convention |
+| `favicon.ico` | small | 32×32 | Legacy browser fallback |
+| `mark-460.png` | circle | 460×460 | Upload target for GitHub profile picture; also works for Slack/Discord avatars |
+| `apple-touch-icon.png` | full | 180×180 | iOS home-screen icon (rounded-square, not circle-cropped) |
+| `og-image.png` | full, centered on `#0b0d12` | 1200×630 | Social link previews (Twitter/X, LinkedIn, Slack unfurls, Discord embeds) |
 
 `mark-sm.svg` and `favicon.svg` hold identical content. The generation script writes both from a single source to avoid drift; see §6.
 

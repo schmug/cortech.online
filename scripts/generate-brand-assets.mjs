@@ -2,7 +2,7 @@
 // scripts/generate-brand-assets.mjs
 // Regenerates public/favicon.{svg,ico}, public/mark-460.png,
 // public/apple-touch-icon.png, and public/og-image.png
-// from the authoritative public/mark{,-sm}.svg sources.
+// from the authoritative public/mark{,-sm,-circle}.svg sources.
 
 import { readFile, writeFile, copyFile, unlink } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
@@ -18,12 +18,17 @@ async function main() {
   // 1. Keep favicon.svg lockstep with mark-sm.svg
   await copyFile(pub('mark-sm.svg'), pub('favicon.svg'));
 
-  // 2. Full-variant derivatives — flatten to void so transparent pixels
-  // don't render black on iOS or white in social previews.
+  // 2. Derivatives — flatten to void so transparent pixels don't render
+  // black on iOS or white in social previews.
   const fullSvg = await readFile(pub('mark.svg'));
+  const circleSvg = await readFile(pub('mark-circle.svg'));
   const bg = { background: '#0b0d12' };
-  await sharp(fullSvg, { density: 600 }).resize(460, 460).flatten(bg).png().toFile(pub('mark-460.png'));
+  // GitHub (and Slack, Discord) circle-crop avatars; use the circle variant
+  // so the ring, dots, and S stay inside the visible disc.
+  await sharp(circleSvg, { density: 600 }).resize(460, 460).flatten(bg).png().toFile(pub('mark-460.png'));
+  // iOS renders apple-touch-icon as a rounded square, not a circle.
   await sharp(fullSvg, { density: 600 }).resize(180, 180).flatten(bg).png().toFile(pub('apple-touch-icon.png'));
+  // OG card is not cropped — full variant fits its 1200×630 frame.
   await sharp(fullSvg, { density: 600 })
     .resize(460, 460)
     .flatten(bg)
