@@ -57,4 +57,4 @@ The original product spec — vision, build sequence, open questions — lives a
 
 ## License
 
-[MIT](LICENSE) © Cory Schmug
+[MIT](LICENSE) © [Schmug](https://github.com/schmug)
