@@ -1,43 +1,60 @@
-# Astro Starter Kit: Minimal
+# CortechOS
+
+The portfolio at [cortech.online](https://cortech.online) — an Astro-rendered landing that hydrates into a tiny desktop OS where each window is one of my projects. Mobile viewport falls back to a vertical card grid.
+
+![CortechOS desktop with the About Cory window open](docs/screenshot-desktop.png)
+
+> Animated demo: [`docs/screenshot-desktop.gif`](docs/screenshot-desktop.gif) — boot → ⌘K launcher → open Projects → drag.
+
+## Run locally
+
+Requires Node `>=22.12.0`.
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install
+npm run dev          # http://localhost:4321
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Build & deploy
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```sh
+npm run build        # → dist/
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Cloudflare Pages:
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+| Setting | Value |
+| --- | --- |
+| Framework preset | None |
+| Build command | `npm run build` |
+| Output directory | `dist` |
+| Node version | 22 |
 
-Any static assets, like images, can be placed in the `public/` directory.
+`public/_routes.json` ships `{ include: [], exclude: ["/*"] }` so Pages bypasses the Functions runtime entirely — every path is served as a static asset. See [`docs/architecture.md`](docs/architecture.md#deploy-contract) for why.
 
-## 🧞 Commands
+## Tech stack
 
-All commands are run from the root of the project, from a terminal:
+- **Astro 6** static site (`output: 'static'`) with one React island
+- **React 19** for the interactive shell, `lazy()`-split into `OSShell` (≥768px) and `MobileShell` (<768px)
+- **Tailwind v4** via `@tailwindcss/vite`
+- **zustand** (with `persist` middleware) for the window-manager store
+- **react-rnd** for draggable / resizable windows
+- **lucide-react** for icons
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Tests
 
-## 👀 Want to learn more?
+```sh
+npm test             # vitest — unit tests for store + helpers
+npm run test:e2e     # playwright — desktop golden path, mobile fallback, iframe embed
+npm run typecheck    # astro check && tsc --noEmit
+```
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+## Architecture
+
+[`docs/architecture.md`](docs/architecture.md) covers the layering, app registry contract, window-manager store shape, a11y contract, and deploy contract — start there if you want to add an app or change a behavior.
+
+The original product spec — vision, build sequence, open questions — lives at [`docs/superpowers/specs/2026-04-12-cortechos-design.md`](docs/superpowers/specs/2026-04-12-cortechos-design.md).
+
+## License
+
+[MIT](LICENSE) © Cory Schmug
