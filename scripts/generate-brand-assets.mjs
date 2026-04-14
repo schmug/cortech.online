@@ -31,16 +31,17 @@ async function main() {
     .png()
     .toFile(pub('og-image.png'));
 
-  // 3. Small-variant ICO (via npx png-to-ico, on-demand)
+  // 3. Small-variant ICO — use png2icons -icop (PNG-compressed ICO entries).
+  // Default BMP entries from png-to-ico produced a 285KB file with an auto
+  // 256×256 slot; PNG-compressed at equivalent quality is ~15KB.
   const smSvg = await readFile(pub('mark-sm.svg'));
-  const tmpPng = pub('favicon-32.png');
-  await sharp(smSvg, { density: 600 }).resize(32, 32).png().toFile(tmpPng);
-  const ico = spawnSync('npx', ['--yes', 'png-to-ico', tmpPng], { encoding: 'buffer' });
-  if (ico.status !== 0) {
-    throw new Error(`png-to-ico failed:\n${ico.stderr.toString()}`);
+  const srcPng = pub('favicon-src.png');
+  await sharp(smSvg, { density: 600 }).resize(256, 256).png().toFile(srcPng);
+  const cmd = spawnSync('npx', ['--yes', 'png2icons', srcPng, pub('favicon'), '-icop', '-bc'], { encoding: 'buffer' });
+  if (cmd.status !== 0) {
+    throw new Error(`png2icons failed:\n${cmd.stderr.toString()}`);
   }
-  await writeFile(pub('favicon.ico'), ico.stdout);
-  await unlink(tmpPng);
+  await unlink(srcPng);
 
   console.log('✓ Brand assets regenerated.');
 }
