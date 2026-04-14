@@ -103,17 +103,58 @@ test.describe('desktop golden path', () => {
 // Strip defaultBrowserType — can't change browser at describe scope, only viewport/UA matter.
 const { defaultBrowserType: _ignoredBrowser, ...iPhone14 } = devices['iPhone 14'];
 
-test.describe('mobile fallback', () => {
+test.describe('mobile springboard', () => {
   test.use(iPhone14);
 
-  test('renders MobileShell with product cards and no OSShell markers', async ({ page }) => {
+  test('home grid + dock render, tap opens app fullscreen, back returns home', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
+
     // MobileShell mounts immediately — no boot splash.
-    await expect(page.locator('#products')).toBeVisible({ timeout: 15_000 });
+    const grid = page.locator('[data-testid="home-grid"]');
+    await expect(grid).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('#ct-desktop')).toHaveCount(0);
-    const cards = page.locator('#products li');
-    await expect(cards.first()).toBeVisible();
-    expect(await cards.count()).toBeGreaterThanOrEqual(4);
+
+    // All 7 registry apps rendered as tiles.
+    const tiles = grid.locator('button[aria-label^="Open "]');
+    expect(await tiles.count()).toBe(7);
+
+    // Dock shows 3 pinned apps (About, Support, Projects).
+    const dockButtons = page.locator('nav[aria-label="Dock"] button');
+    await expect(dockButtons).toHaveCount(3);
+    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open About Cory"]')).toBeVisible();
+    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open Support"]')).toBeVisible();
+    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open Projects"]')).toBeVisible();
+
+    // Tap an iframe app (dmarc.mx) → fullscreen app view with iframe + back pill.
+    await grid.locator('button[aria-label="Open dmarc.mx"]').tap();
+    const appView = page.locator('div[role="dialog"][aria-label="dmarc.mx app"]');
+    await expect(appView).toBeVisible();
+    await expect(appView.locator('iframe[title="dmarc.mx"]')).toBeVisible();
+    const backPill = page.locator('button[aria-label="Back to home"]');
+    await expect(backPill).toBeVisible();
+
+    // Tap back → app view gone, home grid visible again.
+    await backPill.tap();
+    await expect(appView).toHaveCount(0);
+    await expect(grid).toBeVisible();
+  });
+
+  test('prefers-reduced-motion disables the slide-up transition', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const grid = page.locator('[data-testid="home-grid"]');
+    await expect(grid).toBeVisible({ timeout: 15_000 });
+
+    await grid.locator('button[aria-label="Open dmarc.mx"]').tap();
+    const appView = page.locator('div[role="dialog"][aria-label="dmarc.mx app"]');
+    await expect(appView).toBeVisible();
+
+    // Under reduced motion, the slide-up transform is disabled —
+    // transition-property should only cover opacity, not transform.
+    const transitionProperty = await appView.evaluate(
+      (el) => window.getComputedStyle(el).transitionProperty
+    );
+    expect(transitionProperty).toBe('opacity');
   });
 });
 
