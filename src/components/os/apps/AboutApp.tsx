@@ -2,12 +2,12 @@ export default function AboutApp() {
   return (
     <div className="h-full overflow-y-auto bg-[var(--color-void)] px-7 py-6 text-[var(--color-text)]">
       <header className="flex items-start gap-5">
-        <div
+        <img
+          src="/mark.svg"
+          alt=""
           aria-hidden="true"
-          className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[16px] bg-gradient-to-br from-[var(--color-amber)] to-[var(--color-hot)] text-3xl shadow-[0_8px_24px_-8px_rgba(246,195,74,0.5)]"
-        >
-          👋
-        </div>
+          className="h-16 w-16 shrink-0 rounded-[16px] shadow-[0_8px_24px_-8px_rgba(246,195,74,0.5)]"
+        />
         <div>
           <div className="font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--color-amber)]">About</div>
           <h1 className="mt-1 font-[var(--font-display)] text-2xl font-semibold tracking-tight">Cory</h1>

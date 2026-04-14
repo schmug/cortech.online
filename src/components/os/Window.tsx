@@ -1,6 +1,7 @@
 import { Rnd } from 'react-rnd';
 import type { ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
+import { renderIcon } from '../../apps/iconUtils';
 import { useOS, type WindowState } from './store';
 
 type Props = {
@@ -29,7 +30,7 @@ export function Window({ window: win, viewport, children, minSize }: Props) {
 
   if (win.minimized) return null;
 
-  const icon = typeof win.icon === 'string' ? win.icon : '▫';
+  const icon = renderIcon(win.icon, 'h-4 w-4');
 
   return (
     <Rnd

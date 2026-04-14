@@ -1,4 +1,5 @@
 import { apps } from '../../../apps/registry';
+import { renderIcon } from '../../../apps/iconUtils';
 
 export default function SupportApp() {
   const paidApps = apps.filter((a) => a.paid);
@@ -56,7 +57,7 @@ export default function SupportApp() {
         <ul className="mt-3 grid gap-2 text-xs">
           {paidApps.map((app) => (
             <li key={app.id} className="flex items-center gap-3 rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 px-3 py-2">
-              <span aria-hidden="true" className="text-base">{typeof app.icon === 'string' ? app.icon : '▫'}</span>
+              <span aria-hidden="true" className="text-base">{renderIcon(app.icon, 'h-4 w-4')}</span>
               <div className="min-w-0 flex-1">
                 <div className="font-mono text-[11px] text-[var(--color-text)]">{app.name}</div>
                 <div className="truncate text-[11px] text-[var(--color-muted)]">{app.description}</div>

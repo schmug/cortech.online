@@ -64,7 +64,7 @@ export const apps: AppManifest[] = [
     id: 'about',
     name: 'About Cory',
     description: 'Bio, what I build, how to reach me.',
-    icon: '👋',
+    icon: '/mark-sm.svg',
     type: 'native',
     component: () => import('../components/os/apps/AboutApp'),
     defaultSize: { w: 560, h: 560 },

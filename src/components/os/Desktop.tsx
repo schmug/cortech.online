@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { apps, type AppManifest } from '../../apps/registry';
+import { renderIcon } from '../../apps/iconUtils';
 import { useOS } from './store';
 import { ContextMenu, type ContextMenuItem } from './ContextMenu';
 
@@ -58,7 +59,7 @@ export function Desktop() {
               className="flex h-14 w-14 items-center justify-center rounded-[10px] border border-[var(--color-border)] bg-[var(--color-panel)] text-2xl shadow-[0_4px_0_rgba(0,0,0,0.35)] transition group-hover:border-[var(--color-amber)]/60"
               aria-hidden="true"
             >
-              {typeof app.icon === 'string' ? app.icon : '▫'}
+              {renderIcon(app.icon, 'h-10 w-10')}
             </span>
             <span className="line-clamp-2 text-xs font-medium text-[var(--color-text)]">
               {app.name}

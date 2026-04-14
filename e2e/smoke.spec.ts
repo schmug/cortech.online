@@ -61,13 +61,18 @@ test.describe('desktop golden path', () => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await dismissBootSplash(page);
 
-    await expect(page.locator('#ct-desktop')).toBeVisible();
+    // Generous timeout for first-run Vite lazy-chunk compilation.
+    await expect(page.locator('#ct-desktop')).toBeVisible({ timeout: 15_000 });
     await page.screenshot({ path: testInfo.outputPath('1-booted.png') });
 
     // About auto-opens on first boot; clicking the icon focuses the singleton.
     await page.locator('button[aria-label="Open About Cory"]').click();
     await expect(page.locator('section[aria-label="About Cory window"]')).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('2-about-open.png') });
+
+    // Brand-mark regression: AboutApp header renders the full mark as an <img>, not an emoji.
+    const aboutAvatar = page.locator('section[aria-label="About Cory window"] img[src="/mark.svg"]');
+    await expect(aboutAvatar).toBeVisible();
 
     await page.locator('button[aria-label="Open launcher"]').click();
     const launcher = page.locator('[role="dialog"][aria-label="App launcher"]');
@@ -104,7 +109,7 @@ test.describe('mobile fallback', () => {
   test('renders MobileShell with product cards and no OSShell markers', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     // MobileShell mounts immediately — no boot splash.
-    await expect(page.locator('#products')).toBeVisible();
+    await expect(page.locator('#products')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('#ct-desktop')).toHaveCount(0);
     const cards = page.locator('#products li');
     await expect(cards.first()).toBeVisible();
@@ -120,7 +125,7 @@ test.describe('iframe embed', () => {
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     await dismissBootSplash(page);
-    await expect(page.locator('#ct-desktop')).toBeVisible();
+    await expect(page.locator('#ct-desktop')).toBeVisible({ timeout: 15_000 });
 
     for (const app of IFRAME_APPS) {
       await page.locator('button[aria-label="Open launcher"]').click();
