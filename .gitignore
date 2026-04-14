@@ -26,6 +26,9 @@ pnpm-debug.log*
 # superpowers brainstorming session data
 .superpowers/
 
+# git worktrees
+.worktrees/
+
 # playwright
 test-results/
 playwright-report/
