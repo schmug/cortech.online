@@ -104,7 +104,7 @@ AntArt live-canvas easter-egg app; RepoGotchi; cclog live log viewer; blog/writi
 
 Astro renders `/` as static HTML that already contains:
 
-- `<h1>Cory Schmug — Cortech</h1>`
+- `<h1>Schmug — Cortech</h1>`
 - Short bio paragraph
 - A visible project list (rendered from the same registry) with descriptions and links
 

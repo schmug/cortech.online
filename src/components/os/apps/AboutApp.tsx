@@ -10,7 +10,7 @@ export default function AboutApp() {
         </div>
         <div>
           <div className="font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--color-amber)]">About</div>
-          <h1 className="mt-1 font-[var(--font-display)] text-2xl font-semibold tracking-tight">Cory Schmug</h1>
+          <h1 className="mt-1 font-[var(--font-display)] text-2xl font-semibold tracking-tight">Cory</h1>
           <p className="mt-1 text-sm text-[var(--color-muted)]">
             Indie builder · Cloudflare-native · studio-of-one
           </p>

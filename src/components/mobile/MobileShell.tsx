@@ -253,7 +253,7 @@ function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="mt-10 border-t border-[var(--color-border)] px-5 py-5 text-xs text-[var(--color-muted)]">
-      <p>© {year} Cory Schmug · cortech.online · CortechOS v1.0</p>
+      <p>© {year} Schmug · cortech.online · CortechOS v1.0</p>
       <p className="mt-2 font-mono text-[10px]">
         ⌨ Try the desktop version on a laptop for the full OS experience ↗
       </p>
