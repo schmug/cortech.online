@@ -8,7 +8,7 @@ type Props = {
   onClose: () => void;
 };
 
-function matches(app: AppManifest, q: string) {
+export function matches(app: AppManifest, q: string) {
   if (!q) return true;
   const hay = `${app.name} ${app.description} ${app.id}`.toLowerCase();
   return hay.includes(q.toLowerCase());

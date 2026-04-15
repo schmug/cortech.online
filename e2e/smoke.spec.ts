@@ -44,6 +44,22 @@ async function dismissBootSplash(page: Page) {
   await splash.waitFor({ state: 'hidden', timeout: 10_000 });
 }
 
+async function bootDesktop(page: Page) {
+  await page.goto('/', { waitUntil: 'domcontentloaded' });
+  await dismissBootSplash(page);
+  await expect(page.locator('#ct-desktop')).toBeVisible({ timeout: 15_000 });
+}
+
+async function openApp(page: Page, appName: string) {
+  await page.locator('button[aria-label="Open launcher"]').click();
+  const launcher = page.locator('[role="dialog"][aria-label="App launcher"]');
+  await expect(launcher).toBeVisible();
+  await page.locator('input[aria-label="Search apps"]').fill(appName);
+  await page.keyboard.press('Enter');
+  await expect(launcher).toBeHidden();
+  await expect(page.locator(`section[aria-label="${appName} window"]`)).toBeVisible();
+}
+
 // Block external font CDN — otherwise page.goto and page.screenshot hang on
 // `document.fonts.ready`. Fulfill (vs abort) keeps the console clean.
 test.beforeEach(async ({ page }) => {
@@ -97,6 +113,89 @@ test.describe('desktop golden path', () => {
       realErrors,
       `Unexpected console output:\n${realErrors.map((m) => `  [${m.type}] ${m.text}`).join('\n')}`
     ).toEqual([]);
+  });
+});
+
+test.describe('desktop interactions', () => {
+  test.use({ viewport: { width: 1440, height: 900 } });
+
+  test('⌘W closes the focused window', async ({ page }) => {
+    await bootDesktop(page);
+    await openApp(page, 'Projects');
+    const win = page.locator('section[aria-label="Projects window"]');
+    await expect(win).toBeVisible();
+
+    // Focus is set on the window's <section> by Window.tsx when opened; ⌘W is global.
+    await page.keyboard.press('Meta+W');
+    await expect(win).toHaveCount(0);
+  });
+
+  test('Minimize hides the window; clicking the taskbar pill restores it', async ({ page }) => {
+    await bootDesktop(page);
+    await openApp(page, 'Projects');
+    const win = page.locator('section[aria-label="Projects window"]');
+    await expect(win).toBeVisible();
+
+    await page.locator('button[aria-label="Minimize Projects"]').click();
+    // Window.tsx returns null when minimized, so the <section> is unmounted.
+    await expect(win).toHaveCount(0);
+
+    // Taskbar pill for Projects is now in "min" state; clicking restores it.
+    const pill = page.locator('[role="tab"]', { hasText: 'Projects' });
+    await expect(pill).toBeVisible();
+    await pill.click();
+    await expect(win).toBeVisible();
+  });
+
+  test('Maximize → Restore round-trip returns the window to its pre-max rect', async ({ page }) => {
+    await bootDesktop(page);
+    await openApp(page, 'About Cory');
+    const win = page.locator('section[aria-label="About Cory window"]');
+    const preMax = await win.boundingBox();
+    expect(preMax).toBeTruthy();
+
+    await page.locator('button[aria-label="Maximize About Cory"]').click();
+    const maxed = await win.boundingBox();
+    expect(maxed!.width).toBeGreaterThan(preMax!.width);
+    expect(maxed!.height).toBeGreaterThan(preMax!.height);
+
+    // After toggle, the button label flips to "Restore".
+    await page.locator('button[aria-label="Restore About Cory"]').click();
+    const restored = await win.boundingBox();
+    expect(Math.round(restored!.x)).toBe(Math.round(preMax!.x));
+    expect(Math.round(restored!.y)).toBe(Math.round(preMax!.y));
+    expect(Math.round(restored!.width)).toBe(Math.round(preMax!.width));
+    expect(Math.round(restored!.height)).toBe(Math.round(preMax!.height));
+  });
+
+  test('Layout persists across reload (localStorage blob survives)', async ({ page }) => {
+    await bootDesktop(page);
+    await openApp(page, 'Projects');
+    const win = page.locator('section[aria-label="Projects window"]');
+    await expect(win).toBeVisible();
+
+    const before = await page.evaluate(() => {
+      const raw = localStorage.getItem('cortechos:layout');
+      return raw ? JSON.parse(raw).state : null;
+    });
+    expect(before).toBeTruthy();
+    const projBefore = before.windows.find((w: { appId: string }) => w.appId === 'projects');
+    expect(projBefore).toBeTruthy();
+
+    await page.reload();
+    // hasBooted is persisted → no splash on reload.
+    await expect(page.locator('#ct-desktop')).toBeVisible({ timeout: 15_000 });
+    await expect(win).toBeVisible();
+
+    const after = await page.evaluate(() => {
+      const raw = localStorage.getItem('cortechos:layout');
+      return raw ? JSON.parse(raw).state : null;
+    });
+    const projAfter = after.windows.find((w: { appId: string }) => w.appId === 'projects');
+    expect(projAfter.x).toBe(projBefore.x);
+    expect(projAfter.y).toBe(projBefore.y);
+    expect(projAfter.w).toBe(projBefore.w);
+    expect(projAfter.h).toBe(projBefore.h);
   });
 });
 

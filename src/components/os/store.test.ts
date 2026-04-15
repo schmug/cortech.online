@@ -195,4 +195,96 @@ describe('persistence partialize', () => {
     expect(Object.keys(slice).sort()).toEqual(['hasBooted', 'nextZ', 'windows']);
     expect(slice).not.toHaveProperty('focusedId');
   });
+
+  it('openApp writes a partialized slice (no focusedId) to localStorage', () => {
+    useOS.getState().openApp(makeApp({ id: 'a' }));
+    useOS.setState({ hasBooted: true });
+
+    const raw = localStorage.getItem('cortechos:layout');
+    expect(raw).toBeTruthy();
+    const parsed = JSON.parse(raw!);
+    expect(parsed.state).not.toHaveProperty('focusedId');
+    expect(parsed.state.windows).toHaveLength(1);
+    expect(parsed.state.hasBooted).toBe(true);
+  });
+
+  it('rehydrate loads a preset localStorage blob and leaves focusedId null', async () => {
+    // Preset a saved layout directly; bypass openApp so the in-memory write
+    // doesn't re-trigger persistence.
+    const blob = {
+      state: {
+        windows: [
+          {
+            id: 'preset',
+            appId: 'preset',
+            title: 'Preset',
+            icon: 'i',
+            x: 100,
+            y: 200,
+            w: 400,
+            h: 300,
+            z: 5,
+            minimized: false,
+            maximized: false,
+          },
+        ],
+        nextZ: 6,
+        hasBooted: true,
+      },
+      version: 1,
+    };
+    localStorage.setItem('cortechos:layout', JSON.stringify(blob));
+
+    await useOS.persist.rehydrate();
+
+    const after = useOS.getState();
+    expect(after.windows).toHaveLength(1);
+    expect(after.windows[0]!.id).toBe('preset');
+    expect(after.windows[0]!.x).toBe(100);
+    expect(after.nextZ).toBe(6);
+    expect(after.hasBooted).toBe(true);
+    expect(after.focusedId).toBeNull();
+  });
+});
+
+describe('cascade placement', () => {
+  it('9th window wraps back to INITIAL_OFFSET (count % 8)', () => {
+    // Use distinct singleton ids so instanceId == id and stays stable.
+    for (let i = 0; i < 9; i++) {
+      useOS.getState().openApp(makeApp({ id: `app-${i}` }));
+    }
+    const s = useOS.getState();
+    expect(s.windows).toHaveLength(9);
+    const ninth = s.windows[8]!;
+    expect(ninth.x).toBe(24);
+    expect(ninth.y).toBe(24);
+  });
+
+  it('cascade offset math: nth window (n<8) is at 24 + n*28', () => {
+    for (let i = 0; i < 4; i++) {
+      useOS.getState().openApp(makeApp({ id: `app-${i}` }));
+    }
+    const s = useOS.getState();
+    for (let i = 0; i < 4; i++) {
+      expect(s.windows[i]!.x).toBe(24 + i * 28);
+      expect(s.windows[i]!.y).toBe(24 + i * 28);
+    }
+  });
+});
+
+describe('resetLayout', () => {
+  it('clears windows and focusedId, resets nextZ to 1, preserves hasBooted', () => {
+    useOS.getState().openApp(makeApp({ id: 'a' }));
+    useOS.getState().openApp(makeApp({ id: 'b' }));
+    useOS.setState({ hasBooted: true });
+    expect(useOS.getState().nextZ).toBeGreaterThan(1);
+
+    useOS.getState().resetLayout();
+
+    const s = useOS.getState();
+    expect(s.windows).toEqual([]);
+    expect(s.focusedId).toBeNull();
+    expect(s.nextZ).toBe(1);
+    expect(s.hasBooted).toBe(true);
+  });
 });
