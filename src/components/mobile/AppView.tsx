@@ -28,6 +28,7 @@ export function AppView({ appId }: Props) {
   return (
     <div
       role="dialog"
+      aria-modal="true"
       aria-label={`${app.name} app`}
       data-entered={entered}
       className="mobile-app-view fixed inset-0 z-30 flex flex-col bg-[var(--color-void)]"
