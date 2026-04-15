@@ -13,6 +13,7 @@
     "astro": "astro",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
@@ -34,6 +35,8 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.8",
     "@playwright/test": "^1.59.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
     "@vitest/coverage-v8": "^4.1.4",
     "happy-dom": "^20.9.0",
     "typescript": "^5.9.3",
