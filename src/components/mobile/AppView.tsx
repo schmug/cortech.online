@@ -49,6 +49,8 @@ export function AppView({ appId }: Props) {
           <iframe
             src={app.url}
             title={app.name}
+            sandbox="allow-same-origin allow-scripts"
+            referrerPolicy="strict-origin-when-cross-origin"
             className="h-full w-full border-0"
           />
         ) : NativeComponent ? (
