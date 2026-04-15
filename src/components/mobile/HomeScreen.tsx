@@ -32,7 +32,7 @@ function AppTile({ app, onOpen }: TileProps) {
       type="button"
       onClick={onOpen}
       aria-label={`Open ${app.name}`}
-      className="group flex w-full flex-col items-center gap-1.5 py-1 text-center focus:outline-none"
+      className="group flex w-full flex-col items-center gap-1.5 rounded-xl py-1 text-center focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]"
     >
       <span className="relative flex h-[60px] w-[60px] items-center justify-center rounded-[18px] border border-[var(--color-border)] bg-[var(--color-panel)] text-3xl transition group-active:scale-95 group-active:border-[var(--color-amber)]/60">
         <span aria-hidden="true" className="flex items-center justify-center">
