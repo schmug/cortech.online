@@ -2,7 +2,7 @@
 
 The portfolio at [cortech.online](https://cortech.online) — an Astro-rendered landing that hydrates into a tiny desktop OS where each window is one of my projects. Mobile viewport falls back to a vertical card grid.
 
-![CortechOS desktop with the About Cory window open](docs/screenshot-desktop.png)
+![CortechOS desktop with the About Schmug window open](docs/screenshot-desktop.png)
 
 > Animated demo: [`docs/screenshot-desktop.gif`](docs/screenshot-desktop.gif) — boot → ⌘K launcher → open Projects → drag.
 
