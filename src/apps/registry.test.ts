@@ -57,4 +57,12 @@ describe('app registry invariants', () => {
       .map((a) => a.id);
     expect(new Set(singletonIds).size).toBe(singletonIds.length);
   });
+
+  it('blog app is registered as a singleton native app', () => {
+    const blog = apps.find((a) => a.id === 'blog');
+    expect(blog, 'blog app should exist in registry').toBeDefined();
+    expect(blog!.type).toBe('native');
+    expect(blog!.allowMultiple).toBe(false);
+    expect(typeof blog!.component).toBe('function');
+  });
 });
