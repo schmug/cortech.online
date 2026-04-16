@@ -24,6 +24,7 @@ const meta = description ?? 'Cortech is the work of Schmug — a small studio of
 		<title>{fullTitle}</title>
 		<meta name="description" content={meta} />
 		{canonical && <link rel="canonical" href={canonical} />}
+		<link rel="alternate" type="application/rss+xml" title="Cortech" href="/rss.xml" />
 		<meta property="og:title" content={fullTitle} />
 		<meta property="og:description" content={meta} />
 		<meta property="og:type" content="website" />
