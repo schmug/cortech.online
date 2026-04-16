@@ -38,11 +38,6 @@ function AppTile({ app, onOpen }: TileProps) {
         <span aria-hidden="true" className="flex items-center justify-center">
           {renderIcon(app.icon, 'h-8 w-8')}
         </span>
-        {app.paid && (
-          <span className="absolute -top-1 -right-1 rounded-full bg-[var(--color-amber)] px-1.5 py-0.5 font-mono text-[8px] font-semibold uppercase tracking-wider text-[var(--color-void)] shadow">
-            paid
-          </span>
-        )}
       </span>
       <span className="max-w-full truncate text-[11px] font-medium text-[var(--color-text)]">
         {app.name}

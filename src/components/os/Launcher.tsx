@@ -116,7 +116,6 @@ export function Launcher({ open, onClose }: Props) {
                 <span className="flex-1 min-w-0">
                   <span className="flex items-center gap-2">
                     <span className="font-medium">{app.name}</span>
-                    {app.paid && <span className="rounded bg-[var(--color-amber)]/20 px-1 font-mono text-[9px] uppercase tracking-wider">paid</span>}
                     <span className="font-mono text-[10px] text-[var(--color-muted)]">/{app.id}</span>
                   </span>
                   <span className="mt-0.5 block truncate text-xs text-[var(--color-muted)]">{app.description}</span>

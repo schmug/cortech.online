@@ -49,14 +49,6 @@ describe('app registry invariants', () => {
     }
   });
 
-  it('paid flag is only ever set to true (never false)', () => {
-    for (const a of apps) {
-      if ('paid' in a && a.paid !== undefined) {
-        expect(a.paid, `${a.id} paid`).toBe(true);
-      }
-    }
-  });
-
   it('allowMultiple native apps use app.id as their window id (singleton contract)', () => {
     // The store assigns instanceId = app.id when allowMultiple === false.
     // Having duplicate singleton ids across the registry would collide; verify.
