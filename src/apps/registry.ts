@@ -86,4 +86,15 @@ export const apps: AppManifest[] = [
     defaultSize: { w: 760, h: 560 },
     allowMultiple: false,
   },
+  {
+    id: 'blog',
+    name: 'Blog',
+    description: 'Notes on tooling, Cloudflare, and CortechOS.',
+    icon: '✍️',
+    type: 'native',
+    component: () => import('../components/os/apps/BlogApp'),
+    defaultSize: { w: 760, h: 560 },
+    minSize: { w: 480, h: 360 },
+    allowMultiple: false,
+  },
 ];
