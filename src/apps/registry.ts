@@ -12,7 +12,6 @@ export type AppManifest = {
   minSize?: { w: number; h: number };
   allowMultiple?: boolean;
   githubRepo?: string;
-  paid?: boolean;
 };
 
 export const apps: AppManifest[] = [
@@ -26,7 +25,6 @@ export const apps: AppManifest[] = [
     defaultSize: { w: 960, h: 680 },
     minSize: { w: 480, h: 360 },
     githubRepo: 'schmug/dmarcheck',
-    paid: true,
   },
   {
     id: 'donthype-me',
@@ -37,7 +35,6 @@ export const apps: AppManifest[] = [
     url: 'https://donthype.me',
     defaultSize: { w: 960, h: 680 },
     githubRepo: 'schmug/donthype-me',
-    paid: true,
   },
   {
     id: 'apartment-stager',
@@ -48,7 +45,6 @@ export const apps: AppManifest[] = [
     url: 'https://apartment-stager.pages.dev/',
     defaultSize: { w: 960, h: 680 },
     githubRepo: 'schmug/apartment-stager',
-    paid: true,
   },
   {
     id: 'qr-me',

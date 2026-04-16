@@ -64,9 +64,6 @@ export function Desktop() {
             <span className="line-clamp-2 text-xs font-medium text-[var(--color-text)]">
               {app.name}
             </span>
-            {app.paid && (
-              <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--color-amber)]">paid</span>
-            )}
           </button>
         ))}
       </div>

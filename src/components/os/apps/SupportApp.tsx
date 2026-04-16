@@ -2,7 +2,7 @@ import { apps } from '../../../apps/registry';
 import { renderIcon } from '../../../apps/iconUtils';
 
 export default function SupportApp() {
-  const paidApps = apps.filter((a) => a.paid);
+  const flagships = apps.filter((a) => a.type === 'iframe');
 
   return (
     <div className="h-full overflow-y-auto bg-[var(--color-void)] px-7 py-6 text-[var(--color-text)]">
@@ -55,7 +55,7 @@ export default function SupportApp() {
       <section className="mt-8">
         <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--color-muted)]">What your support funds</div>
         <ul className="mt-3 grid gap-2 text-xs">
-          {paidApps.map((app) => (
+          {flagships.map((app) => (
             <li key={app.id} className="flex items-center gap-3 rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 px-3 py-2">
               <span aria-hidden="true" className="text-base">{renderIcon(app.icon, 'h-4 w-4')}</span>
               <div className="min-w-0 flex-1">
