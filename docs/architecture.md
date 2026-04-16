@@ -34,7 +34,7 @@ type AppManifest = {
 
 **Iframe apps** (4): `dmarc.mx`, `donthype.me`, `apartment-stager`, `q-r.contact`. Hosted elsewhere; embedded as-is. Each must allow framing (no `X-Frame-Options: DENY`, no restrictive CSP `frame-ancestors`) — the iframe-embed Playwright suite enforces this.
 
-**Native apps** (3): `About Cory`, `Support`, `Projects`. Each is a lazy-imported React component under `src/components/os/apps/`.
+**Native apps** (3): `About Schmug`, `Support`, `Projects`. Each is a lazy-imported React component under `src/components/os/apps/`.
 
 To **add an app**: append one entry to the array. No other code changes needed — the launcher, desktop icons, and taskbar pick it up automatically.
 

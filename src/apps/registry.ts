@@ -58,7 +58,7 @@ export const apps: AppManifest[] = [
   },
   {
     id: 'about',
-    name: 'About Cory',
+    name: 'About Schmug',
     description: 'Bio, what I build, how to reach me.',
     icon: '/mark-sm.svg',
     type: 'native',

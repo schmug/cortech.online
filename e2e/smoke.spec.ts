@@ -82,12 +82,12 @@ test.describe('desktop golden path', () => {
     await page.screenshot({ path: testInfo.outputPath('1-booted.png') });
 
     // About auto-opens on first boot; clicking the icon focuses the singleton.
-    await page.locator('button[aria-label="Open About Cory"]').click();
-    await expect(page.locator('section[aria-label="About Cory window"]')).toBeVisible();
+    await page.locator('button[aria-label="Open About Schmug"]').click();
+    await expect(page.locator('section[aria-label="About Schmug window"]')).toBeVisible();
     await page.screenshot({ path: testInfo.outputPath('2-about-open.png') });
 
     // Brand-mark regression: AboutApp header renders the full mark as an <img>, not an emoji.
-    const aboutAvatar = page.locator('section[aria-label="About Cory window"] img[src="/mark.svg"]');
+    const aboutAvatar = page.locator('section[aria-label="About Schmug window"] img[src="/mark.svg"]');
     await expect(aboutAvatar).toBeVisible();
 
     await page.locator('button[aria-label="Open launcher"]').click();
@@ -149,18 +149,18 @@ test.describe('desktop interactions', () => {
 
   test('Maximize → Restore round-trip returns the window to its pre-max rect', async ({ page }) => {
     await bootDesktop(page);
-    await openApp(page, 'About Cory');
-    const win = page.locator('section[aria-label="About Cory window"]');
+    await openApp(page, 'About Schmug');
+    const win = page.locator('section[aria-label="About Schmug window"]');
     const preMax = await win.boundingBox();
     expect(preMax).toBeTruthy();
 
-    await page.locator('button[aria-label="Maximize About Cory"]').click();
+    await page.locator('button[aria-label="Maximize About Schmug"]').click();
     const maxed = await win.boundingBox();
     expect(maxed!.width).toBeGreaterThan(preMax!.width);
     expect(maxed!.height).toBeGreaterThan(preMax!.height);
 
     // After toggle, the button label flips to "Restore".
-    await page.locator('button[aria-label="Restore About Cory"]').click();
+    await page.locator('button[aria-label="Restore About Schmug"]').click();
     const restored = await win.boundingBox();
     expect(Math.round(restored!.x)).toBe(Math.round(preMax!.x));
     expect(Math.round(restored!.y)).toBe(Math.round(preMax!.y));
@@ -220,7 +220,7 @@ test.describe('mobile springboard', () => {
     // Dock shows 3 pinned apps (About, Support, Projects).
     const dockButtons = page.locator('nav[aria-label="Dock"] button');
     await expect(dockButtons).toHaveCount(3);
-    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open About Cory"]')).toBeVisible();
+    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open About Schmug"]')).toBeVisible();
     await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open Support"]')).toBeVisible();
     await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open Projects"]')).toBeVisible();
 

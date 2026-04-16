@@ -31,7 +31,7 @@ await page.reload({ waitUntil: 'domcontentloaded' });
 await page.locator('[aria-label="CortechOS booting"]').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
 await page.keyboard.press('Space');
 await page.locator('[aria-label="CortechOS booting"]').waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
-await page.locator('section[aria-label="About Cory window"]').waitFor({ state: 'visible', timeout: 10_000 });
+await page.locator('section[aria-label="About Schmug window"]').waitFor({ state: 'visible', timeout: 10_000 });
 await page.waitForTimeout(400);
 
 await mkdir(dirname(OUT), { recursive: true });

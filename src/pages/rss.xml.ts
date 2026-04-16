@@ -5,7 +5,7 @@ import { fetchOriginalRepos } from '../lib/github';
 export async function GET(context: APIContext) {
   const repos = await fetchOriginalRepos('schmug');
   return rss({
-    title: 'Cortech — Cory Schmug',
+    title: 'Cortech — Schmug',
     description: 'Small, useful things built at cortech.online',
     site: context.site!,
     items: repos.slice(0, 40).map((r) => ({
