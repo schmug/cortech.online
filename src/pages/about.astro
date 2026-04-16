@@ -28,7 +28,7 @@ import Base from '../layouts/Base.astro';
 			</p>
 		</div>
 
-		<div class="mt-10 grid gap-3 text-sm sm:grid-cols-2">
+		<div class="mt-10 grid gap-3 text-sm sm:grid-cols-3">
 			<a href="https://github.com/schmug" rel="noopener" class="rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]">
 				<div class="font-mono text-[11px] uppercase tracking-wider text-[var(--color-muted)]">GitHub</div>
 				<div class="mt-1 text-[var(--color-text)]">github.com/schmug</div>
@@ -36,6 +36,17 @@ import Base from '../layouts/Base.astro';
 			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]">
 				<div class="font-mono text-[11px] uppercase tracking-wider text-[var(--color-muted)]">Sponsor</div>
 				<div class="mt-1 text-[var(--color-text)]">github.com/sponsors/schmug</div>
+			</a>
+			<a href="/rss.xml" class="rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]">
+				<div class="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-[var(--color-muted)]">
+					<svg viewBox="0 0 24 24" aria-hidden="true" class="h-3.5 w-3.5 text-[var(--color-amber)]" fill="currentColor">
+						<path d="M4 4a16 16 0 0 1 16 16h-3A13 13 0 0 0 4 7V4z" />
+						<path d="M4 10a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7v-3z" />
+						<circle cx="6" cy="18" r="2" />
+					</svg>
+					<span>RSS</span>
+				</div>
+				<div class="mt-1 text-[var(--color-text)]">cortech.online/rss.xml</div>
 			</a>
 		</div>
 
