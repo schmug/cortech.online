@@ -213,9 +213,9 @@ test.describe('mobile springboard', () => {
     await expect(grid).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('#ct-desktop')).toHaveCount(0);
 
-    // All 7 registry apps rendered as tiles.
+    // All 8 registry apps rendered as tiles.
     const tiles = grid.locator('button[aria-label^="Open "]');
-    expect(await tiles.count()).toBe(7);
+    expect(await tiles.count()).toBe(8);
 
     // Dock shows 3 pinned apps (About, Support, Projects).
     const dockButtons = page.locator('nav[aria-label="Dock"] button');
