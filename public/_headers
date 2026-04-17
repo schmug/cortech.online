@@ -1,0 +1,8 @@
+/.well-known/api-catalog
+  Content-Type: application/linkset+json
+  Cache-Control: public, max-age=3600
+
+/
+  Link: </.well-known/api-catalog>; rel="api-catalog"
+  Link: </rss.xml>; rel="alternate"; type="application/rss+xml"
+  Link: </sitemap-index.xml>; rel="sitemap"; type="application/xml"
