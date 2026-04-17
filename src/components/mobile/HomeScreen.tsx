@@ -1,8 +1,10 @@
-import { apps, type AppManifest } from '../../apps/registry';
+import { type AppManifest } from '../../apps/registry';
 import { renderIcon } from '../../apps/iconUtils';
+import { useAllApps } from '../../hooks/useAllApps';
 import { useMobile } from './store';
 
 export function HomeScreen() {
+  const apps = useAllApps();
   const openApp = useMobile((s) => s.openApp);
 
   return (

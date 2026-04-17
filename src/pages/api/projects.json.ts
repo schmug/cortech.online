@@ -1,9 +1,10 @@
 import type { APIRoute } from 'astro';
-import { fetchOriginalRepos } from '../../lib/github';
+import { buildFeaturedRepos, fetchAllRepos } from '../../lib/github';
 
 export const GET: APIRoute = async () => {
-  const full = await fetchOriginalRepos('schmug');
-  const repos = full.map((r) => ({
+  const all = await fetchAllRepos('schmug');
+  const originals = all.filter((r) => !r.fork && !r.archived);
+  const repos = originals.map((r) => ({
     name: r.name,
     description: r.description,
     html_url: r.html_url,
@@ -13,12 +14,16 @@ export const GET: APIRoute = async () => {
     updated_at: r.updated_at,
     topics: r.topics,
   }));
-  return new Response(JSON.stringify({ repos, fetchedAt: new Date().toISOString() }), {
-    headers: {
-      'content-type': 'application/json; charset=utf-8',
-      'cache-control': 'public, max-age=3600',
-    },
-  });
+  const featured = buildFeaturedRepos(all);
+  return new Response(
+    JSON.stringify({ repos, featured, fetchedAt: new Date().toISOString() }),
+    {
+      headers: {
+        'content-type': 'application/json; charset=utf-8',
+        'cache-control': 'public, max-age=3600',
+      },
+    }
+  );
 };
 
 export const prerender = true;

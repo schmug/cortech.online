@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { apps, type AppManifest } from '../../apps/registry';
+import { type AppManifest } from '../../apps/registry';
 import { renderIcon } from '../../apps/iconUtils';
+import { useAllApps } from '../../hooks/useAllApps';
 import { useOS } from './store';
 import { ContextMenu, type ContextMenuItem } from './ContextMenu';
 
 type MenuState = { x: number; y: number; app: AppManifest } | null;
 
 export function Desktop() {
+  const apps = useAllApps();
   const openApp = useOS((s) => s.openApp);
   const [menu, setMenu] = useState<MenuState>(null);
 

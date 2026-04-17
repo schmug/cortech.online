@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { apps } from './registry';
+import { appIdForFeaturedRepo, featuredRepos } from './featuredRepos';
 
 describe('app registry invariants', () => {
   it('ids are unique', () => {
@@ -56,6 +57,13 @@ describe('app registry invariants', () => {
       .filter((a) => a.allowMultiple === false)
       .map((a) => a.id);
     expect(new Set(singletonIds).size).toBe(singletonIds.length);
+  });
+
+  it('static app ids do not collide with any featured-repo app id', () => {
+    const staticIds = new Set(apps.map((a) => a.id));
+    for (const cfg of featuredRepos) {
+      expect(staticIds.has(appIdForFeaturedRepo(cfg.fullName))).toBe(false);
+    }
   });
 
   it('blog app is registered as a singleton native app', () => {

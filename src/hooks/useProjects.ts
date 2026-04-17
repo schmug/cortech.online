@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { FeaturedRepo } from '../apps/featuredRepos';
 import type { Repo } from '../lib/github';
 
 export type ProjectsPayload = {
@@ -6,6 +7,7 @@ export type ProjectsPayload = {
     Repo,
     'name' | 'description' | 'html_url' | 'homepage' | 'language' | 'stargazers_count' | 'updated_at'
   >[];
+  featured?: FeaturedRepo[];
   fetchedAt: string;
 };
 

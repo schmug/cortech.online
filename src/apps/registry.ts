@@ -7,7 +7,8 @@ export type AppManifest = {
   icon: string | ReactNode;
   type: 'iframe' | 'native';
   url?: string;
-  component?: () => Promise<{ default: ComponentType }>;
+  component?: () => Promise<{ default: ComponentType<Record<string, unknown>> }>;
+  componentProps?: Record<string, unknown>;
   defaultSize: { w: number; h: number };
   minSize?: { w: number; h: number };
   allowMultiple?: boolean;
