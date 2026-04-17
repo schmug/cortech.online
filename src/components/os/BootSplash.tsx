@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useOS } from './store';
 
 type Phase = 'playing' | 'fading' | 'hidden';
@@ -10,11 +10,33 @@ const STATUS_LINES = [
   'cortechos: ready.',
 ];
 
+const SESSION_KEY = 'cortechos:booted';
+
+function alreadyBootedThisSession(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.sessionStorage.getItem(SESSION_KEY) === '1';
+  } catch {
+    return false;
+  }
+}
+
 export function BootSplash() {
-  const hasBooted = useOS((s) => s.hasBooted);
   const setBooted = useOS((s) => s.setBooted);
-  const [phase, setPhase] = useState<Phase>(hasBooted ? 'hidden' : 'playing');
+  const [phase, setPhase] = useState<Phase>(() =>
+    alreadyBootedThisSession() ? 'hidden' : 'playing'
+  );
   const [statusIndex, setStatusIndex] = useState(0);
+
+  const markBooted = useCallback(() => {
+    setPhase('hidden');
+    setBooted(true);
+    try {
+      window.sessionStorage.setItem(SESSION_KEY, '1');
+    } catch {
+      // sessionStorage can throw in private modes — splash still hides.
+    }
+  }, [setBooted]);
 
   useEffect(() => {
     if (phase === 'hidden') return;
@@ -30,34 +52,27 @@ export function BootSplash() {
       );
     });
     const t1 = setTimeout(() => setPhase('fading'), total);
-    const t2 = setTimeout(() => {
-      setPhase('hidden');
-      setBooted(true);
-    }, total + fadeOut);
+    const t2 = setTimeout(markBooted, total + fadeOut);
 
     return () => {
       lineTimers.forEach(clearTimeout);
       clearTimeout(t1);
       clearTimeout(t2);
     };
-  }, [phase, setBooted]);
+  }, [phase, markBooted]);
 
   useEffect(() => {
     if (phase === 'hidden') return;
-    const skip = () => {
-      setPhase('hidden');
-      setBooted(true);
-    };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key) skip();
+      if (e.key) markBooted();
     };
     document.addEventListener('keydown', onKey);
-    document.addEventListener('mousedown', skip);
+    document.addEventListener('mousedown', markBooted);
     return () => {
       document.removeEventListener('keydown', onKey);
-      document.removeEventListener('mousedown', skip);
+      document.removeEventListener('mousedown', markBooted);
     };
-  }, [phase, setBooted]);
+  }, [phase, markBooted]);
 
   if (phase === 'hidden') return null;
 

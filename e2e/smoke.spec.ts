@@ -183,7 +183,7 @@ test.describe('desktop interactions', () => {
     expect(projBefore).toBeTruthy();
 
     await page.reload();
-    // hasBooted is persisted → no splash on reload.
+    // sessionStorage survives reload → no splash on reload within a visit.
     await expect(page.locator('#ct-desktop')).toBeVisible({ timeout: 15_000 });
     await expect(win).toBeVisible();
 

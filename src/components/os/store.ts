@@ -44,13 +44,25 @@ function nextCascade(count: number): { x: number; y: number } {
   return { x: INITIAL_OFFSET + step * CASCADE, y: INITIAL_OFFSET + step * CASCADE };
 }
 
+// Boot state is per-session, not per-browser: the splash replays on every new
+// tab but stays dismissed on reload. Seeding from sessionStorage here keeps
+// OSShell's first-boot capture in sync with the splash's skip decision.
+function readBootedFromSession(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.sessionStorage.getItem('cortechos:booted') === '1';
+  } catch {
+    return false;
+  }
+}
+
 export const useOS = create<OSState>()(
   persist(
     (set, get) => ({
       windows: [],
       focusedId: null,
       nextZ: 1,
-      hasBooted: false,
+      hasBooted: readBootedFromSession(),
 
       openApp: (app, opts) => {
         const state = get();
@@ -175,7 +187,6 @@ export const useOS = create<OSState>()(
       partialize: (s) => ({
         windows: s.windows,
         nextZ: s.nextZ,
-        hasBooted: s.hasBooted,
       }),
     }
   )
