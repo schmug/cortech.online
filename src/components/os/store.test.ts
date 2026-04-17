@@ -21,6 +21,7 @@ function makeApp(overrides: Partial<AppManifest> = {}): AppManifest {
 beforeEach(() => {
   useOS.setState({ windows: [], focusedId: null, nextZ: 1, hasBooted: false });
   localStorage.clear();
+  sessionStorage.clear();
 });
 
 describe('openApp', () => {
@@ -188,15 +189,16 @@ describe('moveWindow / resizeWindow', () => {
 });
 
 describe('persistence partialize', () => {
-  it('persists windows/nextZ/hasBooted but not focusedId', () => {
+  it('persists windows/nextZ but not focusedId/hasBooted', () => {
     const opts = useOS.persist.getOptions();
     expect(opts.partialize).toBeDefined();
     const slice = opts.partialize!(useOS.getState()) as Record<string, unknown>;
-    expect(Object.keys(slice).sort()).toEqual(['hasBooted', 'nextZ', 'windows']);
+    expect(Object.keys(slice).sort()).toEqual(['nextZ', 'windows']);
     expect(slice).not.toHaveProperty('focusedId');
+    expect(slice).not.toHaveProperty('hasBooted');
   });
 
-  it('openApp writes a partialized slice (no focusedId) to localStorage', () => {
+  it('openApp writes a partialized slice (no focusedId/hasBooted) to localStorage', () => {
     useOS.getState().openApp(makeApp({ id: 'a' }));
     useOS.setState({ hasBooted: true });
 
@@ -204,13 +206,14 @@ describe('persistence partialize', () => {
     expect(raw).toBeTruthy();
     const parsed = JSON.parse(raw!);
     expect(parsed.state).not.toHaveProperty('focusedId');
+    expect(parsed.state).not.toHaveProperty('hasBooted');
     expect(parsed.state.windows).toHaveLength(1);
-    expect(parsed.state.hasBooted).toBe(true);
   });
 
   it('rehydrate loads a preset localStorage blob and leaves focusedId null', async () => {
     // Preset a saved layout directly; bypass openApp so the in-memory write
-    // doesn't re-trigger persistence.
+    // doesn't re-trigger persistence. hasBooted is no longer persisted — it
+    // lives in sessionStorage so the splash replays per visit.
     const blob = {
       state: {
         windows: [
@@ -229,7 +232,6 @@ describe('persistence partialize', () => {
           },
         ],
         nextZ: 6,
-        hasBooted: true,
       },
       version: 1,
     };
@@ -242,7 +244,6 @@ describe('persistence partialize', () => {
     expect(after.windows[0]!.id).toBe('preset');
     expect(after.windows[0]!.x).toBe(100);
     expect(after.nextZ).toBe(6);
-    expect(after.hasBooted).toBe(true);
     expect(after.focusedId).toBeNull();
   });
 });
