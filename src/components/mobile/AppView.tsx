@@ -1,5 +1,5 @@
 import { Suspense, lazy, useEffect, useMemo, useState, type ComponentType } from 'react';
-import { apps } from '../../apps/registry';
+import { useAllApps } from '../../hooks/useAllApps';
 import { useMobile } from './store';
 import { StatusBar } from './StatusBar';
 
@@ -8,6 +8,7 @@ type Props = {
 };
 
 export function AppView({ appId }: Props) {
+  const apps = useAllApps();
   const closeApp = useMobile((s) => s.closeApp);
   const app = apps.find((a) => a.id === appId);
 
@@ -18,7 +19,7 @@ export function AppView({ appId }: Props) {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  const NativeComponent = useMemo<ComponentType | null>(() => {
+  const NativeComponent = useMemo<ComponentType<Record<string, unknown>> | null>(() => {
     if (!app || app.type !== 'native' || !app.component) return null;
     return lazy(app.component);
   }, [app]);
@@ -57,7 +58,7 @@ export function AppView({ appId }: Props) {
         ) : NativeComponent ? (
           <div className="h-full overflow-auto">
             <Suspense fallback={<NativeFallback />}>
-              <NativeComponent />
+              <NativeComponent {...(app.componentProps ?? {})} />
             </Suspense>
           </div>
         ) : null}

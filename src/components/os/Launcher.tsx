@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { apps, type AppManifest } from '../../apps/registry';
+import { type AppManifest } from '../../apps/registry';
 import { renderIcon } from '../../apps/iconUtils';
+import { useAllApps } from '../../hooks/useAllApps';
 import { useOS } from './store';
 
 type Props = {
@@ -15,12 +16,13 @@ export function matches(app: AppManifest, q: string) {
 }
 
 export function Launcher({ open, onClose }: Props) {
+  const apps = useAllApps();
   const openApp = useOS((s) => s.openApp);
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const filtered = useMemo(() => apps.filter((a) => matches(a, query)), [query]);
+  const filtered = useMemo(() => apps.filter((a) => matches(a, query)), [apps, query]);
 
   useEffect(() => {
     if (open) {

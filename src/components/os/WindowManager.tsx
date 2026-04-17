@@ -1,7 +1,7 @@
 import { Suspense, lazy, useMemo } from 'react';
 import { Window } from './Window';
 import { useOS } from './store';
-import { apps } from '../../apps/registry';
+import { useAllApps } from '../../hooks/useAllApps';
 
 type Props = {
   viewport: { w: number; h: number };
@@ -9,7 +9,10 @@ type Props = {
 
 const nativeCache = new Map<string, ReturnType<typeof lazy>>();
 
-function getNativeComponent(appId: string, loader?: () => Promise<{ default: React.ComponentType }>) {
+function getNativeComponent(
+  appId: string,
+  loader?: () => Promise<{ default: React.ComponentType<Record<string, unknown>> }>
+) {
   if (!loader) return null;
   const cached = nativeCache.get(appId);
   if (cached) return cached;
@@ -20,7 +23,8 @@ function getNativeComponent(appId: string, loader?: () => Promise<{ default: Rea
 
 export function WindowManager({ viewport }: Props) {
   const windows = useOS((s) => s.windows);
-  const appMap = useMemo(() => new Map(apps.map((a) => [a.id, a])), []);
+  const allApps = useAllApps();
+  const appMap = useMemo(() => new Map(allApps.map((a) => [a.id, a])), [allApps]);
 
   return (
     <>
@@ -43,7 +47,7 @@ export function WindowManager({ viewport }: Props) {
           const LazyC = getNativeComponent(app.id, app.component);
           body = LazyC ? (
             <Suspense fallback={<NativePending name={app.name} />}>
-              <LazyC />
+              <LazyC {...(app.componentProps ?? {})} />
             </Suspense>
           ) : (
             <NativePlaceholder name={app.name} />
