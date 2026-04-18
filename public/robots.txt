@@ -1,0 +1,37 @@
+# robots.txt for cortech.online
+# RFC 9309 — https://www.rfc-editor.org/rfc/rfc9309
+# Content Signals — https://contentsignals.org/
+
+User-agent: *
+Content-Signal: ai-train=no, search=yes, ai-input=yes
+Allow: /
+
+# --- AI agents: search + real-time fetch (allowed) ---
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# --- AI crawlers: training corpus builders (disallowed) ---
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+Sitemap: https://cortech.online/sitemap-index.xml

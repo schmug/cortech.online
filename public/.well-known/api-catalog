@@ -1,0 +1,28 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://cortech.online/api/blog.json",
+      "describedby": [
+        { "href": "https://cortech.online/blog", "type": "text/html" }
+      ],
+      "type": [
+        { "href": "https://cortech.online/api/blog.json" }
+      ]
+    },
+    {
+      "anchor": "https://cortech.online/api/projects.json",
+      "describedby": [
+        { "href": "https://cortech.online/projects", "type": "text/html" }
+      ],
+      "type": [
+        { "href": "https://cortech.online/api/projects.json" }
+      ]
+    },
+    {
+      "anchor": "https://cortech.online/rss.xml",
+      "alternate": [
+        { "href": "https://cortech.online/rss.xml", "type": "application/rss+xml" }
+      ]
+    }
+  ]
+}
