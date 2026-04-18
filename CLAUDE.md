@@ -36,7 +36,7 @@ For mobile drafting, use the **`/blog` slash command** ([.claude/commands/blog.m
 
 The app registry, window-manager store shape, a11y contract, and deploy contract live in [docs/architecture.md](docs/architecture.md). Read it before adding an app or changing window behavior. Original design rationale: [docs/superpowers/specs/2026-04-12-cortechos-design.md](docs/superpowers/specs/2026-04-12-cortechos-design.md).
 
-To add an app: append one entry to [src/apps/registry.ts](src/apps/registry.ts) — the launcher, desktop icons, and taskbar pick it up automatically. **Update the mobile springboard tile-count assertion** in [e2e/smoke.spec.ts](e2e/smoke.spec.ts) when you do (it currently expects 8).
+To add an app: append one entry to [src/apps/registry.ts](src/apps/registry.ts) — the launcher, desktop icons, and taskbar pick it up automatically. The mobile springboard tile-count assertion in [e2e/smoke.spec.ts](e2e/smoke.spec.ts) is derived from `apps.length + featuredRepos.length`, so it updates automatically.
 
 Iframe apps must allow framing (no `X-Frame-Options: DENY`, no restrictive `frame-ancestors`) — the iframe-embed Playwright suite enforces this.
 

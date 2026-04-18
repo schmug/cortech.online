@@ -1,8 +1,10 @@
 import { test, expect, devices, type ConsoleMessage, type Page } from '@playwright/test';
+import { apps } from '../src/apps/registry';
 
+// donthype-me is temporarily excluded — upstream regressed X-Frame-Options: deny.
+// Tracking: https://github.com/schmug/donthype-me/issues/905 — re-add when resolved.
 const IFRAME_APPS = [
   { id: 'dmarc-mx', name: 'dmarc.mx', url: 'https://dmarc.mx' },
-  { id: 'donthype-me', name: 'donthype.me', url: 'https://donthype.me' },
   { id: 'apartment-stager', name: 'apartment-stager', url: 'https://apartment-stager.pages.dev/' },
   { id: 'qr-me', name: 'q-r.contact', url: 'https://q-r.contact' },
 ] as const;
@@ -210,6 +212,11 @@ test.describe('mobile springboard', () => {
   test.use(iPhone14);
 
   test('home grid + dock render, tap opens app fullscreen, back returns home', async ({ page }) => {
+    // Featured repos come from /api/projects.json (live GitHub fetch), so derive the
+    // expected tile count from whatever that endpoint actually returns right now.
+    const payload = await page.request.get('/api/projects.json').then((r) => r.json());
+    const expectedTileCount = apps.length + (payload.featured?.length ?? 0);
+
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // MobileShell mounts immediately — no boot splash.
@@ -217,9 +224,9 @@ test.describe('mobile springboard', () => {
     await expect(grid).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('#ct-desktop')).toHaveCount(0);
 
-    // All 8 registry apps rendered as tiles.
+    // Tiles = static registry apps + featured repos returned above.
     const tiles = grid.locator('button[aria-label^="Open "]');
-    expect(await tiles.count()).toBe(8);
+    await expect(tiles).toHaveCount(expectedTileCount, { timeout: 10_000 });
 
     // Dock shows 3 pinned apps (About, Support, Projects).
     const dockButtons = page.locator('nav[aria-label="Dock"] button');
