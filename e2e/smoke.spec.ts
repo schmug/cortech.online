@@ -212,10 +212,47 @@ test.describe('mobile springboard', () => {
   test.use(iPhone14);
 
   test('home grid + dock render, tap opens app fullscreen, back returns home', async ({ page }) => {
-    // Featured repos come from /api/projects.json (live GitHub fetch), so derive the
-    // expected tile count from whatever that endpoint actually returns right now.
-    const payload = await page.request.get('/api/projects.json').then((r) => r.json());
-    const expectedTileCount = apps.length + (payload.featured?.length ?? 0);
+    // Stub /api/projects.json with two fake featured repos so tile count is
+    // deterministic — the real endpoint hits GitHub and is rate-limit-sensitive.
+    const stubFeatured = [
+      {
+        fullName: 'fake/alpha',
+        name: 'alpha',
+        description: 'stub',
+        htmlUrl: 'https://example.invalid/alpha',
+        homepage: null,
+        language: null,
+        stargazersCount: 0,
+        updatedAt: null,
+        fork: false,
+        archived: false,
+        private: false,
+      },
+      {
+        fullName: 'fake/beta',
+        name: 'beta',
+        description: 'stub',
+        htmlUrl: 'https://example.invalid/beta',
+        homepage: null,
+        language: null,
+        stargazersCount: 0,
+        updatedAt: null,
+        fork: false,
+        archived: false,
+        private: false,
+      },
+    ];
+    await page.route('**/api/projects.json', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json; charset=utf-8',
+        body: JSON.stringify({
+          repos: [],
+          featured: stubFeatured,
+          fetchedAt: new Date().toISOString(),
+        }),
+      }),
+    );
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
@@ -224,9 +261,9 @@ test.describe('mobile springboard', () => {
     await expect(grid).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('#ct-desktop')).toHaveCount(0);
 
-    // Tiles = static registry apps + featured repos returned above.
+    // Tiles = static registry apps + the two stubbed featured repos.
     const tiles = grid.locator('button[aria-label^="Open "]');
-    await expect(tiles).toHaveCount(expectedTileCount, { timeout: 10_000 });
+    await expect(tiles).toHaveCount(apps.length + stubFeatured.length, { timeout: 10_000 });
 
     // Dock shows 3 pinned apps (About, Support, Projects).
     const dockButtons = page.locator('nav[aria-label="Dock"] button');
@@ -276,6 +313,12 @@ test.describe('mobile springboard', () => {
 
 test.describe('iframe embed', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
+
+  // External services (dmarc.mx, qr-me, apartment-stager) lock their CSP
+  // frame-ancestors to https://cortech.online, which blocks the localhost
+  // origin this suite runs against in CI. Keep the test for local runs —
+  // it still catches regressions when exercised against the prod origin.
+  test.skip(!!process.env.CI, 'External CSPs require prod cortech.online origin');
 
   test('all iframe apps embed without CSP/XFO refusal', async ({ page }) => {
     const messages = captureConsole(page);
