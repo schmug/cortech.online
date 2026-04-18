@@ -2,53 +2,95 @@
 import Base from '../layouts/Base.astro';
 ---
 
-<Base title="About" description="Schmug — indie builder, small-tool maker, Cloudflare-native." canonical="https://cortech.online/about">
-	<section class="mx-auto max-w-2xl px-6 pt-16 pb-10">
-		<div class="flex items-start gap-5">
-			<img
-				src="/mark.svg"
-				alt=""
-				class="h-16 w-16 shrink-0 rounded-[16px] shadow-[0_8px_24px_-8px_rgba(246,195,74,0.5)]"
-			/>
-			<div>
-				<p class="font-mono text-[11px] uppercase tracking-[0.35em] text-[var(--color-amber)]">About</p>
-				<h1 class="mt-2 font-[var(--font-display)] text-3xl font-bold tracking-tight sm:text-4xl">Schmug</h1>
-			</div>
-		</div>
+<Base
+  title="About"
+  description="Schmug — indie builder, small-tool maker, Cloudflare-native."
+  canonical="https://cortech.online/about"
+>
+  <section class="mx-auto max-w-2xl px-6 pt-16 pb-10">
+    <div class="flex items-start gap-5">
+      <img
+        src="/mark.svg"
+        alt=""
+        class="h-16 w-16 shrink-0 rounded-[16px] shadow-[0_8px_24px_-8px_rgba(246,195,74,0.5)]"
+      />
+      <div>
+        <p class="font-mono text-[11px] tracking-[0.35em] text-[var(--color-amber)] uppercase">
+          About
+        </p>
+        <h1 class="mt-2 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl">
+          Schmug
+        </h1>
+      </div>
+    </div>
 
-		<div class="mt-6 max-w-none space-y-5 text-[var(--color-dim)]">
-			<p>
-				I'm a builder. I like making small, well-scoped things that do one job well and ship. My work lives mostly on Cloudflare (Workers, Pages) and tends to be TypeScript-first.
-			</p>
-			<p>
-				Current focus: DNS and email security (<a href="https://dmarc.mx" rel="noopener" class="text-[var(--color-amber)] hover:underline">dmarc.mx</a>), contact-card utilities (<a href="https://q-r.contact" rel="noopener" class="text-[var(--color-amber)] hover:underline">q-r.contact</a>), AI and Claude Code tooling (cclog, claude-view, claudzibit), and the occasional piece of generative art (AntArt, RepoGotchi).
-			</p>
-			<p>
-				This page is about to turn into <span class="font-mono text-[var(--color-amber)]">CortechOS</span> — a tiny branded desktop where every icon is one of those projects, running live in a window. Until then, here's the static version.
-			</p>
-		</div>
+    <div class="mt-6 max-w-none space-y-5 text-[var(--color-dim)]">
+      <p>
+        I'm a builder. I like making small, well-scoped things that do one job well and ship. My
+        work lives mostly on Cloudflare (Workers, Pages) and tends to be TypeScript-first.
+      </p>
+      <p>
+        Current focus: DNS and email security (<a
+          href="https://dmarc.mx"
+          rel="noopener"
+          class="text-[var(--color-amber)] hover:underline">dmarc.mx</a
+        >), contact-card utilities (<a
+          href="https://q-r.contact"
+          rel="noopener"
+          class="text-[var(--color-amber)] hover:underline">q-r.contact</a
+        >), AI and Claude Code tooling (cclog, claude-view, claudzibit), and the occasional piece of
+        generative art (AntArt, RepoGotchi).
+      </p>
+      <p>
+        This page is about to turn into <span class="font-mono text-[var(--color-amber)]"
+          >CortechOS</span
+        > — a tiny branded desktop where every icon is one of those projects, running live in a window.
+        Until then, here's the static version.
+      </p>
+    </div>
 
-		<div class="mt-10 grid gap-3 text-sm sm:grid-cols-3">
-			<a href="https://github.com/schmug" rel="noopener" class="rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]">
-				<div class="font-mono text-[11px] uppercase tracking-wider text-[var(--color-muted)]">GitHub</div>
-				<div class="mt-1 text-[var(--color-text)]">github.com/schmug</div>
-			</a>
-			<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]">
-				<div class="font-mono text-[11px] uppercase tracking-wider text-[var(--color-muted)]">Sponsor</div>
-				<div class="mt-1 text-[var(--color-text)]">github.com/sponsors/schmug</div>
-			</a>
-			<a href="/rss.xml" class="rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]">
-				<div class="flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-wider text-[var(--color-muted)]">
-					<svg viewBox="0 0 24 24" aria-hidden="true" class="h-3.5 w-3.5 text-[var(--color-amber)]" fill="currentColor">
-						<path d="M4 4a16 16 0 0 1 16 16h-3A13 13 0 0 0 4 7V4z" />
-						<path d="M4 10a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7v-3z" />
-						<circle cx="6" cy="18" r="2" />
-					</svg>
-					<span>RSS</span>
-				</div>
-				<div class="mt-1 text-[var(--color-text)]">cortech.online/rss.xml</div>
-			</a>
-		</div>
-
-	</section>
+    <div class="mt-10 grid gap-3 text-sm sm:grid-cols-3">
+      <a
+        href="https://github.com/schmug"
+        rel="noopener"
+        class="rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]"
+      >
+        <div class="font-mono text-[11px] tracking-wider text-[var(--color-muted)] uppercase">
+          GitHub
+        </div>
+        <div class="mt-1 text-[var(--color-text)]">github.com/schmug</div>
+      </a>
+      <a
+        href="https://github.com/sponsors/schmug"
+        rel="noopener"
+        class="rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]"
+      >
+        <div class="font-mono text-[11px] tracking-wider text-[var(--color-muted)] uppercase">
+          Sponsor
+        </div>
+        <div class="mt-1 text-[var(--color-text)]">github.com/sponsors/schmug</div>
+      </a>
+      <a
+        href="/rss.xml"
+        class="rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]"
+      >
+        <div
+          class="flex items-center gap-1.5 font-mono text-[11px] tracking-wider text-[var(--color-muted)] uppercase"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            class="h-3.5 w-3.5 text-[var(--color-amber)]"
+            fill="currentColor"
+          >
+            <path d="M4 4a16 16 0 0 1 16 16h-3A13 13 0 0 0 4 7V4z"></path>
+            <path d="M4 10a10 10 0 0 1 10 10h-3a7 7 0 0 0-7-7v-3z"></path>
+            <circle cx="6" cy="18" r="2"></circle>
+          </svg>
+          <span>RSS</span>
+        </div>
+        <div class="mt-1 text-[var(--color-text)]">cortech.online/rss.xml</div>
+      </a>
+    </div>
+  </section>
 </Base>

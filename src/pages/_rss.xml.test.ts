@@ -23,10 +23,8 @@ const postsRef: { current: FakePost[] } = { current: [] };
 
 vi.mock('astro:content', () => ({
   // Mirror Astro's getCollection signature: optional filter that receives the entry.
-  getCollection: async (
-    _name: string,
-    filter?: (entry: FakePost) => boolean,
-  ) => (filter ? postsRef.current.filter(filter) : postsRef.current),
+  getCollection: async (_name: string, filter?: (entry: FakePost) => boolean) =>
+    filter ? postsRef.current.filter(filter) : postsRef.current,
 }));
 
 vi.mock('../lib/github', () => ({

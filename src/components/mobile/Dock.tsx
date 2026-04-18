@@ -7,7 +7,7 @@ const DOCK_IDS = ['about', 'support', 'projects'] as const;
 export function Dock() {
   const openApp = useMobile((s) => s.openApp);
   const pinned = DOCK_IDS.map((id) => apps.find((a) => a.id === id)).filter(
-    (a): a is (typeof apps)[number] => !!a
+    (a): a is (typeof apps)[number] => !!a,
   );
 
   return (

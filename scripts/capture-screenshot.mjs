@@ -20,7 +20,7 @@ const page = await ctx.newPage();
 
 // Block external font CDN so we don't hang on document.fonts.ready.
 await page.route(/fonts\.(googleapis|gstatic)\.com/, (route) =>
-  route.fulfill({ status: 200, contentType: 'text/css', body: '' })
+  route.fulfill({ status: 200, contentType: 'text/css', body: '' }),
 );
 
 await page.goto(URL, { waitUntil: 'domcontentloaded' });
@@ -28,10 +28,18 @@ await page.evaluate(() => localStorage.removeItem('cortechos:layout'));
 await page.reload({ waitUntil: 'domcontentloaded' });
 
 // Skip boot splash; auto-opened About window confirms the desktop is live.
-await page.locator('[aria-label="CortechOS booting"]').waitFor({ state: 'visible', timeout: 10_000 }).catch(() => {});
+await page
+  .locator('[aria-label="CortechOS booting"]')
+  .waitFor({ state: 'visible', timeout: 10_000 })
+  .catch(() => {});
 await page.keyboard.press('Space');
-await page.locator('[aria-label="CortechOS booting"]').waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => {});
-await page.locator('section[aria-label="About Schmug window"]').waitFor({ state: 'visible', timeout: 10_000 });
+await page
+  .locator('[aria-label="CortechOS booting"]')
+  .waitFor({ state: 'hidden', timeout: 10_000 })
+  .catch(() => {});
+await page
+  .locator('section[aria-label="About Schmug window"]')
+  .waitFor({ state: 'visible', timeout: 10_000 });
 await page.waitForTimeout(400);
 
 await mkdir(dirname(OUT), { recursive: true });

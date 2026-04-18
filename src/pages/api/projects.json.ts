@@ -15,15 +15,12 @@ export const GET: APIRoute = async () => {
     topics: r.topics,
   }));
   const featured = buildFeaturedRepos(all);
-  return new Response(
-    JSON.stringify({ repos, featured, fetchedAt: new Date().toISOString() }),
-    {
-      headers: {
-        'content-type': 'application/json; charset=utf-8',
-        'cache-control': 'public, max-age=3600',
-      },
-    }
-  );
+  return new Response(JSON.stringify({ repos, featured, fetchedAt: new Date().toISOString() }), {
+    headers: {
+      'content-type': 'application/json; charset=utf-8',
+      'cache-control': 'public, max-age=3600',
+    },
+  });
 };
 
 export const prerender = true;

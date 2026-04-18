@@ -35,7 +35,7 @@ describe('buildFeaturedRepos', () => {
     const configs: FeaturedRepoConfig[] = [{ fullName: 'schmug/cupid' }];
     const out = buildFeaturedRepos(
       [repo({ name: 'cupid', fork: true, language: 'Pascal' })],
-      configs
+      configs,
     );
     expect(out).toHaveLength(1);
     expect(out[0]).toMatchObject({ fullName: 'schmug/cupid', fork: true, language: 'Pascal' });
@@ -83,10 +83,7 @@ describe('buildFeaturedRepos', () => {
   });
 
   it('preserves order from the config, not the API response', () => {
-    const configs: FeaturedRepoConfig[] = [
-      { fullName: 'schmug/b' },
-      { fullName: 'schmug/a' },
-    ];
+    const configs: FeaturedRepoConfig[] = [{ fullName: 'schmug/b' }, { fullName: 'schmug/a' }];
     const out = buildFeaturedRepos([repo({ name: 'a' }), repo({ name: 'b' })], configs);
     expect(out.map((r) => r.name)).toEqual(['b', 'a']);
   });

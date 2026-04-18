@@ -64,7 +64,7 @@ export function Window({ window: win, viewport, children, minSize }: Props) {
       >
         <header
           className={[
-            'ct-window-drag flex h-[34px] shrink-0 select-none items-center gap-2 border-b px-3',
+            'ct-window-drag flex h-[34px] shrink-0 items-center gap-2 border-b px-3 select-none',
             focused
               ? 'border-[var(--color-amber)]/30 bg-[var(--color-panel-hi)]'
               : 'border-[var(--color-border)] bg-[var(--color-shadow)]',

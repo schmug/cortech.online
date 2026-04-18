@@ -1,9 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  appIdForFeaturedRepo,
-  featuredRepos,
-  repoNameFromFullName,
-} from './featuredRepos';
+import { appIdForFeaturedRepo, featuredRepos, repoNameFromFullName } from './featuredRepos';
 import { apps } from './registry';
 
 describe('featuredRepos config', () => {

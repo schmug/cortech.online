@@ -7,96 +7,143 @@ const flagships = apps.filter((a) => a.type === 'iframe');
 ---
 
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="theme-color" content="#0b0d12" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Cortech — Schmug</title>
-		<meta name="description" content="Cortech is the work of Schmug — a small studio of one building email-security tools, contact-card utilities, AI tooling, and playful experiments. Boot into CortechOS." />
-		<link rel="canonical" href="https://cortech.online/" />
-		<link rel="alternate" type="application/rss+xml" title="Cortech" href="/rss.xml" />
-		<meta property="og:title" content="Cortech — Schmug" />
-		<meta property="og:description" content="CortechOS — a tiny desktop that showcases each of my projects as a live, openable window." />
-		<meta property="og:type" content="website" />
-		<meta property="og:image" content="https://cortech.online/og-image.png" />
-		<meta property="og:image:width" content="1200" />
-		<meta property="og:image:height" content="630" />
-		<meta name="twitter:card" content="summary_large_image" />
-		<meta name="twitter:image" content="https://cortech.online/og-image.png" />
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
-		<script is:inline>
-			document.documentElement.classList.add('js');
-		</script>
-		<style>
-			html.js #static-layer { display: none; }
-			html:not(.js) #root-shell { display: none; }
-		</style>
-	</head>
-	<body class="min-h-screen bg-[var(--color-void)] text-[var(--color-text)] antialiased">
-		<!-- Static content: visible to crawlers and no-JS fallback. Hidden on JS-enabled browsers. -->
-		<div id="static-layer" class="ct-backdrop min-h-screen">
-			<header class="border-b border-[var(--color-border)]">
-				<div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4 text-sm">
-					<span class="font-mono font-semibold">cortech.online</span>
-					<nav class="flex items-center gap-5 text-[var(--color-muted)]">
-						<a href="/about" class="hover:text-[var(--color-text)]">About</a>
-						<a href="/projects" class="hover:text-[var(--color-text)]">Projects</a>
-						<a href="https://github.com/schmug" rel="noopener" class="hover:text-[var(--color-text)]">GitHub</a>
-					</nav>
-				</div>
-			</header>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0b0d12" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Cortech — Schmug</title>
+    <meta
+      name="description"
+      content="Cortech is the work of Schmug — a small studio of one building email-security tools, contact-card utilities, AI tooling, and playful experiments. Boot into CortechOS."
+    />
+    <link rel="canonical" href="https://cortech.online/" />
+    <link rel="alternate" type="application/rss+xml" title="Cortech" href="/rss.xml" />
+    <meta property="og:title" content="Cortech — Schmug" />
+    <meta
+      property="og:description"
+      content="CortechOS — a tiny desktop that showcases each of my projects as a live, openable window."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://cortech.online/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content="https://cortech.online/og-image.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
+    <style>
+      html.js #static-layer {
+        display: none;
+      }
+      html:not(.js) #root-shell {
+        display: none;
+      }
+    </style>
+  </head>
+  <body class="min-h-screen bg-[var(--color-void)] text-[var(--color-text)] antialiased">
+    <!-- Static content: visible to crawlers and no-JS fallback. Hidden on JS-enabled browsers. -->
+    <div id="static-layer" class="ct-backdrop min-h-screen">
+      <header class="border-b border-[var(--color-border)]">
+        <div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4 text-sm">
+          <span class="font-mono font-semibold">cortech.online</span>
+          <nav class="flex items-center gap-5 text-[var(--color-muted)]">
+            <a href="/about" class="hover:text-[var(--color-text)]">About</a>
+            <a href="/projects" class="hover:text-[var(--color-text)]">Projects</a>
+            <a
+              href="https://github.com/schmug"
+              rel="noopener"
+              class="hover:text-[var(--color-text)]">GitHub</a
+            >
+          </nav>
+        </div>
+      </header>
 
-			<main class="mx-auto max-w-4xl px-6 py-16">
-				<p class="font-mono text-[11px] uppercase tracking-[0.35em] text-[var(--color-amber)]">CortechOS 1.0</p>
-				<h1 class="mt-4 font-[var(--font-display)] text-4xl font-bold tracking-tight sm:text-5xl">
-					I build <span class="text-[var(--color-amber)]">small, useful things</span>.
-				</h1>
-				<p class="mt-5 max-w-2xl text-lg text-[var(--color-dim)]">
-					Email security, contact-card utilities, AI tooling, and the occasional piece of generative art. Enable JavaScript to boot into <span class="font-mono text-[var(--color-amber)]">CortechOS</span> — a tiny desktop where you can open each project in a window.
-				</p>
+      <main class="mx-auto max-w-4xl px-6 py-16">
+        <p class="font-mono text-[11px] tracking-[0.35em] text-[var(--color-amber)] uppercase">
+          CortechOS 1.0
+        </p>
+        <h1 class="mt-4 text-4xl font-[var(--font-display)] font-bold tracking-tight sm:text-5xl">
+          I build <span class="text-[var(--color-amber)]">small, useful things</span>.
+        </h1>
+        <p class="mt-5 max-w-2xl text-lg text-[var(--color-dim)]">
+          Email security, contact-card utilities, AI tooling, and the occasional piece of generative
+          art. Enable JavaScript to boot into <span class="font-mono text-[var(--color-amber)]"
+            >CortechOS</span
+          > — a tiny desktop where you can open each project in a window.
+        </p>
 
-				<section class="mt-10">
-					<h2 class="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-muted)]">Products</h2>
-					<ul class="mt-4 grid gap-3 sm:grid-cols-2">
-						{flagships.map((app) => (
-							<li class="rounded-[var(--ct-radius)] border border-[var(--color-border)] p-4">
-								<div class="flex items-center gap-2">
-									{typeof app.icon === 'string' && app.icon.startsWith('/')
-										? <img src={app.icon} alt="" class="h-6 w-6" />
-										: <span class="text-xl">{app.icon}</span>}
-									<a href={app.url} rel="noopener" class="font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]">{app.name}</a>
+        <section class="mt-10">
+          <h2 class="font-mono text-[11px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
+            Products
+          </h2>
+          <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+            {
+              flagships.map((app) => (
+                <li class="rounded-[var(--ct-radius)] border border-[var(--color-border)] p-4">
+                  <div class="flex items-center gap-2">
+                    {typeof app.icon === 'string' && app.icon.startsWith('/') ? (
+                      <img src={app.icon} alt="" class="h-6 w-6" />
+                    ) : (
+                      <span class="text-xl">{app.icon}</span>
+                    )}
+                    <a
+                      href={app.url}
+                      rel="noopener"
+                      class="font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]"
+                    >
+                      {app.name}
+                    </a>
+                  </div>
+                  <p class="mt-1 text-sm text-[var(--color-dim)]">{app.description}</p>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
 
-								</div>
-								<p class="mt-1 text-sm text-[var(--color-dim)]">{app.description}</p>
-							</li>
-						))}
-					</ul>
-				</section>
+        <section class="mt-10">
+          <h2 class="font-mono text-[11px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
+            Support
+          </h2>
+          <div class="mt-4 flex flex-wrap gap-3 text-sm">
+            <a
+              href="https://github.com/sponsors/schmug"
+              rel="noopener"
+              class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)]"
+              >GitHub Sponsors</a
+            >
+            <a
+              href="https://github.com/schmug"
+              rel="noopener"
+              class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)]"
+              >Star on GitHub</a
+            >
+          </div>
+        </section>
+      </main>
 
-				<section class="mt-10">
-					<h2 class="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-muted)]">Support</h2>
-					<div class="mt-4 flex flex-wrap gap-3 text-sm">
-						<a href="https://github.com/sponsors/schmug" rel="noopener" class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)]">GitHub Sponsors</a>
-						<a href="https://github.com/schmug" rel="noopener" class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)]">Star on GitHub</a>
-					</div>
-				</section>
-			</main>
+      <footer
+        class="border-t border-[var(--color-border)] px-6 py-6 text-xs text-[var(--color-muted)]"
+      >
+        <div class="mx-auto max-w-4xl">
+          © {new Date().getFullYear()} Schmug · cortech.online · CortechOS v1.0
+        </div>
+      </footer>
+    </div>
 
-			<footer class="border-t border-[var(--color-border)] px-6 py-6 text-xs text-[var(--color-muted)]">
-				<div class="mx-auto max-w-4xl">
-					© {new Date().getFullYear()} Schmug · cortech.online · CortechOS v1.0
-				</div>
-			</footer>
-		</div>
-
-		<!-- Interactive shell: mounts on JS. OSShell on >=768px, MobileShell on <768px. -->
-		<div id="root-shell">
-			<RootShell client:only="react" />
-		</div>
-	</body>
+    <!-- Interactive shell: mounts on JS. OSShell on >=768px, MobileShell on <768px. -->
+    <div id="root-shell">
+      <RootShell client:only="react" />
+    </div>
+  </body>
 </html>

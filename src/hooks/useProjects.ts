@@ -5,7 +5,13 @@ import type { Repo } from '../lib/github';
 export type ProjectsPayload = {
   repos: Pick<
     Repo,
-    'name' | 'description' | 'html_url' | 'homepage' | 'language' | 'stargazers_count' | 'updated_at'
+    | 'name'
+    | 'description'
+    | 'html_url'
+    | 'homepage'
+    | 'language'
+    | 'stargazers_count'
+    | 'updated_at'
   >[];
   featured?: FeaturedRepo[];
   fetchedAt: string;

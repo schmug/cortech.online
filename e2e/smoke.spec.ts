@@ -64,14 +64,16 @@ async function openApp(page: Page, appName: string) {
 // `document.fonts.ready`. Fulfill (vs abort) keeps the console clean.
 test.beforeEach(async ({ page }) => {
   await page.route(/fonts\.(googleapis|gstatic)\.com/, (route) =>
-    route.fulfill({ status: 200, contentType: 'text/css', body: '' })
+    route.fulfill({ status: 200, contentType: 'text/css', body: '' }),
   );
 });
 
 test.describe('desktop golden path', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test('boots, opens windows via icon and launcher, ⌘K toggles, Esc closes', async ({ page }, testInfo) => {
+  test('boots, opens windows via icon and launcher, ⌘K toggles, Esc closes', async ({
+    page,
+  }, testInfo) => {
     const messages = captureConsole(page);
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -87,7 +89,9 @@ test.describe('desktop golden path', () => {
     await page.screenshot({ path: testInfo.outputPath('2-about-open.png') });
 
     // Brand-mark regression: AboutApp header renders the full mark as an <img>, not an emoji.
-    const aboutAvatar = page.locator('section[aria-label="About Schmug window"] img[src="/mark.svg"]');
+    const aboutAvatar = page.locator(
+      'section[aria-label="About Schmug window"] img[src="/mark.svg"]',
+    );
     await expect(aboutAvatar).toBeVisible();
 
     await page.locator('button[aria-label="Open launcher"]').click();
@@ -111,7 +115,7 @@ test.describe('desktop golden path', () => {
     const realErrors = filterNoise(messages);
     expect(
       realErrors,
-      `Unexpected console output:\n${realErrors.map((m) => `  [${m.type}] ${m.text}`).join('\n')}`
+      `Unexpected console output:\n${realErrors.map((m) => `  [${m.type}] ${m.text}`).join('\n')}`,
     ).toEqual([]);
   });
 });
@@ -220,9 +224,15 @@ test.describe('mobile springboard', () => {
     // Dock shows 3 pinned apps (About, Support, Projects).
     const dockButtons = page.locator('nav[aria-label="Dock"] button');
     await expect(dockButtons).toHaveCount(3);
-    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open About Schmug"]')).toBeVisible();
-    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open Support"]')).toBeVisible();
-    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open Projects"]')).toBeVisible();
+    await expect(
+      page.locator('nav[aria-label="Dock"] button[aria-label="Open About Schmug"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('nav[aria-label="Dock"] button[aria-label="Open Support"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('nav[aria-label="Dock"] button[aria-label="Open Projects"]'),
+    ).toBeVisible();
 
     // Tap an iframe app (dmarc.mx) → fullscreen app view with iframe + back pill.
     await grid.locator('button[aria-label="Open dmarc.mx"]').tap();
@@ -251,7 +261,7 @@ test.describe('mobile springboard', () => {
     // Under reduced motion, the slide-up transform is disabled —
     // transition-property should only cover opacity, not transform.
     const transitionProperty = await appView.evaluate(
-      (el) => window.getComputedStyle(el).transitionProperty
+      (el) => window.getComputedStyle(el).transitionProperty,
     );
     expect(transitionProperty).toBe('opacity');
   });
@@ -285,11 +295,11 @@ test.describe('iframe embed', () => {
     }
 
     const xfoNoise = messages.filter((m) =>
-      /Refused to display.*frame|X-Frame-Options|Content Security Policy/i.test(m.text)
+      /Refused to display.*frame|X-Frame-Options|Content Security Policy/i.test(m.text),
     );
     expect(
       xfoNoise,
-      `Iframe embedding blocked:\n${xfoNoise.map((m) => `  [${m.type}] ${m.text}`).join('\n')}`
+      `Iframe embedding blocked:\n${xfoNoise.map((m) => `  [${m.type}] ${m.text}`).join('\n')}`,
     ).toEqual([]);
   });
 });

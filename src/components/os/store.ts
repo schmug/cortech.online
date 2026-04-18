@@ -75,9 +75,7 @@ export const useOS = create<OSState>()(
           }
         }
         const instanceId =
-          app.allowMultiple === false
-            ? app.id
-            : `${app.id}#${Date.now().toString(36)}`;
+          app.allowMultiple === false ? app.id : `${app.id}#${Date.now().toString(36)}`;
         const cascade = nextCascade(state.windows.length);
         const x = opts?.x ?? cascade.x;
         const y = opts?.y ?? cascade.y;
@@ -171,7 +169,7 @@ export const useOS = create<OSState>()(
       resizeWindow: (id, w, h, x, y) => {
         set((s) => ({
           windows: s.windows.map((win) =>
-            win.id === id ? { ...win, w, h, x: x ?? win.x, y: y ?? win.y } : win
+            win.id === id ? { ...win, w, h, x: x ?? win.x, y: y ?? win.y } : win,
           ),
         }));
       },
@@ -188,6 +186,6 @@ export const useOS = create<OSState>()(
         windows: s.windows,
         nextZ: s.nextZ,
       }),
-    }
-  )
+    },
+  ),
 );

@@ -114,13 +114,19 @@ export function Launcher({ open, onClose }: Props) {
                     : 'text-[var(--color-text)]',
                 ].join(' ')}
               >
-                <span className="text-xl" aria-hidden="true">{renderIcon(app.icon, 'h-6 w-6')}</span>
-                <span className="flex-1 min-w-0">
+                <span className="text-xl" aria-hidden="true">
+                  {renderIcon(app.icon, 'h-6 w-6')}
+                </span>
+                <span className="min-w-0 flex-1">
                   <span className="flex items-center gap-2">
                     <span className="font-medium">{app.name}</span>
-                    <span className="font-mono text-[10px] text-[var(--color-muted)]">/{app.id}</span>
+                    <span className="font-mono text-[10px] text-[var(--color-muted)]">
+                      /{app.id}
+                    </span>
                   </span>
-                  <span className="mt-0.5 block truncate text-xs text-[var(--color-muted)]">{app.description}</span>
+                  <span className="mt-0.5 block truncate text-xs text-[var(--color-muted)]">
+                    {app.description}
+                  </span>
                 </span>
               </button>
             </li>
@@ -129,7 +135,9 @@ export function Launcher({ open, onClose }: Props) {
 
         <div className="flex items-center justify-between border-t border-[var(--color-border)] bg-[var(--color-shadow)] px-4 py-2 font-mono text-[10px] text-[var(--color-muted)]">
           <span>↑↓ navigate · ↵ open · Esc close</span>
-          <span>{filtered.length} / {apps.length}</span>
+          <span>
+            {filtered.length} / {apps.length}
+          </span>
         </div>
       </div>
     </div>

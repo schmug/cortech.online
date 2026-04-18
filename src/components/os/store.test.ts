@@ -183,7 +183,7 @@ describe('moveWindow / resizeWindow', () => {
     expect(after.focusedId).toBe(before.focusedId);
     expect(after.nextZ).toBe(before.nextZ);
     expect(after.windows.find((w) => w.id === 'a')!.z).toBe(
-      before.windows.find((w) => w.id === 'a')!.z
+      before.windows.find((w) => w.id === 'a')!.z,
     );
   });
 });

@@ -11,6 +11,8 @@ The portfolio at [cortech.online](https://cortech.online) — a single Astro sta
 Run before claiming work is complete:
 
 ```sh
+npm run format:check # prettier
+npm run lint         # eslint
 npm run typecheck    # astro check && tsc --noEmit
 npm test             # vitest, ~63 unit tests, sub-second
 npm run test:e2e     # playwright, auto-starts dev server on :4321
@@ -18,7 +20,7 @@ npm run test:e2e     # playwright, auto-starts dev server on :4321
 
 `npm run build` catches blog-post schema errors that the typecheck misses — run it after touching anything in `src/content/blog/` or `src/content.config.ts`.
 
-There is **no CI workflow** today. Treat green local tests as the merge gate.
+CI runs the same commands on every PR and push to `main` — see [.github/workflows/ci.yml](.github/workflows/ci.yml). Local green = CI green.
 
 ## Deploy
 
@@ -26,7 +28,7 @@ Cloudflare Pages, settings in [README.md](README.md#build--deploy). `public/_rou
 
 ## Blog posts
 
-Markdown in `src/content/blog/`, schema in [src/content.config.ts](src/content.config.ts), template at [src/content/blog/_template.md](src/content/blog/_template.md). Files starting with `_` are ignored. Frontmatter: `title`, `description`, `pubDate`, `tags`, `draft`. Posts feed `/blog`, `/rss.xml`, and the desktop Blog app simultaneously.
+Markdown in `src/content/blog/`, schema in [src/content.config.ts](src/content.config.ts), template at [src/content/blog/\_template.md](src/content/blog/_template.md). Files starting with `_` are ignored. Frontmatter: `title`, `description`, `pubDate`, `tags`, `draft`. Posts feed `/blog`, `/rss.xml`, and the desktop Blog app simultaneously.
 
 For mobile drafting, use the **`/blog` slash command** ([.claude/commands/blog.md](.claude/commands/blog.md)) — it turns a voice/text dump into a reviewable PR in one turn.
 
@@ -44,5 +46,5 @@ Iframe apps must allow framing (no `X-Frame-Options: DENY`, no restrictive `fram
 - Tests colocate as `.test.ts(x)` next to source
 - Zustand store mutations stay inside store actions, never inline in components
 - Window-relative units come from the store, not CSS — see `src/components/os/store.ts`
-- Comments only when the *why* is non-obvious. Don't restate what the code does.
+- Comments only when the _why_ is non-obvious. Don't restate what the code does.
 - Site owner is referred to as **Schmug**, not Cory ([commit 1a5d204](https://github.com/schmug/portfolio/commit/1a5d204))

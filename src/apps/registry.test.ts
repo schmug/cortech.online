@@ -53,9 +53,7 @@ describe('app registry invariants', () => {
   it('allowMultiple native apps use app.id as their window id (singleton contract)', () => {
     // The store assigns instanceId = app.id when allowMultiple === false.
     // Having duplicate singleton ids across the registry would collide; verify.
-    const singletonIds = apps
-      .filter((a) => a.allowMultiple === false)
-      .map((a) => a.id);
+    const singletonIds = apps.filter((a) => a.allowMultiple === false).map((a) => a.id);
     expect(new Set(singletonIds).size).toBe(singletonIds.length);
   });
 

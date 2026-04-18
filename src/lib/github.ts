@@ -45,7 +45,7 @@ export async function fetchOriginalRepos(username: string): Promise<Repo[]> {
 
 export function buildFeaturedRepos(
   repos: Repo[],
-  configs: FeaturedRepoConfig[] = featuredRepos
+  configs: FeaturedRepoConfig[] = featuredRepos,
 ): FeaturedRepo[] {
   const byName = new Map(repos.map((r) => [r.name.toLowerCase(), r]));
   const out: FeaturedRepo[] = [];

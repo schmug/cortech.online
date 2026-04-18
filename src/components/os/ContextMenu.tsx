@@ -112,7 +112,11 @@ export function ContextMenu({ x, y, items, onDismiss }: Props) {
                   : 'text-[var(--color-text)]',
           ].join(' ')}
         >
-          {item.icon && <span className="w-4 text-center" aria-hidden="true">{item.icon}</span>}
+          {item.icon && (
+            <span className="w-4 text-center" aria-hidden="true">
+              {item.icon}
+            </span>
+          )}
           <span>{item.label}</span>
         </button>
       ))}
