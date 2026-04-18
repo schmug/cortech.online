@@ -7,12 +7,15 @@ export default function SupportApp() {
   return (
     <div className="h-full overflow-y-auto bg-[var(--color-void)] px-7 py-6 text-[var(--color-text)]">
       <header>
-        <div className="font-mono text-[11px] uppercase tracking-[0.3em] text-[var(--color-amber)]">Support</div>
-        <h1 className="mt-1 font-[var(--font-display)] text-2xl font-semibold tracking-tight">
+        <div className="font-mono text-[11px] tracking-[0.3em] text-[var(--color-amber)] uppercase">
+          Support
+        </div>
+        <h1 className="mt-1 text-2xl font-[var(--font-display)] font-semibold tracking-tight">
           Keep the small things small.
         </h1>
         <p className="mt-2 text-sm text-[var(--color-muted)]">
-          Everything on CortechOS runs on a pile of Cloudflare Workers, side projects, and evenings. A few ways to pitch in —
+          Everything on CortechOS runs on a pile of Cloudflare Workers, side projects, and evenings.
+          A few ways to pitch in —
         </p>
       </header>
 
@@ -53,20 +56,29 @@ export default function SupportApp() {
       </section>
 
       <section className="mt-8">
-        <div className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--color-muted)]">What your support funds</div>
+        <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--color-muted)] uppercase">
+          What your support funds
+        </div>
         <ul className="mt-3 grid gap-2 text-xs">
           {flagships.map((app) => (
-            <li key={app.id} className="flex items-center gap-3 rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 px-3 py-2">
-              <span aria-hidden="true" className="text-base">{renderIcon(app.icon, 'h-4 w-4')}</span>
+            <li
+              key={app.id}
+              className="flex items-center gap-3 rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 px-3 py-2"
+            >
+              <span aria-hidden="true" className="text-base">
+                {renderIcon(app.icon, 'h-4 w-4')}
+              </span>
               <div className="min-w-0 flex-1">
                 <div className="font-mono text-[11px] text-[var(--color-text)]">{app.name}</div>
-                <div className="truncate text-[11px] text-[var(--color-muted)]">{app.description}</div>
+                <div className="truncate text-[11px] text-[var(--color-muted)]">
+                  {app.description}
+                </div>
               </div>
               {app.url && (
                 <a
                   href={app.url}
                   target="_blank"
-                  rel="noopener"
+                  rel="noopener noreferrer"
                   className="font-mono text-[10px] text-[var(--color-muted)] hover:text-[var(--color-amber)]"
                 >
                   open ↗
@@ -78,7 +90,8 @@ export default function SupportApp() {
       </section>
 
       <p className="mt-6 text-xs text-[var(--color-muted)]">
-        Business / sponsorship inquiries: open the <span className="font-mono text-[var(--color-text)]">About</span> app for contact details.
+        Business / sponsorship inquiries: open the{' '}
+        <span className="font-mono text-[var(--color-text)]">About</span> app for contact details.
       </p>
     </div>
   );
@@ -103,7 +116,9 @@ function Tier(props: {
     <>
       <div>
         <div className="flex items-center gap-2">
-          <span aria-hidden="true" className="text-lg">{props.icon}</span>
+          <span aria-hidden="true" className="text-lg">
+            {props.icon}
+          </span>
           <div className="font-medium text-[var(--color-text)]">{props.title}</div>
         </div>
         <p className="mt-2 text-xs text-[var(--color-muted)]">{props.note}</p>
@@ -125,7 +140,7 @@ function Tier(props: {
     <a
       href={props.href}
       target="_blank"
-      rel="noopener"
+      rel="noopener noreferrer"
       aria-disabled={props.disabled}
       onClick={(e) => props.disabled && e.preventDefault()}
       className={cls}

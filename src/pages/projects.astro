@@ -5,7 +5,7 @@ import { apps } from '../apps/registry.ts';
 
 const repos = await fetchOriginalRepos('schmug');
 const flagshipRepoNames = new Set(
-  apps.filter((a) => a.githubRepo).map((a) => a.githubRepo!.split('/')[1])
+  apps.filter((a) => a.githubRepo).map((a) => a.githubRepo!.split('/')[1]),
 );
 const flagships = repos.filter((r) => flagshipRepoNames.has(r.name));
 const others = repos.filter((r) => !flagshipRepoNames.has(r.name));
@@ -20,57 +20,111 @@ function relativeTime(iso: string): string {
 }
 ---
 
-<Base title="Projects" description="Every non-forked repo from github.com/schmug — utilities, AI tooling, email security, and creative experiments." canonical="https://cortech.online/projects">
-	<section class="mx-auto max-w-4xl px-6 pt-16 pb-10">
-		<p class="font-mono text-[11px] uppercase tracking-[0.35em] text-[var(--color-amber)]">Projects</p>
-		<h1 class="mt-5 font-[var(--font-display)] text-3xl font-bold tracking-tight sm:text-4xl">Everything I've shipped</h1>
-		<p class="mt-4 max-w-2xl text-[var(--color-dim)]">
-			Pulled from <a href="https://github.com/schmug" rel="noopener" class="text-[var(--color-amber)] hover:underline">github.com/schmug</a> at build time. Forks and archives filtered out. {repos.length} projects.
-		</p>
-	</section>
+<Base
+  title="Projects"
+  description="Every non-forked repo from github.com/schmug — utilities, AI tooling, email security, and creative experiments."
+  canonical="https://cortech.online/projects"
+>
+  <section class="mx-auto max-w-4xl px-6 pt-16 pb-10">
+    <p class="font-mono text-[11px] tracking-[0.35em] text-[var(--color-amber)] uppercase">
+      Projects
+    </p>
+    <h1 class="mt-5 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl">
+      Everything I've shipped
+    </h1>
+    <p class="mt-4 max-w-2xl text-[var(--color-dim)]">
+      Pulled from <a
+        href="https://github.com/schmug"
+        rel="noopener"
+        class="text-[var(--color-amber)] hover:underline">github.com/schmug</a
+      > at build time. Forks and archives filtered out. {repos.length} projects.
+    </p>
+  </section>
 
-	{flagships.length > 0 && (
-		<section class="mx-auto max-w-4xl px-6 py-6">
-			<h2 class="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-muted)]">Featured</h2>
-			<ul class="mt-4 grid gap-3 sm:grid-cols-2">
-				{flagships.map((repo) => (
-					<li class="rounded-[var(--ct-radius)] border border-[var(--color-amber)]/40 bg-[var(--color-amber)]/5 p-4 transition hover:border-[var(--color-amber)]">
-						<div class="flex items-baseline justify-between gap-3">
-							<a href={repo.html_url} rel="noopener" class="font-mono font-medium text-[var(--color-amber)] hover:underline">{repo.name}</a>
-							<span class="font-mono text-[10px] uppercase tracking-wider text-[var(--color-muted)]">{repo.language ?? '—'}</span>
-						</div>
-						{repo.description && <p class="mt-2 text-sm text-[var(--color-dim)]">{repo.description}</p>}
-						<div class="mt-3 flex gap-3 text-xs text-[var(--color-muted)]">
-							<span>★ {repo.stargazers_count}</span>
-							<span>{relativeTime(repo.updated_at)}</span>
-							{repo.homepage && <a href={repo.homepage} rel="noopener" class="hover:text-[var(--color-amber)]">live ↗</a>}
-						</div>
-					</li>
-				))}
-			</ul>
-		</section>
-	)}
+  {
+    flagships.length > 0 && (
+      <section class="mx-auto max-w-4xl px-6 py-6">
+        <h2 class="font-mono text-[11px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
+          Featured
+        </h2>
+        <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+          {flagships.map((repo) => (
+            <li class="rounded-[var(--ct-radius)] border border-[var(--color-amber)]/40 bg-[var(--color-amber)]/5 p-4 transition hover:border-[var(--color-amber)]">
+              <div class="flex items-baseline justify-between gap-3">
+                <a
+                  href={repo.html_url}
+                  rel="noopener"
+                  class="font-mono font-medium text-[var(--color-amber)] hover:underline"
+                >
+                  {repo.name}
+                </a>
+                <span class="font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
+                  {repo.language ?? '—'}
+                </span>
+              </div>
+              {repo.description && (
+                <p class="mt-2 text-sm text-[var(--color-dim)]">{repo.description}</p>
+              )}
+              <div class="mt-3 flex gap-3 text-xs text-[var(--color-muted)]">
+                <span>★ {repo.stargazers_count}</span>
+                <span>{relativeTime(repo.updated_at)}</span>
+                {repo.homepage && (
+                  <a href={repo.homepage} rel="noopener" class="hover:text-[var(--color-amber)]">
+                    live ↗
+                  </a>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
 
-	<section class="mx-auto max-w-4xl px-6 py-6 pb-16">
-		<h2 class="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-muted)]">All repositories</h2>
-		{others.length === 0 ? (
-			<p class="mt-4 text-sm text-[var(--color-dim)]">No repositories available right now — GitHub API was unreachable at build time. Visit <a href="https://github.com/schmug" rel="noopener" class="text-[var(--color-amber)] hover:underline">github.com/schmug</a> directly.</p>
-		) : (
-			<ul class="mt-4 divide-y divide-[var(--color-border)] rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/40">
-				{others.map((repo) => (
-					<li class="flex flex-col gap-2 px-4 py-3 transition hover:bg-[var(--color-panel-hi)] sm:flex-row sm:items-center sm:justify-between">
-						<div class="min-w-0 flex-1">
-							<a href={repo.html_url} rel="noopener" class="font-mono font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]">{repo.name}</a>
-							{repo.description && <p class="mt-0.5 truncate text-sm text-[var(--color-muted)]">{repo.description}</p>}
-						</div>
-						<div class="flex items-center gap-3 font-mono text-[11px] text-[var(--color-muted)]">
-							<span>{repo.language ?? '—'}</span>
-							<span>★ {repo.stargazers_count}</span>
-							<span>{relativeTime(repo.updated_at)}</span>
-						</div>
-					</li>
-				))}
-			</ul>
-		)}
-	</section>
+  <section class="mx-auto max-w-4xl px-6 py-6 pb-16">
+    <h2 class="font-mono text-[11px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
+      All repositories
+    </h2>
+    {
+      others.length === 0 ? (
+        <p class="mt-4 text-sm text-[var(--color-dim)]">
+          No repositories available right now — GitHub API was unreachable at build time. Visit{' '}
+          <a
+            href="https://github.com/schmug"
+            rel="noopener"
+            class="text-[var(--color-amber)] hover:underline"
+          >
+            github.com/schmug
+          </a>{' '}
+          directly.
+        </p>
+      ) : (
+        <ul class="mt-4 divide-y divide-[var(--color-border)] rounded-[var(--ct-radius)] border border-[var(--color-border)] bg-[var(--color-panel)]/40">
+          {others.map((repo) => (
+            <li class="flex flex-col gap-2 px-4 py-3 transition hover:bg-[var(--color-panel-hi)] sm:flex-row sm:items-center sm:justify-between">
+              <div class="min-w-0 flex-1">
+                <a
+                  href={repo.html_url}
+                  rel="noopener"
+                  class="font-mono font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]"
+                >
+                  {repo.name}
+                </a>
+                {repo.description && (
+                  <p class="mt-0.5 truncate text-sm text-[var(--color-muted)]">
+                    {repo.description}
+                  </p>
+                )}
+              </div>
+              <div class="flex items-center gap-3 font-mono text-[11px] text-[var(--color-muted)]">
+                <span>{repo.language ?? '—'}</span>
+                <span>★ {repo.stargazers_count}</span>
+                <span>{relativeTime(repo.updated_at)}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
 </Base>

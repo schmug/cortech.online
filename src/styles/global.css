@@ -1,9 +1,9 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --font-display: "Space Grotesk", var(--font-sans);
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-display: 'Space Grotesk', var(--font-sans);
 
   --color-void: #0b0d12;
   --color-shadow: #0f1218;
@@ -29,8 +29,16 @@
     radial-gradient(circle at 80% 70%, rgba(94, 227, 209, 0.04) 0, transparent 45%),
     linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
-  background-size: 100% 100%, 100% 100%, 28px 28px, 28px 28px;
-  background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+  background-size:
+    100% 100%,
+    100% 100%,
+    28px 28px,
+    28px 28px;
+  background-position:
+    0 0,
+    0 0,
+    -1px -1px,
+    -1px -1px;
 }
 
 /* Window chrome tokens — applied via utilities in components */
@@ -47,12 +55,14 @@ html {
 
 body {
   font-family: var(--font-sans);
-  font-feature-settings: "ss01", "cv11";
+  font-feature-settings: 'ss01', 'cv11';
 }
 
 /* Respect reduced motion — gets real use in M5 boot splash and M3 windows */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }

@@ -6,10 +6,22 @@ export type Props = {
 };
 const { size = 24, class: className, label = 'CortechOS' } = Astro.props;
 ---
-<span class:list={['inline-flex items-center gap-2 font-mono font-semibold tracking-tight', className]}>
+
+<span
+  class:list={['inline-flex items-center gap-2 font-mono font-semibold tracking-tight', className]}
+>
   <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-    <rect x="2" y="2" width="28" height="28" rx="6" fill="#0b0d12" stroke="#f6c34a" stroke-width="2"/>
-    <text x="16" y="23" font-family="Inter, 'Arial Black', Arial, 'Helvetica Neue', sans-serif" font-size="20" font-weight="900" fill="#f6c34a" text-anchor="middle">S</text>
+    <rect x="2" y="2" width="28" height="28" rx="6" fill="#0b0d12" stroke="#f6c34a" stroke-width="2"
+    ></rect>
+    <text
+      x="16"
+      y="23"
+      font-family="Inter, 'Arial Black', Arial, 'Helvetica Neue', sans-serif"
+      font-size="20"
+      font-weight="900"
+      fill="#f6c34a"
+      text-anchor="middle">S</text
+    >
   </svg>
   <span>{label}</span>
 </span>

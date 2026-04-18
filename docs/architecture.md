@@ -1,6 +1,6 @@
 # CortechOS architecture
 
-Reference for how the *implemented* code is structured — file map, store shape, app contract, deploy contract. For the original design rationale and product goals, see [`docs/superpowers/specs/2026-04-12-cortechos-design.md`](./superpowers/specs/2026-04-12-cortechos-design.md).
+Reference for how the _implemented_ code is structured — file map, store shape, app contract, deploy contract. For the original design rationale and product goals, see [`docs/superpowers/specs/2026-04-12-cortechos-design.md`](./superpowers/specs/2026-04-12-cortechos-design.md).
 
 ## Layering
 
@@ -22,13 +22,13 @@ type AppManifest = {
   description: string;
   icon: string | ReactNode;
   type: 'iframe' | 'native';
-  url?: string;                                    // iframe only
-  component?: () => Promise<{ default: ComponentType }>;  // native only
+  url?: string; // iframe only
+  component?: () => Promise<{ default: ComponentType }>; // native only
   defaultSize: { w: number; h: number };
   minSize?: { w: number; h: number };
-  allowMultiple?: boolean;     // false → singleton (focus existing instance instead of opening a new one)
-  githubRepo?: string;         // owner/repo, displayed in window chrome / about page
-  paid?: boolean;              // shown with a "PAID" badge in launcher and desktop
+  allowMultiple?: boolean; // false → singleton (focus existing instance instead of opening a new one)
+  githubRepo?: string; // owner/repo, displayed in window chrome / about page
+  paid?: boolean; // shown with a "PAID" badge in launcher and desktop
 };
 ```
 
@@ -48,8 +48,8 @@ Source: [`src/components/os/store.ts`](../src/components/os/store.ts). A zustand
 type OSState = {
   windows: WindowState[];
   focusedId: string | null;
-  nextZ: number;       // monotonic z-counter; never reset
-  hasBooted: boolean;  // gates the boot splash and the first-visit auto-open
+  nextZ: number; // monotonic z-counter; never reset
+  hasBooted: boolean; // gates the boot splash and the first-visit auto-open
 };
 ```
 
@@ -65,16 +65,16 @@ type OSState = {
 
 ## A11y contract
 
-| Feature | Where | Behavior |
-| --- | --- | --- |
-| Skip link | `OSShell.tsx` | `sr-only` link "Skip to desktop icons" — visible on focus, jumps to `#ct-desktop-icons`. |
-| App role | `OSShell.tsx` | Desktop container has `role="application"` + `aria-label="CortechOS desktop"`. |
-| Window semantics | `Window.tsx` | Each window is `role="group"` with `aria-label="{title} window"`. Control buttons (Close, Minimize, Maximize/Restore) have explicit `aria-label`s; icons are `aria-hidden`. |
-| Live announcer | `OSShell.tsx` | Hidden `role="status" aria-live="polite"` region announces "{title} opened" / "Window closed" as the window list changes. |
-| Launcher dialog | `Launcher.tsx` | `role="dialog" aria-modal="true"`. Result list is `role="listbox"` with `role="option"` items. Tab is captured to keep focus on the search input — arrow keys walk results. |
-| Boot splash | `BootSplash.tsx` | Press any key or click to skip. Honors `prefers-reduced-motion` (`window.matchMedia`). |
-| Reduced motion | `src/styles/global.css` | `@media (prefers-reduced-motion: reduce)` disables animations globally. |
-| Keyboard | `useKeyboard.ts` | `⌘K` / `Ctrl+K` toggles launcher. `⌘W` / `Ctrl+W` closes the focused window. `Esc` closes the launcher. |
+| Feature          | Where                   | Behavior                                                                                                                                                                    |
+| ---------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Skip link        | `OSShell.tsx`           | `sr-only` link "Skip to desktop icons" — visible on focus, jumps to `#ct-desktop-icons`.                                                                                    |
+| App role         | `OSShell.tsx`           | Desktop container has `role="application"` + `aria-label="CortechOS desktop"`.                                                                                              |
+| Window semantics | `Window.tsx`            | Each window is `role="group"` with `aria-label="{title} window"`. Control buttons (Close, Minimize, Maximize/Restore) have explicit `aria-label`s; icons are `aria-hidden`. |
+| Live announcer   | `OSShell.tsx`           | Hidden `role="status" aria-live="polite"` region announces "{title} opened" / "Window closed" as the window list changes.                                                   |
+| Launcher dialog  | `Launcher.tsx`          | `role="dialog" aria-modal="true"`. Result list is `role="listbox"` with `role="option"` items. Tab is captured to keep focus on the search input — arrow keys walk results. |
+| Boot splash      | `BootSplash.tsx`        | Press any key or click to skip. Honors `prefers-reduced-motion` (`window.matchMedia`).                                                                                      |
+| Reduced motion   | `src/styles/global.css` | `@media (prefers-reduced-motion: reduce)` disables animations globally.                                                                                                     |
+| Keyboard         | `useKeyboard.ts`        | `⌘K` / `Ctrl+K` toggles launcher. `⌘W` / `Ctrl+W` closes the focused window. `Esc` closes the launcher.                                                                     |
 
 ## Deploy contract
 
@@ -96,11 +96,11 @@ There is intentionally **no `public/_headers`** file. The site has no custom CSP
 
 ## Testing
 
-| Suite | Command | Where |
-| --- | --- | --- |
-| Unit (zustand store, helpers) | `npm test` | `src/**/*.test.ts` (e.g. `src/components/os/store.test.ts`) |
-| End-to-end (desktop, mobile, iframe embed) | `npm run test:e2e` | `e2e/smoke.spec.ts` |
-| Type & Astro check | `npm run typecheck` | `astro check && tsc --noEmit` |
+| Suite                                      | Command             | Where                                                       |
+| ------------------------------------------ | ------------------- | ----------------------------------------------------------- |
+| Unit (zustand store, helpers)              | `npm test`          | `src/**/*.test.ts` (e.g. `src/components/os/store.test.ts`) |
+| End-to-end (desktop, mobile, iframe embed) | `npm run test:e2e`  | `e2e/smoke.spec.ts`                                         |
+| Type & Astro check                         | `npm run typecheck` | `astro check && tsc --noEmit`                               |
 
 The desktop e2e spins up the dev server (`webServer` in `playwright.config.ts`), boots the OS, opens windows via icon and launcher, and asserts no unexpected console errors. The iframe-embed spec opens each iframe app and fails if any returns `X-Frame-Options` / CSP refusal — that's how iframe regressions surface.
 

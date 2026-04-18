@@ -4,7 +4,7 @@
 // public/apple-touch-icon.png, and public/og-image.png
 // from the authoritative public/mark{,-sm,-circle}.svg sources.
 
-import { readFile, writeFile, copyFile, unlink } from 'node:fs/promises';
+import { readFile, copyFile, unlink } from 'node:fs/promises';
 import { spawnSync } from 'node:child_process';
 import sharp from 'sharp';
 import { fileURLToPath } from 'node:url';
@@ -25,9 +25,17 @@ async function main() {
   const bg = { background: '#0b0d12' };
   // GitHub (and Slack, Discord) circle-crop avatars; use the circle variant
   // so the ring, dots, and S stay inside the visible disc.
-  await sharp(circleSvg, { density: 600 }).resize(460, 460).flatten(bg).png().toFile(pub('mark-460.png'));
+  await sharp(circleSvg, { density: 600 })
+    .resize(460, 460)
+    .flatten(bg)
+    .png()
+    .toFile(pub('mark-460.png'));
   // iOS renders apple-touch-icon as a rounded square, not a circle.
-  await sharp(fullSvg, { density: 600 }).resize(180, 180).flatten(bg).png().toFile(pub('apple-touch-icon.png'));
+  await sharp(fullSvg, { density: 600 })
+    .resize(180, 180)
+    .flatten(bg)
+    .png()
+    .toFile(pub('apple-touch-icon.png'));
   // OG card is not cropped — full variant fits its 1200×630 frame.
   await sharp(fullSvg, { density: 600 })
     .resize(460, 460)
@@ -42,7 +50,9 @@ async function main() {
   const smSvg = await readFile(pub('mark-sm.svg'));
   const srcPng = pub('favicon-src.png');
   await sharp(smSvg, { density: 600 }).resize(256, 256).png().toFile(srcPng);
-  const cmd = spawnSync('npx', ['--yes', 'png2icons', srcPng, pub('favicon'), '-icop', '-bc'], { encoding: 'buffer' });
+  const cmd = spawnSync('npx', ['--yes', 'png2icons', srcPng, pub('favicon'), '-icop', '-bc'], {
+    encoding: 'buffer',
+  });
   if (cmd.status !== 0) {
     throw new Error(`png2icons failed:\n${cmd.stderr.toString()}`);
   }

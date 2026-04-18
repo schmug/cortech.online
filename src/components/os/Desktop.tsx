@@ -18,9 +18,7 @@ export function Desktop() {
   };
 
   const buildItems = (app: AppManifest): ContextMenuItem[] => {
-    const items: ContextMenuItem[] = [
-      { label: 'Open', icon: '↗', onClick: () => openApp(app) },
-    ];
+    const items: ContextMenuItem[] = [{ label: 'Open', icon: '↗', onClick: () => openApp(app) }];
     if (app.url) {
       items.push({
         label: 'Open in new tab',
@@ -53,7 +51,7 @@ export function Desktop() {
             onDoubleClick={() => openApp(app)}
             onClick={() => openApp(app)}
             onContextMenu={(e) => onContext(e, app)}
-            className="group flex flex-col items-center gap-1.5 rounded-md p-2 text-center transition hover:bg-[var(--color-panel)]/60 focus:bg-[var(--color-panel)]/80 focus:outline focus:outline-2 focus:outline-[var(--color-amber)] focus:outline-offset-2"
+            className="group flex flex-col items-center gap-1.5 rounded-md p-2 text-center transition hover:bg-[var(--color-panel)]/60 focus:bg-[var(--color-panel)]/80 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-[var(--color-amber)]"
             aria-label={`Open ${app.name}`}
             title={app.description}
           >

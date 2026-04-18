@@ -1,8 +1,10 @@
 import { test, expect, devices, type ConsoleMessage, type Page } from '@playwright/test';
+import { apps } from '../src/apps/registry';
 
+// donthype-me is temporarily excluded — upstream regressed X-Frame-Options: deny.
+// Tracking: https://github.com/schmug/donthype-me/issues/905 — re-add when resolved.
 const IFRAME_APPS = [
   { id: 'dmarc-mx', name: 'dmarc.mx', url: 'https://dmarc.mx' },
-  { id: 'donthype-me', name: 'donthype.me', url: 'https://donthype.me' },
   { id: 'apartment-stager', name: 'apartment-stager', url: 'https://apartment-stager.pages.dev/' },
   { id: 'qr-me', name: 'q-r.contact', url: 'https://q-r.contact' },
 ] as const;
@@ -64,14 +66,16 @@ async function openApp(page: Page, appName: string) {
 // `document.fonts.ready`. Fulfill (vs abort) keeps the console clean.
 test.beforeEach(async ({ page }) => {
   await page.route(/fonts\.(googleapis|gstatic)\.com/, (route) =>
-    route.fulfill({ status: 200, contentType: 'text/css', body: '' })
+    route.fulfill({ status: 200, contentType: 'text/css', body: '' }),
   );
 });
 
 test.describe('desktop golden path', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
 
-  test('boots, opens windows via icon and launcher, ⌘K toggles, Esc closes', async ({ page }, testInfo) => {
+  test('boots, opens windows via icon and launcher, ⌘K toggles, Esc closes', async ({
+    page,
+  }, testInfo) => {
     const messages = captureConsole(page);
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
@@ -87,7 +91,9 @@ test.describe('desktop golden path', () => {
     await page.screenshot({ path: testInfo.outputPath('2-about-open.png') });
 
     // Brand-mark regression: AboutApp header renders the full mark as an <img>, not an emoji.
-    const aboutAvatar = page.locator('section[aria-label="About Schmug window"] img[src="/mark.svg"]');
+    const aboutAvatar = page.locator(
+      'section[aria-label="About Schmug window"] img[src="/mark.svg"]',
+    );
     await expect(aboutAvatar).toBeVisible();
 
     await page.locator('button[aria-label="Open launcher"]').click();
@@ -111,7 +117,7 @@ test.describe('desktop golden path', () => {
     const realErrors = filterNoise(messages);
     expect(
       realErrors,
-      `Unexpected console output:\n${realErrors.map((m) => `  [${m.type}] ${m.text}`).join('\n')}`
+      `Unexpected console output:\n${realErrors.map((m) => `  [${m.type}] ${m.text}`).join('\n')}`,
     ).toEqual([]);
   });
 });
@@ -206,6 +212,48 @@ test.describe('mobile springboard', () => {
   test.use(iPhone14);
 
   test('home grid + dock render, tap opens app fullscreen, back returns home', async ({ page }) => {
+    // Stub /api/projects.json with two fake featured repos so tile count is
+    // deterministic — the real endpoint hits GitHub and is rate-limit-sensitive.
+    const stubFeatured = [
+      {
+        fullName: 'fake/alpha',
+        name: 'alpha',
+        description: 'stub',
+        htmlUrl: 'https://example.invalid/alpha',
+        homepage: null,
+        language: null,
+        stargazersCount: 0,
+        updatedAt: null,
+        fork: false,
+        archived: false,
+        private: false,
+      },
+      {
+        fullName: 'fake/beta',
+        name: 'beta',
+        description: 'stub',
+        htmlUrl: 'https://example.invalid/beta',
+        homepage: null,
+        language: null,
+        stargazersCount: 0,
+        updatedAt: null,
+        fork: false,
+        archived: false,
+        private: false,
+      },
+    ];
+    await page.route('**/api/projects.json', (route) =>
+      route.fulfill({
+        status: 200,
+        contentType: 'application/json; charset=utf-8',
+        body: JSON.stringify({
+          repos: [],
+          featured: stubFeatured,
+          fetchedAt: new Date().toISOString(),
+        }),
+      }),
+    );
+
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     // MobileShell mounts immediately — no boot splash.
@@ -213,16 +261,22 @@ test.describe('mobile springboard', () => {
     await expect(grid).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('#ct-desktop')).toHaveCount(0);
 
-    // All 8 registry apps rendered as tiles.
+    // Tiles = static registry apps + the two stubbed featured repos.
     const tiles = grid.locator('button[aria-label^="Open "]');
-    expect(await tiles.count()).toBe(8);
+    await expect(tiles).toHaveCount(apps.length + stubFeatured.length, { timeout: 10_000 });
 
     // Dock shows 3 pinned apps (About, Support, Projects).
     const dockButtons = page.locator('nav[aria-label="Dock"] button');
     await expect(dockButtons).toHaveCount(3);
-    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open About Schmug"]')).toBeVisible();
-    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open Support"]')).toBeVisible();
-    await expect(page.locator('nav[aria-label="Dock"] button[aria-label="Open Projects"]')).toBeVisible();
+    await expect(
+      page.locator('nav[aria-label="Dock"] button[aria-label="Open About Schmug"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('nav[aria-label="Dock"] button[aria-label="Open Support"]'),
+    ).toBeVisible();
+    await expect(
+      page.locator('nav[aria-label="Dock"] button[aria-label="Open Projects"]'),
+    ).toBeVisible();
 
     // Tap an iframe app (dmarc.mx) → fullscreen app view with iframe + back pill.
     await grid.locator('button[aria-label="Open dmarc.mx"]').tap();
@@ -251,7 +305,7 @@ test.describe('mobile springboard', () => {
     // Under reduced motion, the slide-up transform is disabled —
     // transition-property should only cover opacity, not transform.
     const transitionProperty = await appView.evaluate(
-      (el) => window.getComputedStyle(el).transitionProperty
+      (el) => window.getComputedStyle(el).transitionProperty,
     );
     expect(transitionProperty).toBe('opacity');
   });
@@ -259,6 +313,12 @@ test.describe('mobile springboard', () => {
 
 test.describe('iframe embed', () => {
   test.use({ viewport: { width: 1440, height: 900 } });
+
+  // External services (dmarc.mx, qr-me, apartment-stager) lock their CSP
+  // frame-ancestors to https://cortech.online, which blocks the localhost
+  // origin this suite runs against in CI. Keep the test for local runs —
+  // it still catches regressions when exercised against the prod origin.
+  test.skip(!!process.env.CI, 'External CSPs require prod cortech.online origin');
 
   test('all iframe apps embed without CSP/XFO refusal', async ({ page }) => {
     const messages = captureConsole(page);
@@ -285,11 +345,11 @@ test.describe('iframe embed', () => {
     }
 
     const xfoNoise = messages.filter((m) =>
-      /Refused to display.*frame|X-Frame-Options|Content Security Policy/i.test(m.text)
+      /Refused to display.*frame|X-Frame-Options|Content Security Policy/i.test(m.text),
     );
     expect(
       xfoNoise,
-      `Iframe embedding blocked:\n${xfoNoise.map((m) => `  [${m.type}] ${m.text}`).join('\n')}`
+      `Iframe embedding blocked:\n${xfoNoise.map((m) => `  [${m.type}] ${m.text}`).join('\n')}`,
     ).toEqual([]);
   });
 });

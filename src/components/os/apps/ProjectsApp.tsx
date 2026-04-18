@@ -10,7 +10,7 @@ export default function ProjectsApp() {
     if (!query) return payload.repos;
     const q = query.toLowerCase();
     return payload.repos.filter((r) =>
-      `${r.name} ${r.description ?? ''} ${r.language ?? ''}`.toLowerCase().includes(q)
+      `${r.name} ${r.description ?? ''} ${r.language ?? ''}`.toLowerCase().includes(q),
     );
   }, [payload, query]);
 
@@ -19,8 +19,12 @@ export default function ProjectsApp() {
       <header className="shrink-0 border-b border-[var(--color-border)] bg-[var(--color-panel)]/80 px-5 py-3">
         <div className="flex items-baseline justify-between">
           <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-amber)]">Projects</div>
-            <h2 className="mt-0.5 font-[var(--font-display)] text-lg font-semibold">github.com/schmug</h2>
+            <div className="font-mono text-[11px] tracking-[0.25em] text-[var(--color-amber)] uppercase">
+              Projects
+            </div>
+            <h2 className="mt-0.5 text-lg font-[var(--font-display)] font-semibold">
+              github.com/schmug
+            </h2>
           </div>
           {payload && (
             <span className="font-mono text-[10px] text-[var(--color-muted)]">
@@ -44,7 +48,12 @@ export default function ProjectsApp() {
         {error && (
           <div className="rounded-md border border-[var(--color-hot)]/40 bg-[var(--color-hot)]/5 p-4 text-xs text-[var(--color-dim)]">
             Couldn't load repos ({error}). Visit{' '}
-            <a href="https://github.com/schmug" target="_blank" rel="noopener" className="text-[var(--color-amber)] hover:underline">
+            <a
+              href="https://github.com/schmug"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--color-amber)] hover:underline"
+            >
               github.com/schmug
             </a>{' '}
             directly.
@@ -59,7 +68,8 @@ export default function ProjectsApp() {
           <ul className="divide-y divide-[var(--color-border)]">
             {filtered.length === 0 && (
               <li className="py-6 text-center text-xs text-[var(--color-muted)]">
-                No repos match "<span className="font-mono text-[var(--color-text)]">{query}</span>".
+                No repos match "<span className="font-mono text-[var(--color-text)]">{query}</span>
+                ".
               </li>
             )}
             {filtered.map((repo) => (
@@ -67,22 +77,26 @@ export default function ProjectsApp() {
                 <a
                   href={repo.html_url}
                   target="_blank"
-                  rel="noopener"
+                  rel="noopener noreferrer"
                   className="block px-1 py-2 transition hover:bg-[var(--color-panel-hi)]"
                 >
                   <div className="flex items-baseline justify-between gap-3">
-                    <span className="font-mono text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]">{repo.name}</span>
-                    <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-muted)]">{repo.language ?? '—'}</span>
+                    <span className="font-mono text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]">
+                      {repo.name}
+                    </span>
+                    <span className="font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
+                      {repo.language ?? '—'}
+                    </span>
                   </div>
                   {repo.description && (
-                    <p className="mt-1 line-clamp-2 text-xs text-[var(--color-dim)]">{repo.description}</p>
+                    <p className="mt-1 line-clamp-2 text-xs text-[var(--color-dim)]">
+                      {repo.description}
+                    </p>
                   )}
                   <div className="mt-1 flex gap-3 font-mono text-[10px] text-[var(--color-muted)]">
                     <span>★ {repo.stargazers_count}</span>
                     <span>{relativeTime(repo.updated_at)}</span>
-                    {repo.homepage && (
-                      <span className="text-[var(--color-amber)]/80">live ↗</span>
-                    )}
+                    {repo.homepage && <span className="text-[var(--color-amber)]/80">live ↗</span>}
                   </div>
                 </a>
               </li>

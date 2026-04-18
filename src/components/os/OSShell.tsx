@@ -80,7 +80,7 @@ export default function OSShell() {
     >
       <a
         href="#ct-desktop-icons"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[400] focus:rounded focus:bg-[var(--color-amber)] focus:px-3 focus:py-1 focus:text-[var(--color-void)] focus:outline-none"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[400] focus:rounded focus:bg-[var(--color-amber)] focus:px-3 focus:py-1 focus:text-[var(--color-void)] focus:outline-none"
       >
         Skip to desktop icons
       </a>

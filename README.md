@@ -23,12 +23,12 @@ npm run build        # → dist/
 
 Cloudflare Pages:
 
-| Setting | Value |
-| --- | --- |
-| Framework preset | None |
-| Build command | `npm run build` |
-| Output directory | `dist` |
-| Node version | 22 |
+| Setting          | Value           |
+| ---------------- | --------------- |
+| Framework preset | None            |
+| Build command    | `npm run build` |
+| Output directory | `dist`          |
+| Node version     | 22              |
 
 `public/_routes.json` ships `{ include: [], exclude: ["/*"] }` so Pages bypasses the Functions runtime entirely — every path is served as a static asset. See [`docs/architecture.md`](docs/architecture.md#deploy-contract) for why.
 
@@ -44,10 +44,14 @@ Cloudflare Pages:
 ## Tests
 
 ```sh
+npm run lint         # eslint
+npm run format:check # prettier — use `npm run format` to auto-fix
 npm test             # vitest — unit tests for store + helpers
 npm run test:e2e     # playwright — desktop golden path, mobile fallback, iframe embed
 npm run typecheck    # astro check && tsc --noEmit
 ```
+
+The same commands run in GitHub Actions on every PR (see [`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 
 ## Architecture
 

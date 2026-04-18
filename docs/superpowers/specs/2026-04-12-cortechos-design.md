@@ -4,7 +4,7 @@
 
 Cory (github.com/schmug) wants a portfolio at `cortech.online` (already owned) that both **showcases original work** and gives visitors a clear path to **support the work** (GitHub Sponsors, Stripe tip, star on GitHub). The page should lean **playful/creative** in tone — matching the creative side of the GitHub catalog (AntArt, RepoGotchi, BurgerDrop) while still presenting paid/serious products credibly.
 
-The concept landed during brainstorming: cortech.online boots into **CortechOS** — an original, branded, web-based desktop where each "app icon" is one of Cory's live products, running inside a window via iframe. Visitors don't just see screenshots; they actually *use* dmarc.mx, q-r.contact, donthype.me, and apartment-stager without leaving the portfolio. Native panels cover bio, support CTAs, and a live project browser.
+The concept landed during brainstorming: cortech.online boots into **CortechOS** — an original, branded, web-based desktop where each "app icon" is one of Cory's live products, running inside a window via iframe. Visitors don't just see screenshots; they actually _use_ dmarc.mx, q-r.contact, donthype.me, and apartment-stager without leaving the portfolio. Native panels cover bio, support CTAs, and a live project browser.
 
 Inspired by Puter.com but **not** using Puter itself — Puter requires a Node backend + persistent storage + AGPL; we want a static SPA on Cloudflare Pages. We borrow the metaphor, build our own shell.
 

@@ -14,36 +14,37 @@
 
 ## File Structure
 
-| Path | Status | Responsibility |
-|------|--------|----------------|
-| `public/mark.svg` | CREATE | Full variant vector — consumed by AboutApp, `/about`, OG |
-| `public/mark-sm.svg` | CREATE | Small variant vector — consumed by registry, Logo, favicon |
-| `public/favicon.svg` | OVERWRITE | Identical to `mark-sm.svg` (root-path convention) |
-| `public/favicon.ico` | OVERWRITE | 32×32 legacy ICO derived from `mark-sm.svg` |
-| `public/mark-460.png` | CREATE | 460×460 GitHub profile upload |
-| `public/apple-touch-icon.png` | CREATE | 180×180 iOS home screen |
-| `public/og-image.png` | CREATE | 1200×630 social card |
-| `scripts/generate-brand-assets.mjs` | CREATE | Derivative PNG/ICO generator |
-| `src/components/Logo.astro` | MODIFY | Inline SVG → small variant paths |
-| `src/apps/registry.ts` | MODIFY | About icon `'👋'` → `'/mark-sm.svg'` |
-| `src/apps/iconUtils.tsx` | CREATE | `renderIcon(icon, className)` helper — single source of conditional render |
-| `src/components/os/apps/AboutApp.tsx` | MODIFY | `<div>👋</div>` → `<img src="/mark.svg" …>` |
-| `src/components/os/Launcher.tsx` | MODIFY | Use `renderIcon` |
-| `src/components/os/Desktop.tsx` | MODIFY | Use `renderIcon` |
-| `src/components/os/Taskbar.tsx` | MODIFY | Use `renderIcon` |
-| `src/components/os/Window.tsx` | MODIFY | Use `renderIcon` |
-| `src/components/os/apps/SupportApp.tsx` | MODIFY | Use `renderIcon` (line 59) |
-| `src/components/mobile/MobileShell.tsx` | MODIFY | Use `renderIcon` |
-| `src/pages/index.astro` | MODIFY | Static-layer conditional for path icons (line 63) |
-| `src/pages/about.astro` | MODIFY | Add matching avatar above eyebrow |
-| `src/layouts/Base.astro` | MODIFY | Add og:image, twitter:image, apple-touch-icon meta |
-| `e2e/smoke.spec.ts` | MODIFY | Add one assertion: About avatar `<img>` has non-empty `src` |
+| Path                                    | Status    | Responsibility                                                             |
+| --------------------------------------- | --------- | -------------------------------------------------------------------------- |
+| `public/mark.svg`                       | CREATE    | Full variant vector — consumed by AboutApp, `/about`, OG                   |
+| `public/mark-sm.svg`                    | CREATE    | Small variant vector — consumed by registry, Logo, favicon                 |
+| `public/favicon.svg`                    | OVERWRITE | Identical to `mark-sm.svg` (root-path convention)                          |
+| `public/favicon.ico`                    | OVERWRITE | 32×32 legacy ICO derived from `mark-sm.svg`                                |
+| `public/mark-460.png`                   | CREATE    | 460×460 GitHub profile upload                                              |
+| `public/apple-touch-icon.png`           | CREATE    | 180×180 iOS home screen                                                    |
+| `public/og-image.png`                   | CREATE    | 1200×630 social card                                                       |
+| `scripts/generate-brand-assets.mjs`     | CREATE    | Derivative PNG/ICO generator                                               |
+| `src/components/Logo.astro`             | MODIFY    | Inline SVG → small variant paths                                           |
+| `src/apps/registry.ts`                  | MODIFY    | About icon `'👋'` → `'/mark-sm.svg'`                                       |
+| `src/apps/iconUtils.tsx`                | CREATE    | `renderIcon(icon, className)` helper — single source of conditional render |
+| `src/components/os/apps/AboutApp.tsx`   | MODIFY    | `<div>👋</div>` → `<img src="/mark.svg" …>`                                |
+| `src/components/os/Launcher.tsx`        | MODIFY    | Use `renderIcon`                                                           |
+| `src/components/os/Desktop.tsx`         | MODIFY    | Use `renderIcon`                                                           |
+| `src/components/os/Taskbar.tsx`         | MODIFY    | Use `renderIcon`                                                           |
+| `src/components/os/Window.tsx`          | MODIFY    | Use `renderIcon`                                                           |
+| `src/components/os/apps/SupportApp.tsx` | MODIFY    | Use `renderIcon` (line 59)                                                 |
+| `src/components/mobile/MobileShell.tsx` | MODIFY    | Use `renderIcon`                                                           |
+| `src/pages/index.astro`                 | MODIFY    | Static-layer conditional for path icons (line 63)                          |
+| `src/pages/about.astro`                 | MODIFY    | Add matching avatar above eyebrow                                          |
+| `src/layouts/Base.astro`                | MODIFY    | Add og:image, twitter:image, apple-touch-icon meta                         |
+| `e2e/smoke.spec.ts`                     | MODIFY    | Add one assertion: About avatar `<img>` has non-empty `src`                |
 
 ---
 
 ## Task 1: Author the SVG sources
 
 **Files:**
+
 - Create: `public/mark.svg`
 - Create: `public/mark-sm.svg`
 
@@ -89,6 +90,7 @@ docs/superpowers/specs/2026-04-13-unified-brand-mark-design.md"
 ## Task 2: Write the asset generation script
 
 **Files:**
+
 - Create: `scripts/generate-brand-assets.mjs`
 
 - [ ] **Step 1: Write the script**
@@ -156,6 +158,7 @@ git commit -m "feat(brand): add script to regenerate derivative assets from SVG 
 ## Task 3: Generate the derivative assets
 
 **Files:**
+
 - Overwrite: `public/favicon.svg`, `public/favicon.ico`
 - Create: `public/mark-460.png`, `public/apple-touch-icon.png`, `public/og-image.png`
 
@@ -164,6 +167,7 @@ git commit -m "feat(brand): add script to regenerate derivative assets from SVG 
 Run: `node scripts/generate-brand-assets.mjs`
 Expected stdout: `✓ Brand assets regenerated.`
 Expected files present (verify with `ls -la public/`):
+
 - `public/favicon.svg` (overwritten, same content as `mark-sm.svg`)
 - `public/favicon.ico` (regenerated 32×32)
 - `public/mark-460.png` (~10–30 KB)
@@ -176,6 +180,7 @@ Run: `open public/mark-460.png public/og-image.png public/apple-touch-icon.png`
 Expected: `mark-460.png` shows the full mark centered at high resolution; `og-image.png` shows the mark small-centered on a 1200×630 void background; `apple-touch-icon.png` shows the full mark. The S should be clearly bold and amber. If `sharp` rendered an empty or very thin S, the fontconfig fallback failed — see Risk Mitigation below.
 
 **Risk mitigation — S didn't render:** If the S is missing or a thin serif in the generated PNGs, install a system bold sans:
+
 - macOS: the fallback chain should always pick up Arial Black or Helvetica. If not: `brew install --cask font-inter` and rerun.
 - If still broken, replace both `<text>` elements in `public/mark.svg` and `public/mark-sm.svg` with a hand-outlined `<path>` for "S" via https://danmarshall.github.io/google-font-to-svg-path/ (paste `S`, select Inter 900, copy the `<path d="…"/>`). Then re-run the generation script.
 
@@ -191,6 +196,7 @@ git commit -m "feat(brand): generate derivative brand assets (favicon, OG card, 
 ## Task 4: Add the `renderIcon` helper
 
 **Files:**
+
 - Create: `src/apps/iconUtils.tsx`
 
 Consumers currently each do `typeof app.icon === 'string' ? app.icon : '▫'`. When `icon` is a path like `/mark-sm.svg`, we want to render an `<img>`. Centralizing the branch avoids duplication across 7 call sites.
@@ -221,6 +227,7 @@ git commit -m "feat(brand): add renderIcon helper for emoji vs path app icons"
 ## Task 5: Point the About app at the new mark (TDD)
 
 **Files:**
+
 - Modify: `src/apps/registry.ts:67`
 - Modify: `src/components/os/apps/AboutApp.tsx:5-10`
 - Modify: `e2e/smoke.spec.ts` (add one assertion)
@@ -230,9 +237,9 @@ git commit -m "feat(brand): add renderIcon helper for emoji vs path app icons"
 In `e2e/smoke.spec.ts`, locate the `desktop golden path` test's assertion block after `await expect(page.locator('section[aria-label="About Cory window"]')).toBeVisible();` (around line 69). Add right after it:
 
 ```typescript
-    // Brand mark regression: About window must render the mark as an <img>, not an emoji.
-    const aboutAvatar = page.locator('section[aria-label="About Cory window"] img').first();
-    await expect(aboutAvatar).toHaveAttribute('src', /\/mark(-sm)?\.svg$/);
+// Brand mark regression: About window must render the mark as an <img>, not an emoji.
+const aboutAvatar = page.locator('section[aria-label="About Cory window"] img').first();
+await expect(aboutAvatar).toHaveAttribute('src', /\/mark(-sm)?\.svg$/);
 ```
 
 - [ ] **Step 2: Run the Playwright test — expect failure**
@@ -243,10 +250,13 @@ Expected: FAIL with a timeout/locator error because no `<img>` exists in the Abo
 - [ ] **Step 3: Update `src/apps/registry.ts:67`**
 
 Replace:
+
 ```typescript
     icon: '👋',
 ```
+
 With:
+
 ```typescript
     icon: '/mark-sm.svg',
 ```
@@ -254,6 +264,7 @@ With:
 - [ ] **Step 4: Update `src/components/os/apps/AboutApp.tsx` lines 4–10**
 
 Replace the entire `<header>` block starting at line 4:
+
 ```tsx
       <header className="flex items-start gap-5">
         <div
@@ -265,6 +276,7 @@ Replace the entire `<header>` block starting at line 4:
 ```
 
 With:
+
 ```tsx
       <header className="flex items-start gap-5">
         <img
@@ -302,6 +314,7 @@ assertion to guard against emoji-regression."
 ## Task 6: Thread `renderIcon` through every consumer
 
 **Files:**
+
 - Modify: `src/components/os/Launcher.tsx:114`
 - Modify: `src/components/os/Desktop.tsx:61`
 - Modify: `src/components/os/Taskbar.tsx:73`
@@ -314,47 +327,67 @@ Without this task, the About-app icon will appear as the literal string `/mark-s
 - [ ] **Step 1: Update `src/components/os/Launcher.tsx`**
 
 At the top of the file (after the existing `apps, type AppManifest` import), add:
+
 ```tsx
 import { renderIcon } from '../../apps/iconUtils';
 ```
 
 On line 114, replace:
+
 ```tsx
-<span className="text-xl" aria-hidden="true">{typeof app.icon === 'string' ? app.icon : '▫'}</span>
+<span className="text-xl" aria-hidden="true">
+  {typeof app.icon === 'string' ? app.icon : '▫'}
+</span>
 ```
+
 With:
+
 ```tsx
-<span className="text-xl" aria-hidden="true">{renderIcon(app.icon, 'h-6 w-6')}</span>
+<span className="text-xl" aria-hidden="true">
+  {renderIcon(app.icon, 'h-6 w-6')}
+</span>
 ```
 
 - [ ] **Step 2: Update `src/components/os/Desktop.tsx`**
 
 Add import near the existing registry import:
+
 ```tsx
 import { renderIcon } from '../../apps/iconUtils';
 ```
 
 On line 61, replace:
+
 ```tsx
-{typeof app.icon === 'string' ? app.icon : '▫'}
+{
+  typeof app.icon === 'string' ? app.icon : '▫';
+}
 ```
+
 With:
+
 ```tsx
-{renderIcon(app.icon, 'h-10 w-10')}
+{
+  renderIcon(app.icon, 'h-10 w-10');
+}
 ```
 
 - [ ] **Step 3: Update `src/components/os/Taskbar.tsx`**
 
 Add import:
+
 ```tsx
 import { renderIcon } from '../../apps/iconUtils';
 ```
 
 On line 73, replace:
+
 ```tsx
 <span aria-hidden="true">{typeof win.icon === 'string' ? win.icon : '▫'}</span>
 ```
+
 With:
+
 ```tsx
 <span aria-hidden="true">{renderIcon(win.icon, 'h-4 w-4')}</span>
 ```
@@ -362,15 +395,19 @@ With:
 - [ ] **Step 4: Update `src/components/os/Window.tsx`**
 
 Add import at the top:
+
 ```tsx
 import { renderIcon } from '../../apps/iconUtils';
 ```
 
 On line 32, replace:
+
 ```tsx
 const icon = typeof win.icon === 'string' ? win.icon : '▫';
 ```
+
 With:
+
 ```tsx
 const icon = renderIcon(win.icon, 'h-4 w-4');
 ```
@@ -380,17 +417,25 @@ The `icon` variable is rendered later in the file inside JSX (grep to confirm it
 - [ ] **Step 5: Update `src/components/os/apps/SupportApp.tsx` line 59**
 
 Add import at the top:
+
 ```tsx
 import { renderIcon } from '../../../apps/iconUtils';
 ```
 
 Replace:
+
 ```tsx
-<span aria-hidden="true" className="text-base">{typeof app.icon === 'string' ? app.icon : '▫'}</span>
+<span aria-hidden="true" className="text-base">
+  {typeof app.icon === 'string' ? app.icon : '▫'}
+</span>
 ```
+
 With:
+
 ```tsx
-<span aria-hidden="true" className="text-base">{renderIcon(app.icon, 'h-4 w-4')}</span>
+<span aria-hidden="true" className="text-base">
+  {renderIcon(app.icon, 'h-4 w-4')}
+</span>
 ```
 
 (Do **not** touch line 105 — that's a different `props.icon` that's already a string.)
@@ -398,17 +443,25 @@ With:
 - [ ] **Step 6: Update `src/components/mobile/MobileShell.tsx`**
 
 Add import:
+
 ```tsx
 import { renderIcon } from '../../apps/iconUtils';
 ```
 
 On line 96, replace:
+
 ```tsx
-<span aria-hidden="true" className="text-2xl">{typeof app.icon === 'string' ? app.icon : '▫'}</span>
+<span aria-hidden="true" className="text-2xl">
+  {typeof app.icon === 'string' ? app.icon : '▫'}
+</span>
 ```
+
 With:
+
 ```tsx
-<span aria-hidden="true" className="text-2xl">{renderIcon(app.icon, 'h-8 w-8')}</span>
+<span aria-hidden="true" className="text-2xl">
+  {renderIcon(app.icon, 'h-8 w-8')}
+</span>
 ```
 
 - [ ] **Step 7: Run unit + type checks**
@@ -425,6 +478,7 @@ Expected: all existing tests pass; the About avatar assertion still passes; no r
 
 Run: `npm run dev`
 Open `http://localhost:4321`, dismiss the splash, verify:
+
 - About icon on the desktop grid renders as the small brand mark (not the string `/mark-sm.svg`)
 - Opening About shows the full mark in the window header
 - Launcher (⌘K) shows the mark in the About row
@@ -446,27 +500,40 @@ rendering as literal text in Launcher/Desktop/Taskbar/Mobile."
 ## Task 7: Swap `Logo.astro` to the small variant
 
 **Files:**
+
 - Modify: `src/components/Logo.astro:10-16`
 
 - [ ] **Step 1: Replace lines 10–16 in `src/components/Logo.astro`**
 
 Replace the `<svg>` block:
+
 ```astro
-  <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-    <rect x="3" y="3" width="26" height="26" rx="4" fill="#0b0d12" stroke="#f6c34a" stroke-width="2"/>
-    <path d="M3 10 H29" stroke="#f6c34a" stroke-width="2"/>
-    <circle cx="7" cy="6.5" r="1.25" fill="#f6c34a"/>
-    <circle cx="11" cy="6.5" r="1.25" fill="#5ee3d1"/>
-    <circle cx="15" cy="6.5" r="1.25" fill="#ff6a5c"/>
-  </svg>
+<svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
+  <rect x="3" y="3" width="26" height="26" rx="4" fill="#0b0d12" stroke="#f6c34a" stroke-width="2"
+  ></rect>
+  <path d="M3 10 H29" stroke="#f6c34a" stroke-width="2"></path>
+  <circle cx="7" cy="6.5" r="1.25" fill="#f6c34a"></circle>
+  <circle cx="11" cy="6.5" r="1.25" fill="#5ee3d1"></circle>
+  <circle cx="15" cy="6.5" r="1.25" fill="#ff6a5c"></circle>
+</svg>
 ```
 
 With:
+
 ```astro
-  <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-    <rect x="2" y="2" width="28" height="28" rx="6" fill="#0b0d12" stroke="#f6c34a" stroke-width="2"/>
-    <text x="16" y="23" font-family="Inter, 'Arial Black', Arial, 'Helvetica Neue', sans-serif" font-size="20" font-weight="900" fill="#f6c34a" text-anchor="middle">S</text>
-  </svg>
+<svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
+  <rect x="2" y="2" width="28" height="28" rx="6" fill="#0b0d12" stroke="#f6c34a" stroke-width="2"
+  ></rect>
+  <text
+    x="16"
+    y="23"
+    font-family="Inter, 'Arial Black', Arial, 'Helvetica Neue', sans-serif"
+    font-size="20"
+    font-weight="900"
+    fill="#f6c34a"
+    text-anchor="middle">S</text
+  >
+</svg>
 ```
 
 - [ ] **Step 2: Run build**
@@ -493,43 +560,46 @@ smudge. The small variant (frame + bold S) is crisp at every scale."
 ## Task 8: Add OG + Twitter + apple-touch-icon meta to `Base.astro`
 
 **Files:**
+
 - Modify: `src/layouts/Base.astro:19-29`
 
 - [ ] **Step 1: Replace lines 19–29 of `src/layouts/Base.astro`**
 
 Replace:
+
 ```astro
-			<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<meta name="theme-color" content="#0b0d12" />
-			<meta name="generator" content={Astro.generator} />
-			<title>{fullTitle}</title>
-			<meta name="description" content={meta} />
-			{canonical && <link rel="canonical" href={canonical} />}
-			<meta property="og:title" content={fullTitle} />
-			<meta property="og:description" content={meta} />
-			<meta property="og:type" content="website" />
-			<meta name="twitter:card" content="summary" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0b0d12" />
+<meta name="generator" content={Astro.generator} />
+<title>{fullTitle}</title>
+<meta name="description" content={meta} />
+{canonical && <link rel="canonical" href={canonical} />}
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={meta} />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
 ```
 
 With:
+
 ```astro
-			<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-			<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<meta name="theme-color" content="#0b0d12" />
-			<meta name="generator" content={Astro.generator} />
-			<title>{fullTitle}</title>
-			<meta name="description" content={meta} />
-			{canonical && <link rel="canonical" href={canonical} />}
-			<meta property="og:title" content={fullTitle} />
-			<meta property="og:description" content={meta} />
-			<meta property="og:type" content="website" />
-			<meta property="og:image" content="https://cortech.online/og-image.png" />
-			<meta property="og:image:width" content="1200" />
-			<meta property="og:image:height" content="630" />
-			<meta name="twitter:card" content="summary_large_image" />
-			<meta name="twitter:image" content="https://cortech.online/og-image.png" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0b0d12" />
+<meta name="generator" content={Astro.generator} />
+<title>{fullTitle}</title>
+<meta name="description" content={meta} />
+{canonical && <link rel="canonical" href={canonical} />}
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={meta} />
+<meta property="og:type" content="website" />
+<meta property="og:image" content="https://cortech.online/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://cortech.online/og-image.png" />
 ```
 
 - [ ] **Step 2: Build and check the rendered HTML**
@@ -553,6 +623,7 @@ at full width in link previews."
 ## Task 9: Handle path-icons in the SSR static layer
 
 **Files:**
+
 - Modify: `src/pages/index.astro:63`
 
 The Astro static layer (rendered for crawlers + no-JS) currently does `<span class="text-xl">{app.icon}</span>`. With About's icon now `/mark-sm.svg`, that would render as the literal string. Astro doesn't ship `renderIcon` (React-only), so handle the branch inline.
@@ -560,15 +631,21 @@ The Astro static layer (rendered for crawlers + no-JS) currently does `<span cla
 - [ ] **Step 1: Replace line 63 in `src/pages/index.astro`**
 
 Replace:
+
 ```astro
-										<span class="text-xl">{app.icon}</span>
+<span class="text-xl">{app.icon}</span>
 ```
 
 With:
+
 ```astro
-										{typeof app.icon === 'string' && app.icon.startsWith('/')
-											? <img src={app.icon} alt="" class="h-6 w-6" />
-											: <span class="text-xl">{app.icon}</span>}
+{
+  typeof app.icon === 'string' && app.icon.startsWith('/') ? (
+    <img src={app.icon} alt="" class="h-6 w-6" />
+  ) : (
+    <span class="text-xl">{app.icon}</span>
+  )
+}
 ```
 
 Note: `flagships` on line 6 filters to iframe apps only, so About isn't in the static layer today. This change is defensive — keeps the static layer robust if/when a path-based icon ends up there.
@@ -590,31 +667,42 @@ git commit -m "fix(ssr): static-layer icon rendering tolerates path-based icons"
 ## Task 10: Add matching avatar to the static `/about` page
 
 **Files:**
+
 - Modify: `src/pages/about.astro:6-9`
 
 - [ ] **Step 1: Update the header block**
 
 In `src/pages/about.astro`, replace lines 6–9:
+
 ```astro
-	<section class="mx-auto max-w-2xl px-6 pt-16 pb-10">
-		<p class="font-mono text-[11px] uppercase tracking-[0.35em] text-[var(--color-amber)]">About</p>
-		<h1 class="mt-5 font-[var(--font-display)] text-3xl font-bold tracking-tight sm:text-4xl">Cory</h1>
+<section class="mx-auto max-w-2xl px-6 pt-16 pb-10">
+  <p class="font-mono text-[11px] tracking-[0.35em] text-[var(--color-amber)] uppercase">About</p>
+  <h1 class="mt-5 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl">
+    Cory
+  </h1>
+</section>
 ```
 
 With:
+
 ```astro
-	<section class="mx-auto max-w-2xl px-6 pt-16 pb-10">
-		<div class="flex items-start gap-5">
-			<img
-				src="/mark.svg"
-				alt=""
-				class="h-16 w-16 shrink-0 rounded-[16px] shadow-[0_8px_24px_-8px_rgba(246,195,74,0.5)]"
-			/>
-			<div>
-				<p class="font-mono text-[11px] uppercase tracking-[0.35em] text-[var(--color-amber)]">About</p>
-				<h1 class="mt-2 font-[var(--font-display)] text-3xl font-bold tracking-tight sm:text-4xl">Cory</h1>
-			</div>
-		</div>
+<section class="mx-auto max-w-2xl px-6 pt-16 pb-10">
+  <div class="flex items-start gap-5">
+    <img
+      src="/mark.svg"
+      alt=""
+      class="h-16 w-16 shrink-0 rounded-[16px] shadow-[0_8px_24px_-8px_rgba(246,195,74,0.5)]"
+    />
+    <div>
+      <p class="font-mono text-[11px] tracking-[0.35em] text-[var(--color-amber)] uppercase">
+        About
+      </p>
+      <h1 class="mt-2 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl">
+        Cory
+      </h1>
+    </div>
+  </div>
+</section>
 ```
 
 - [ ] **Step 2: Build**
@@ -666,6 +754,7 @@ Expected: all existing smoke tests pass (desktop golden path, mobile fallback, i
 
 Run: `npm run preview` (serves the production build).
 Open in Chrome + Safari, hard-refresh, verify:
+
 - Tab favicon shows the small mark (amber frame + S) at 16/32px
 - `/` renders with Logo.astro small mark in the header
 - `/about` renders with the full mark
@@ -675,6 +764,7 @@ Open in Chrome + Safari, hard-refresh, verify:
 - [ ] **Step 6: OG preview**
 
 Deploy to a preview URL (Cloudflare Pages branch preview), then:
+
 - Paste the preview URL into https://www.linkedin.com/post-inspector/
 - Paste into a Slack DM to yourself
 

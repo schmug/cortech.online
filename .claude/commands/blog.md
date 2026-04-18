@@ -57,8 +57,8 @@ Match the format of existing posts (see [src/content/blog/2026-04-16-hello-world
 
 ```markdown
 ---
-title: "Inferred title"
-description: "Inferred 1–2 sentence summary."
+title: 'Inferred title'
+description: 'Inferred 1–2 sentence summary.'
 pubDate: 2026-04-16
 tags: [tag-one, tag-two, tag-three]
 draft: false

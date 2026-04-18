@@ -11,7 +11,9 @@ import { test, expect } from '@playwright/test';
 //     edge, not by the Astro dev server.
 
 test.describe('agent readiness', () => {
-  test('/robots.txt is served plain-text with AI rules, Content-Signal, and sitemap', async ({ request }) => {
+  test('/robots.txt is served plain-text with AI rules, Content-Signal, and sitemap', async ({
+    request,
+  }) => {
     const res = await request.get('/robots.txt');
     expect(res.status()).toBe(200);
     expect(res.headers()['content-type']).toMatch(/text\/plain/);

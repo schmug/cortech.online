@@ -55,10 +55,10 @@ export default function BlogApp() {
       <header className="shrink-0 border-b border-[var(--color-border)] bg-[var(--color-panel)]/80 px-5 py-3">
         <div className="flex items-baseline justify-between">
           <div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-amber)]">
+            <div className="font-mono text-[11px] tracking-[0.25em] text-[var(--color-amber)] uppercase">
               Blog
             </div>
-            <h2 className="mt-0.5 font-[var(--font-display)] text-lg font-semibold">
+            <h2 className="mt-0.5 text-lg font-[var(--font-display)] font-semibold">
               cortech.online/blog
             </h2>
           </div>
@@ -99,7 +99,8 @@ export default function BlogApp() {
           <div className="flex h-full flex-col items-center justify-center gap-2 px-6 text-center text-xs text-[var(--color-muted)]">
             <p>No posts published yet.</p>
             <p className="text-[var(--color-dim)]">
-              Drafts and the post template live in <span className="font-mono">src/content/blog/</span>.
+              Drafts and the post template live in{' '}
+              <span className="font-mono">src/content/blog/</span>.
             </p>
           </div>
         )}
@@ -107,7 +108,8 @@ export default function BlogApp() {
           <ul className="divide-y divide-[var(--color-border)]">
             {filtered.length === 0 && (
               <li className="py-6 text-center text-xs text-[var(--color-muted)]">
-                No posts match "<span className="font-mono text-[var(--color-text)]">{query}</span>".
+                No posts match "<span className="font-mono text-[var(--color-text)]">{query}</span>
+                ".
               </li>
             )}
             {filtered.map((post) => (
@@ -117,10 +119,10 @@ export default function BlogApp() {
                   className="block px-1 py-3 transition hover:bg-[var(--color-panel-hi)]"
                 >
                   <div className="flex items-baseline justify-between gap-3">
-                    <span className="font-[var(--font-display)] text-sm font-semibold text-[var(--color-text)] hover:text-[var(--color-amber)]">
+                    <span className="text-sm font-[var(--font-display)] font-semibold text-[var(--color-text)] hover:text-[var(--color-amber)]">
                       {post.title}
                     </span>
-                    <span className="shrink-0 font-mono text-[10px] uppercase tracking-wider text-[var(--color-muted)]">
+                    <span className="shrink-0 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
                       {dateFormatter.format(new Date(post.pubDate))}
                     </span>
                   </div>

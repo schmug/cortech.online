@@ -11,7 +11,7 @@ export default defineConfig({
   site: 'https://cortech.online',
   trailingSlash: 'ignore',
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
   },
 
   integrations: [
@@ -19,5 +19,5 @@ export default defineConfig({
     sitemap({
       filter: (page) => !page.includes('/api/') && !page.endsWith('/rss.xml'),
     }),
-  ]
+  ],
 });

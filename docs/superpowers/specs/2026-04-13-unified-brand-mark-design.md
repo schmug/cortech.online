@@ -28,6 +28,7 @@ Render tests confirmed that at sizes below ~48px, the titlebar dots and divider 
 - **Circle variant** — amber ring + 3 arc-dots + amber S. Used for circle-cropping contexts (GitHub profile, Slack, Discord). Added 2026-04-13 after PR #13 shipped; the full variant's rounded-rect corners clip under circle-crop and the titlebar dots cluster off-center, breaking the "window" metaphor.
 
 ### Rejected alternatives
+
 - **Full mark at every size.** Rejected — unreadable at 16/32px favicon sizes; dots render as sub-pixel smudge.
 - **Simplified mark only (drop window chrome entirely).** Rejected — loses the "desktop OS" cue that makes the GitHub avatar feel continuous with cortech.online. The unification argument weakens.
 
@@ -77,6 +78,7 @@ Amber ring replaces the rounded-rect frame. Three colored dots sit on an inner a
 ### 3.4 Palette reference
 
 From `src/styles/global.css`:
+
 - `--color-void` `#0b0d12` — background
 - `--color-amber` `#f6c34a` — primary accent, S color, frame stroke
 - `--color-cyan` `#5ee3d1` — titlebar dot
@@ -86,30 +88,30 @@ From `src/styles/global.css`:
 
 All assets live under `public/`. SVGs are authoritative; PNGs are generated artifacts, committed for deploy convenience.
 
-| Path | Source variant | Dimensions | Purpose |
-|------|----------------|------------|---------|
-| `mark.svg` | full | vector | Consumed by AboutApp tile, `/about` header, OG inline |
-| `mark-sm.svg` | small | vector | Consumed by `registry.ts` as the About-app launcher icon |
-| `mark-circle.svg` | circle | vector | Source for `mark-460.png` (circle-cropping platforms) |
-| `favicon.svg` | small (identical to `mark-sm.svg`) | vector | Primary browser tab favicon — kept at root path for convention |
-| `favicon.ico` | small | 32×32 | Legacy browser fallback |
-| `mark-460.png` | circle | 460×460 | Upload target for GitHub profile picture; also works for Slack/Discord avatars |
-| `apple-touch-icon.png` | full | 180×180 | iOS home-screen icon (rounded-square, not circle-cropped) |
-| `og-image.png` | full, centered on `#0b0d12` | 1200×630 | Social link previews (Twitter/X, LinkedIn, Slack unfurls, Discord embeds) |
+| Path                   | Source variant                     | Dimensions | Purpose                                                                        |
+| ---------------------- | ---------------------------------- | ---------- | ------------------------------------------------------------------------------ |
+| `mark.svg`             | full                               | vector     | Consumed by AboutApp tile, `/about` header, OG inline                          |
+| `mark-sm.svg`          | small                              | vector     | Consumed by `registry.ts` as the About-app launcher icon                       |
+| `mark-circle.svg`      | circle                             | vector     | Source for `mark-460.png` (circle-cropping platforms)                          |
+| `favicon.svg`          | small (identical to `mark-sm.svg`) | vector     | Primary browser tab favicon — kept at root path for convention                 |
+| `favicon.ico`          | small                              | 32×32      | Legacy browser fallback                                                        |
+| `mark-460.png`         | circle                             | 460×460    | Upload target for GitHub profile picture; also works for Slack/Discord avatars |
+| `apple-touch-icon.png` | full                               | 180×180    | iOS home-screen icon (rounded-square, not circle-cropped)                      |
+| `og-image.png`         | full, centered on `#0b0d12`        | 1200×630   | Social link previews (Twitter/X, LinkedIn, Slack unfurls, Discord embeds)      |
 
 `mark-sm.svg` and `favicon.svg` hold identical content. The generation script writes both from a single source to avoid drift; see §6.
 
 ## 5. Code touch points
 
-| File | Line(s) | Change |
-|------|---------|--------|
-| `public/favicon.svg` | full file | Overwrite with §3.2 small variant |
-| `src/components/Logo.astro` | 10–16 | Swap inline SVG for small-variant paths |
-| `src/apps/registry.ts` | 67 | `icon: '👋'` → `icon: <img src="/mark-sm.svg" alt="" />` (small variant — the launcher renders app icons at small size). Rename file to `registry.tsx` so JSX parses. `AppManifest.icon` is already `string \| ReactNode` (line 7), so no type change needed. |
-| `src/components/os/apps/AboutApp.tsx` | 5–10 | Replace `<div>…👋</div>` with `<img src="/mark.svg" alt="" className="h-16 w-16 shrink-0 rounded-[16px] shadow-[0_8px_24px_-8px_rgba(246,195,74,0.5)]" />`. Drop the amber→hot gradient background — the mark carries the palette already. |
-| `src/pages/about.astro` | ~6 (before eyebrow at line 7) | Add `<img src="/mark.svg" alt="" class="h-16 w-16 rounded-[16px] shadow-[0_8px_24px_-8px_rgba(246,195,74,0.5)]" />` for visual parity with the OS-app About view |
-| `src/layouts/Base.astro` | after line 19 | Add meta: `<link rel="apple-touch-icon" href="/apple-touch-icon.png" />`, `<meta property="og:image" content="https://cortech.online/og-image.png" />`, `<meta name="twitter:card" content="summary_large_image" />`, `<meta name="twitter:image" content="https://cortech.online/og-image.png" />` |
-| `src/pages/index.astro` | 19–22 meta block | Add `og:image` and `twitter:image` only if not inherited from Base layout (verify during implementation) |
+| File                                  | Line(s)                       | Change                                                                                                                                                                                                                                                                                              |
+| ------------------------------------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `public/favicon.svg`                  | full file                     | Overwrite with §3.2 small variant                                                                                                                                                                                                                                                                   |
+| `src/components/Logo.astro`           | 10–16                         | Swap inline SVG for small-variant paths                                                                                                                                                                                                                                                             |
+| `src/apps/registry.ts`                | 67                            | `icon: '👋'` → `icon: <img src="/mark-sm.svg" alt="" />` (small variant — the launcher renders app icons at small size). Rename file to `registry.tsx` so JSX parses. `AppManifest.icon` is already `string \| ReactNode` (line 7), so no type change needed.                                       |
+| `src/components/os/apps/AboutApp.tsx` | 5–10                          | Replace `<div>…👋</div>` with `<img src="/mark.svg" alt="" className="h-16 w-16 shrink-0 rounded-[16px] shadow-[0_8px_24px_-8px_rgba(246,195,74,0.5)]" />`. Drop the amber→hot gradient background — the mark carries the palette already.                                                          |
+| `src/pages/about.astro`               | ~6 (before eyebrow at line 7) | Add `<img src="/mark.svg" alt="" class="h-16 w-16 rounded-[16px] shadow-[0_8px_24px_-8px_rgba(246,195,74,0.5)]" />` for visual parity with the OS-app About view                                                                                                                                    |
+| `src/layouts/Base.astro`              | after line 19                 | Add meta: `<link rel="apple-touch-icon" href="/apple-touch-icon.png" />`, `<meta property="og:image" content="https://cortech.online/og-image.png" />`, `<meta name="twitter:card" content="summary_large_image" />`, `<meta name="twitter:image" content="https://cortech.online/og-image.png" />` |
+| `src/pages/index.astro`               | 19–22 meta block              | Add `og:image` and `twitter:image` only if not inherited from Base layout (verify during implementation)                                                                                                                                                                                            |
 
 ## 6. Generation pipeline
 
@@ -139,16 +141,19 @@ Idempotent. Run manually whenever the SVG sources change. No new committed dev d
 ## 7. Verification
 
 ### Automated
+
 1. `npm test` — existing 15 vitest tests must pass.
 2. `npm run build` — no Astro or TypeScript errors, including after renaming `registry.ts` → `registry.tsx`.
 3. `npm run test:e2e` — existing Playwright smoke (`e2e/`) must pass. **Add one new assertion** in the About-app section: the avatar `<img>` element has a non-empty `src` attribute and its request resolves 200. Guards against emoji-regression.
 
 ### Manual
+
 4. `npm run dev` — verify favicon renders in browser tab (16/32px), header Logo at 22px reads cleanly, `/about` has matching avatar, opening About-inside-OS shows the full variant.
 5. `npm run build && npm run preview` — serve `dist/` and hard-refresh to confirm `/favicon.ico` serves new icon (browsers cache favicons aggressively).
 6. Paste deploy preview URL into **LinkedIn Post Inspector** (linkedin.com/post-inspector/) and **Slack unfurl** to confirm OG card renders the mark.
 
 ### Manual, out-of-repo
+
 7. Upload `public/mark-460.png` via `github.com/settings/profile`. Call out in PR body as a post-merge step.
 
 ## 8. Out of scope
@@ -159,12 +164,12 @@ Idempotent. Run manually whenever the SVG sources change. No new committed dev d
 
 ## 9. Risks and mitigations
 
-| Risk | Mitigation |
-|------|-----------|
-| Font rendering drift on the S | Convert `<text>` to outlined `<path>` at export; verify in spec section §3. |
+| Risk                                           | Mitigation                                                                                                                                                                       |
+| ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Font rendering drift on the S                  | Convert `<text>` to outlined `<path>` at export; verify in spec section §3.                                                                                                      |
 | Renaming `registry.ts` → `.tsx` breaks imports | Grep for `from '../apps/registry'` / `from '@/apps/registry'` during implementation; Astro + Vite resolve both extensions automatically, but explicit imports may need touching. |
-| Favicon caching hides regressions | Verify via preview build with hard-refresh, not dev server alone. Call out in verification §7. |
-| OG card renders at unexpected aspect ratio | Use `sharp-cli --fit=contain --background="#0b0d12"` to avoid cropping; test with real social platforms via Post Inspector. |
+| Favicon caching hides regressions              | Verify via preview build with hard-refresh, not dev server alone. Call out in verification §7.                                                                                   |
+| OG card renders at unexpected aspect ratio     | Use `sharp-cli --fit=contain --background="#0b0d12"` to avoid cropping; test with real social platforms via Post Inspector.                                                      |
 
 ## 10. Acceptance (closes issue #10 when merged)
 

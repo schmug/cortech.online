@@ -40,7 +40,7 @@ export function AppView({ appId }: Props) {
         type="button"
         onClick={closeApp}
         aria-label="Back to home"
-        className="absolute left-3 top-9 z-10 flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-panel)]/90 px-3 py-1.5 font-mono text-[11px] text-[var(--color-text)] shadow backdrop-blur transition active:scale-95 active:border-[var(--color-amber)]/60"
+        className="absolute top-9 left-3 z-10 flex items-center gap-1 rounded-full border border-[var(--color-border)] bg-[var(--color-panel)]/90 px-3 py-1.5 font-mono text-[11px] text-[var(--color-text)] shadow backdrop-blur transition active:scale-95 active:border-[var(--color-amber)]/60"
       >
         <span aria-hidden="true">←</span>
         <span>back</span>

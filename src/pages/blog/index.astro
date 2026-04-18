@@ -20,8 +20,10 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
 >
   <section class="mx-auto max-w-2xl px-6 pt-16 pb-10">
     <div>
-      <p class="font-mono text-[11px] uppercase tracking-[0.35em] text-[var(--color-amber)]">Blog</p>
-      <h1 class="mt-2 font-[var(--font-display)] text-3xl font-bold tracking-tight sm:text-4xl">
+      <p class="font-mono text-[11px] tracking-[0.35em] text-[var(--color-amber)] uppercase">
+        Blog
+      </p>
+      <h1 class="mt-2 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl">
         Notes from the studio
       </h1>
       <p class="mt-3 max-w-xl text-sm text-[var(--color-muted)]">
@@ -43,7 +45,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
                 href={`/blog/${post.id}/`}
                 class="group block transition hover:text-[var(--color-amber)]"
               >
-                <div class="flex items-baseline gap-3 font-mono text-[10px] uppercase tracking-wider text-[var(--color-muted)]">
+                <div class="flex items-baseline gap-3 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
                   <time datetime={post.data.pubDate.toISOString()}>
                     {dateFormatter.format(post.data.pubDate)}
                   </time>
@@ -51,7 +53,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
                     <span class="truncate">{post.data.tags.join(' · ')}</span>
                   )}
                 </div>
-                <h2 class="mt-1 font-[var(--font-display)] text-xl font-semibold text-[var(--color-text)] group-hover:text-[var(--color-amber)]">
+                <h2 class="mt-1 text-xl font-[var(--font-display)] font-semibold text-[var(--color-text)] group-hover:text-[var(--color-amber)]">
                   {post.data.title}
                 </h2>
                 <p class="mt-1 text-sm text-[var(--color-dim)]">{post.data.description}</p>

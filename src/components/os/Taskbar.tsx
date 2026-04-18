@@ -34,17 +34,32 @@ export function Taskbar({ onOpenLauncher }: Props) {
         aria-label="Open launcher"
       >
         <svg width="18" height="18" viewBox="0 0 32 32" aria-hidden="true">
-          <rect x="3" y="3" width="26" height="26" rx="4" fill="#0b0d12" stroke="currentColor" strokeWidth="2"/>
-          <path d="M3 10 H29" stroke="currentColor" strokeWidth="2"/>
-          <circle cx="7" cy="6.5" r="1.25" fill="currentColor"/>
-          <circle cx="11" cy="6.5" r="1.25" fill="#5ee3d1"/>
-          <circle cx="15" cy="6.5" r="1.25" fill="#ff6a5c"/>
+          <rect
+            x="3"
+            y="3"
+            width="26"
+            height="26"
+            rx="4"
+            fill="#0b0d12"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+          <path d="M3 10 H29" stroke="currentColor" strokeWidth="2" />
+          <circle cx="7" cy="6.5" r="1.25" fill="currentColor" />
+          <circle cx="11" cy="6.5" r="1.25" fill="#5ee3d1" />
+          <circle cx="15" cy="6.5" r="1.25" fill="#ff6a5c" />
         </svg>
         <span className="font-mono">cortech</span>
-        <span className="hidden text-xs text-[var(--color-muted)] group-hover:text-[var(--color-amber)] sm:inline">⌘K</span>
+        <span className="hidden text-xs text-[var(--color-muted)] group-hover:text-[var(--color-amber)] sm:inline">
+          ⌘K
+        </span>
       </button>
 
-      <div className="flex flex-1 items-center gap-1 overflow-x-auto" role="tablist" aria-label="Running apps">
+      <div
+        className="flex flex-1 items-center gap-1 overflow-x-auto"
+        role="tablist"
+        aria-label="Running apps"
+      >
         {windows.length === 0 && (
           <span className="px-2 font-mono text-[11px] text-[var(--color-muted)]">no apps open</span>
         )}
@@ -82,14 +97,14 @@ export function Taskbar({ onOpenLauncher }: Props) {
       <div className="flex items-center gap-3 px-1">
         <a
           href="https://github.com/schmug"
-          rel="noopener"
+          rel="noopener noreferrer"
           target="_blank"
           className="font-mono text-[11px] text-[var(--color-muted)] transition hover:text-[var(--color-amber)]"
           title="github.com/schmug"
         >
           /schmug
         </a>
-        <span className="font-mono text-xs tabular-nums text-[var(--color-dim)]" aria-live="polite">
+        <span className="font-mono text-xs text-[var(--color-dim)] tabular-nums" aria-live="polite">
           {formatTime(now)}
         </span>
       </div>

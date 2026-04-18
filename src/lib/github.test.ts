@@ -14,7 +14,7 @@ describe('fetchOriginalRepos silent-failure contract', () => {
   it('returns [] when the API responds non-OK', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn().mockResolvedValue({ ok: false, status: 503, json: async () => ({}) })
+      vi.fn().mockResolvedValue({ ok: false, status: 503, json: async () => ({}) }),
     );
     const repos = await fetchOriginalRepos('schmug');
     expect(repos).toEqual([]);

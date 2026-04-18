@@ -11,7 +11,7 @@ const nativeCache = new Map<string, ReturnType<typeof lazy>>();
 
 function getNativeComponent(
   appId: string,
-  loader?: () => Promise<{ default: React.ComponentType<Record<string, unknown>> }>
+  loader?: () => Promise<{ default: React.ComponentType<Record<string, unknown>> }>,
 ) {
   if (!loader) return null;
   const cached = nativeCache.get(appId);
@@ -77,11 +77,13 @@ function NativePending({ name }: { name: string }) {
 function NativePlaceholder({ name }: { name: string }) {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-2 bg-[var(--color-void)] p-6 text-center">
-      <div className="font-mono text-xs uppercase tracking-[0.25em] text-[var(--color-amber)]">CortechOS · Native App</div>
+      <div className="font-mono text-xs tracking-[0.25em] text-[var(--color-amber)] uppercase">
+        CortechOS · Native App
+      </div>
       <div className="text-lg font-medium text-[var(--color-text)]">{name}</div>
       <div className="max-w-xs text-xs text-[var(--color-muted)]">
-        This panel is wired up in milestone M6. The window manager itself is
-        already working — try dragging, resizing, minimizing, or maximizing.
+        This panel is wired up in milestone M6. The window manager itself is already working — try
+        dragging, resizing, minimizing, or maximizing.
       </div>
     </div>
   );

@@ -24,10 +24,10 @@ export default function RepoInfoApp({ repo }: Props) {
           {repo.icon ?? '📦'}
         </span>
         <div className="min-w-0">
-          <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--color-amber)]">
+          <div className="font-mono text-[11px] tracking-[0.25em] text-[var(--color-amber)] uppercase">
             {repo.private ? 'Private repo' : repo.fork ? 'Forked repo' : 'Repo'}
           </div>
-          <h2 className="mt-1 truncate font-[var(--font-display)] text-xl font-semibold">
+          <h2 className="mt-1 truncate text-xl font-[var(--font-display)] font-semibold">
             {repo.fullName}
           </h2>
           {repo.description && (
@@ -42,10 +42,7 @@ export default function RepoInfoApp({ repo }: Props) {
         <Stat label="Language" value={repo.language ?? '—'} />
         <Stat label="Stars" value={`★ ${repo.stargazersCount}`} />
         <Stat label="Updated" value={repo.updatedAt ? relativeTime(repo.updatedAt) : '—'} />
-        <Stat
-          label="Visibility"
-          value={repo.private ? 'private' : repo.fork ? 'fork' : 'public'}
-        />
+        <Stat label="Visibility" value={repo.private ? 'private' : repo.fork ? 'fork' : 'public'} />
       </dl>
 
       <section className="mt-6 grid gap-2 sm:grid-cols-2">
@@ -55,8 +52,8 @@ export default function RepoInfoApp({ repo }: Props) {
 
       {repo.private && (
         <p className="mt-4 rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 px-3 py-2 text-[11px] text-[var(--color-muted)]">
-          This repo is private — link opens the GitHub page but code is only visible to
-          authorized users.
+          This repo is private — link opens the GitHub page but code is only visible to authorized
+          users.
         </p>
       )}
     </div>
@@ -66,7 +63,7 @@ export default function RepoInfoApp({ repo }: Props) {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 px-3 py-2">
-      <dt className="text-[10px] uppercase tracking-wider text-[var(--color-muted)]">{label}</dt>
+      <dt className="text-[10px] tracking-wider text-[var(--color-muted)] uppercase">{label}</dt>
       <dd className="mt-0.5 text-[var(--color-text)]">{value}</dd>
     </div>
   );
@@ -85,7 +82,7 @@ function LinkCard({
     <a
       href={href}
       target="_blank"
-      rel="noopener"
+      rel="noopener noreferrer"
       className={[
         'group flex items-center justify-between rounded-md border px-3 py-2.5 font-mono text-xs transition',
         accent
