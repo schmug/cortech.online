@@ -12,10 +12,14 @@ export default defineConfig({
     screenshot: 'only-on-failure',
   },
   webServer: {
-    command: 'npm run dev',
+    // In CI, serve the built site via `astro preview` — no Vite dep optimizer,
+    // so no "504 Outdated Optimize Dep" races on in-flight dynamic islands.
+    // Locally, keep `astro dev` for fast iteration; `optimizeDeps.include` in
+    // astro.config.mjs softens the same race for dev runs.
+    command: process.env.CI ? 'npm run build && npm run preview' : 'npm run dev',
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
-    timeout: 60_000,
+    timeout: process.env.CI ? 120_000 : 60_000,
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
 });
