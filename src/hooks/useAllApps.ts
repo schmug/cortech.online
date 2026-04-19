@@ -5,12 +5,17 @@ import { useFeaturedApps } from './useFeaturedApps';
 export function useAllApps(): AppManifest[] {
   const featured = useFeaturedApps();
   return useMemo(() => {
-    if (featured.length === 0) return apps;
-    const staticIds = new Set(apps.map((a) => a.id));
-    const merged = [...apps];
-    for (const f of featured) {
-      if (!staticIds.has(f.id)) merged.push(f);
+    let merged = apps;
+    if (featured.length > 0) {
+      const staticIds = new Set(apps.map((a) => a.id));
+      merged = [...apps];
+      for (const f of featured) {
+        if (!staticIds.has(f.id)) merged.push(f);
+      }
     }
-    return merged;
+    return merged.map((app) => ({
+      ...app,
+      _searchable: app._searchable || `${app.name} ${app.description} ${app.id}`.toLowerCase(),
+    }));
   }, [featured]);
 }

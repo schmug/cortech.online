@@ -13,6 +13,7 @@ export type AppManifest = {
   minSize?: { w: number; h: number };
   allowMultiple?: boolean;
   githubRepo?: string;
+  _searchable?: string;
 };
 
 export const apps: AppManifest[] = [

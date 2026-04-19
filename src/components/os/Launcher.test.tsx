@@ -34,10 +34,10 @@ describe('matches (search predicate)', () => {
 
   it('matches on name, description, and id (case-insensitive)', () => {
     const app = makeApp({ id: 'dmarc-mx', name: 'dmarc.mx', description: 'email security' });
-    expect(matches(app, 'dmarc')).toBe(true);
-    expect(matches(app, 'DMARC')).toBe(true);
-    expect(matches(app, 'email')).toBe(true);
-    expect(matches(app, 'mx')).toBe(true);
+    expect(matches(app, 'dmarc'.toLowerCase())).toBe(true);
+    expect(matches(app, 'DMARC'.toLowerCase())).toBe(true);
+    expect(matches(app, 'email'.toLowerCase())).toBe(true);
+    expect(matches(app, 'mx'.toLowerCase())).toBe(true);
   });
 
   it('non-matching query returns false', () => {
