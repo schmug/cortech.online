@@ -70,6 +70,7 @@ curl -sSI "<url>" | grep -iE "x-frame-options|content-security-policy"
 ```
 
 Reject the app (or work with the target site owner) if:
+
 - Response has `X-Frame-Options: DENY` (or `SAMEORIGIN` on a different origin)
 - Response has `Content-Security-Policy: frame-ancestors 'none'` (or a list that excludes `cortech.online`)
 

@@ -54,6 +54,7 @@ curl -sSI "<url>" | grep -iE "x-frame-options|content-security-policy"
 ```
 
 Flag if:
+
 - `X-Frame-Options: DENY` or `SAMEORIGIN` on a different origin than `cortech.online`.
 - `Content-Security-Policy: frame-ancestors 'none'` or a list that excludes `cortech.online`.
 

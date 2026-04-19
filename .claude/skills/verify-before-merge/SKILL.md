@@ -1,20 +1,22 @@
 ---
 name: verify-before-merge
-description: Run the full pre-merge verification gate — typecheck, vitest, playwright e2e, and (if blog content changed) build. Use this skill before creating a PR, marking work ready for review, or claiming a task is complete. The repo has NO CI, so green local output here is the merge gate.
+description: Run the same checks CI runs (format:check, lint, typecheck, vitest, playwright, build) locally for fast feedback before pushing. Use before creating a PR, marking work ready for review, or claiming a task is complete — so CI catches nothing unexpected.
 ---
 
-# verify-before-merge — the merge-gate ritual
+# verify-before-merge — run CI checks locally
 
-Per [CLAUDE.md](CLAUDE.md): the repo has **no CI workflow**. Green local output from these checks is the merge gate. Never skip a step; never claim a task is done without running this.
+CI (`.github/workflows/ci.yml`) runs format:check, lint, typecheck, vitest, playwright, and build on every PR. Running those same commands locally first catches issues in seconds instead of minutes of CI churn.
 
 ## What runs
 
 Run in order, capturing pass/fail for each:
 
-1. **`npm run typecheck`** — `astro check && tsc --noEmit`. Catches type errors and most Astro template issues.
-2. **`npm test`** — vitest unit suite (~63 tests, sub-second).
-3. **`npm run test:e2e`** — Playwright. Auto-starts the dev server on `:4321`. Takes the longest; runs last.
-4. **`npm run build`** — **only if** `git status` (or `git diff --name-only <base>`) shows changes under `src/content/blog/` or to `src/content.config.ts`. `build` is the only thing that catches blog-post schema errors; typecheck alone misses them.
+1. **`npm run format:check`** — prettier. Fast. If it fails, run `npm run format` to auto-fix, then re-run.
+2. **`npm run lint`** — eslint. If it fails, try `npm run lint:fix` first.
+3. **`npm run typecheck`** — `astro check && tsc --noEmit`. Catches type errors and most Astro template issues.
+4. **`npm test`** — vitest unit suite (sub-second).
+5. **`npm run test:e2e`** — Playwright. Auto-starts the dev server on `:4321`. Takes the longest.
+6. **`npm run build`** — always runs in CI. Locally, skip it unless `src/content/blog/` or `src/content.config.ts` changed — `build` is the only thing that catches blog-post schema errors, and it's slow.
 
 ## Step 1 — Decide whether `build` is needed
 
@@ -31,6 +33,8 @@ If blog content/schema didn't change, skip `build` — e2e already exercises the
 Run sequentially (not in parallel — e2e spins up a dev server that would conflict with build):
 
 ```sh
+npm run format:check
+npm run lint
 npm run typecheck
 npm test
 npm run test:e2e
@@ -45,8 +49,10 @@ If a check fails, stop. Fix the root cause and re-run from that check onwards. *
 Output a compact verdict, one line per check:
 
 ```
+✓ format:check
+✓ lint
 ✓ typecheck
-✓ vitest (63 passed)
+✓ vitest (85 passed)
 ✓ playwright (28 passed)
 ✓ build                ← only when run
 ———
@@ -56,6 +62,8 @@ All checks passed — safe to open PR / merge.
 On failure, report the failing check, the first few lines of its output, and stop:
 
 ```
+✓ format:check
+✓ lint
 ✓ typecheck
 ✗ vitest — 2 failed
   FAIL  src/components/os/store.test.ts
