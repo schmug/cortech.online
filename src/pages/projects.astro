@@ -35,7 +35,7 @@ function relativeTime(iso: string): string {
     <p class="mt-4 max-w-2xl text-[var(--color-dim)]">
       Pulled from <a
         href="https://github.com/schmug"
-        rel="noopener"
+        rel="noopener noreferrer"
         class="text-[var(--color-amber)] hover:underline">github.com/schmug</a
       > at build time. Forks and archives filtered out. {repos.length} projects.
     </p>
@@ -53,7 +53,7 @@ function relativeTime(iso: string): string {
               <div class="flex items-baseline justify-between gap-3">
                 <a
                   href={repo.html_url}
-                  rel="noopener"
+                  rel="noopener noreferrer"
                   class="font-mono font-medium text-[var(--color-amber)] hover:underline"
                 >
                   {repo.name}
@@ -69,7 +69,11 @@ function relativeTime(iso: string): string {
                 <span>★ {repo.stargazers_count}</span>
                 <span>{relativeTime(repo.updated_at)}</span>
                 {repo.homepage && (
-                  <a href={repo.homepage} rel="noopener" class="hover:text-[var(--color-amber)]">
+                  <a
+                    href={repo.homepage}
+                    rel="noopener noreferrer"
+                    class="hover:text-[var(--color-amber)]"
+                  >
                     live ↗
                   </a>
                 )}
@@ -91,7 +95,7 @@ function relativeTime(iso: string): string {
           No repositories available right now — GitHub API was unreachable at build time. Visit{' '}
           <a
             href="https://github.com/schmug"
-            rel="noopener"
+            rel="noopener noreferrer"
             class="text-[var(--color-amber)] hover:underline"
           >
             github.com/schmug
@@ -105,7 +109,7 @@ function relativeTime(iso: string): string {
               <div class="min-w-0 flex-1">
                 <a
                   href={repo.html_url}
-                  rel="noopener"
+                  rel="noopener noreferrer"
                   class="font-mono font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]"
                 >
                   {repo.name}
