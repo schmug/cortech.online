@@ -1,8 +1,11 @@
+import { useState, useRef } from 'react';
 import { apps } from '../../../apps/registry';
 import { renderIcon } from '../../../apps/iconUtils';
 
 export default function SupportApp() {
   const flagships = apps.filter((a) => a.type === 'iframe');
+  const [copied, setCopied] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   return (
     <div className="h-full overflow-y-auto bg-[var(--color-void)] px-7 py-6 text-[var(--color-text)]">
@@ -43,13 +46,16 @@ export default function SupportApp() {
           href="https://github.com/schmug?tab=repositories&type=source"
         />
         <Tier
-          icon="🗣️"
+          icon={copied ? '✅' : '🗣️'}
           title="Tell a friend"
           note="If a tool here solved a real problem, share it. Referrals are the best currency."
-          cta="Copy link"
+          cta={copied ? 'Copied!' : 'Copy link'}
           onClick={() => {
             if (typeof navigator !== 'undefined' && navigator.clipboard) {
               navigator.clipboard.writeText('https://cortech.online');
+              setCopied(true);
+              if (timeoutRef.current) clearTimeout(timeoutRef.current);
+              timeoutRef.current = setTimeout(() => setCopied(false), 2000);
             }
           }}
         />
@@ -124,7 +130,7 @@ function Tier(props: {
         <p className="mt-2 text-xs text-[var(--color-muted)]">{props.note}</p>
       </div>
       <div className="mt-3 font-mono text-[11px] text-[var(--color-amber)]">
-        {props.cta} {!props.disabled && '→'}
+        {props.cta} {!props.disabled && props.cta !== 'Copied!' && '→'}
       </div>
     </>
   );
