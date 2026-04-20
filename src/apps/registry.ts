@@ -13,9 +13,11 @@ export type AppManifest = {
   minSize?: { w: number; h: number };
   allowMultiple?: boolean;
   githubRepo?: string;
+  /** Pre-computed lowercased string for O(1) search filtering */
+  _searchable?: string;
 };
 
-export const apps: AppManifest[] = [
+const rawApps: Omit<AppManifest, '_searchable'>[] = [
   {
     id: 'about',
     name: 'About Schmug',
@@ -99,3 +101,8 @@ export const apps: AppManifest[] = [
     githubRepo: 'schmug/qr-me',
   },
 ];
+
+export const apps: AppManifest[] = rawApps.map((app) => ({
+  ...app,
+  _searchable: `${app.name} ${app.description} ${app.id}`.toLowerCase(),
+}));

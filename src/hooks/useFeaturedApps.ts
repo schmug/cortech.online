@@ -16,13 +16,16 @@ export function featuredRepoToApp(repo: FeaturedRepo): AppManifest {
     minSize: MIN_SIZE,
     allowMultiple: false,
     githubRepo: repo.fullName,
-  } as const;
+  };
+
+  const _searchable = `${base.name} ${base.description} ${base.id}`.toLowerCase();
 
   if (repo.homepage) {
     return {
       ...base,
       type: 'iframe',
       url: repo.homepage,
+      _searchable,
     };
   }
 
@@ -31,6 +34,7 @@ export function featuredRepoToApp(repo: FeaturedRepo): AppManifest {
     type: 'native',
     component: () => import('../components/os/apps/RepoInfoApp'),
     componentProps: { repo },
+    _searchable,
   };
 }
 

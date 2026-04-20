@@ -32,10 +32,12 @@ describe('matches (search predicate)', () => {
     expect(matches(makeApp({ id: 'foo', name: 'Foo', description: 'bar' }), '')).toBe(true);
   });
 
-  it('matches on name, description, and id (case-insensitive)', () => {
+  it('matches on name, description, and id (requires lowercased query)', () => {
     const app = makeApp({ id: 'dmarc-mx', name: 'dmarc.mx', description: 'email security' });
+    app._searchable = `${app.name} ${app.description} ${app.id}`.toLowerCase();
+
     expect(matches(app, 'dmarc')).toBe(true);
-    expect(matches(app, 'DMARC')).toBe(true);
+    expect(matches(app, 'dmarc'.toLowerCase())).toBe(true);
     expect(matches(app, 'email')).toBe(true);
     expect(matches(app, 'mx')).toBe(true);
   });

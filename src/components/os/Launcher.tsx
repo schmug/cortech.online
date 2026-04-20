@@ -11,8 +11,9 @@ type Props = {
 
 export function matches(app: AppManifest, q: string) {
   if (!q) return true;
-  const hay = `${app.name} ${app.description} ${app.id}`.toLowerCase();
-  return hay.includes(q.toLowerCase());
+  // Fallback computation if _searchable is missing for any reason
+  const hay = app._searchable || `${app.name} ${app.description} ${app.id}`.toLowerCase();
+  return hay.includes(q);
 }
 
 export function Launcher({ open, onClose }: Props) {
@@ -22,7 +23,14 @@ export function Launcher({ open, onClose }: Props) {
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const filtered = useMemo(() => apps.filter((a) => matches(a, query)), [apps, query]);
+  const filtered = useMemo(() => {
+    // ⚡ Bolt: Hoisting the query transform out of the filter loop.
+    // By pre-lowercasing the query once, we avoid calling `.toLowerCase()` on the query
+    // for every app on every keystroke. Combined with the pre-computed _searchable string
+    // on the AppManifest, this avoids O(N) string allocations during the search filter path.
+    const qLower = query.toLowerCase();
+    return apps.filter((a) => matches(a, qLower));
+  }, [apps, query]);
 
   useEffect(() => {
     if (open) {
