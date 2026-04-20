@@ -1,0 +1,4 @@
+## 2024-11-20 - [Missing Security Headers]
+**Vulnerability:** The application was missing critical security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) in its Cloudflare Pages configuration file `public/_headers`.
+**Learning:** Fully static sites deployed via Cloudflare Pages do not automatically get comprehensive security headers. This codebase relies on `public/_headers` to define them, so we must add a `/*` catch-all block to supply headers globally.
+**Prevention:** Ensure new Cloudflare Pages projects include a default `public/_headers` file with secure defaults (`X-Frame-Options`, `X-Content-Type-Options`, `Referrer-Policy`, etc.) right from the start.
