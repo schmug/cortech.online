@@ -6,15 +6,20 @@ import { apps, type AppManifest } from '../../apps/registry';
 import { useOS } from './store';
 
 function makeApp(overrides: Partial<AppManifest> = {}): AppManifest {
-  return {
+  const base = {
     id: 'test-app',
     name: 'Test App',
     description: 'a test',
     icon: 'i',
-    type: 'native',
+    type: 'native' as const,
     component: () => Promise.resolve({ default: () => null as any }),
     defaultSize: { w: 400, h: 300 },
     ...overrides,
+  };
+  return {
+    ...base,
+    _searchable:
+      overrides._searchable ?? `${base.name} ${base.description} ${base.id}`.toLowerCase(),
   };
 }
 

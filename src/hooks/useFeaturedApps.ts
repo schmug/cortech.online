@@ -23,6 +23,7 @@ export function featuredRepoToApp(repo: FeaturedRepo): AppManifest {
       ...base,
       type: 'iframe',
       url: repo.homepage,
+      _searchable: `${base.name} ${base.description} ${base.id}`.toLowerCase(),
     };
   }
 
@@ -31,6 +32,7 @@ export function featuredRepoToApp(repo: FeaturedRepo): AppManifest {
     type: 'native',
     component: () => import('../components/os/apps/RepoInfoApp'),
     componentProps: { repo },
+    _searchable: `${base.name} ${base.description} ${base.id}`.toLowerCase(),
   };
 }
 

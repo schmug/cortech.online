@@ -5,16 +5,21 @@ import type { AppManifest } from '../../apps/registry';
 const noopComponent = () => Promise.resolve({ default: () => null as any });
 
 function makeApp(overrides: Partial<AppManifest> = {}): AppManifest {
-  return {
+  const base = {
     id: 'test-app',
     name: 'Test App',
     description: 'desc',
     icon: 'i',
-    type: 'native',
+    type: 'native' as const,
     component: noopComponent,
     defaultSize: { w: 400, h: 300 },
     allowMultiple: false, // stable ids in tests
     ...overrides,
+  };
+  return {
+    ...base,
+    _searchable:
+      overrides._searchable ?? `${base.name} ${base.description} ${base.id}`.toLowerCase(),
   };
 }
 

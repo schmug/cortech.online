@@ -11,7 +11,8 @@ type Props = {
 
 export function matches(app: AppManifest, q: string) {
   if (!q) return true;
-  const hay = `${app.name} ${app.description} ${app.id}`.toLowerCase();
+  // Fallback if _searchable is somehow missing (e.g. tests that bypass registry map)
+  const hay = app._searchable ?? `${app.name} ${app.description} ${app.id}`.toLowerCase();
   return hay.includes(q.toLowerCase());
 }
 
@@ -22,7 +23,16 @@ export function Launcher({ open, onClose }: Props) {
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const filtered = useMemo(() => apps.filter((a) => matches(a, query)), [apps, query]);
+  // ⚡ Optimization: Pre-compute lowercase query once per render, avoiding .toLowerCase() inside the filter loop
+  const filtered = useMemo(() => {
+    const qLower = query.toLowerCase();
+    return apps.filter((a) => {
+      if (!qLower) return true;
+      // We expect _searchable to be set. Use direct include for perf.
+      // If matches() is exported and used elsewhere, matches() handles the full logic safely.
+      return (a._searchable ?? `${a.name} ${a.description} ${a.id}`.toLowerCase()).includes(qLower);
+    });
+  }, [apps, query]);
 
   useEffect(() => {
     if (open) {

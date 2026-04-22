@@ -13,9 +13,19 @@ export type AppManifest = {
   minSize?: { w: number; h: number };
   allowMultiple?: boolean;
   githubRepo?: string;
+  _searchable: string; // Pre-computed search string
 };
 
-export const apps: AppManifest[] = [
+// Internal type for defining apps before _searchable is computed
+type AppManifestRaw = Omit<AppManifest, '_searchable'>;
+
+// Helper to safely pre-compute search strings without mutating during render loops
+const withSearchable = (app: AppManifestRaw): AppManifest => ({
+  ...app,
+  _searchable: `${app.name} ${app.description} ${app.id}`.toLowerCase(),
+});
+
+const appsRaw: AppManifestRaw[] = [
   {
     id: 'about',
     name: 'About Schmug',
@@ -99,3 +109,5 @@ export const apps: AppManifest[] = [
     githubRepo: 'schmug/qr-me',
   },
 ];
+
+export const apps: AppManifest[] = appsRaw.map(withSearchable);
