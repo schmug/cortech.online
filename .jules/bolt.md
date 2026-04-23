@@ -1,0 +1,3 @@
+## 2026-04-23 - Pre-computed Optimization Side Effects
+**Learning:** When adding pre-computed fields like `_searchable` to objects and updating functions to use them, ensure backward compatibility for exported utility functions. Do not modify tests to hide regressions in public utility functions; instead add optional arguments or internal fallback checks.
+**Action:** Always check where exported utility functions are used. If an optimization assumes an input is transformed (e.g. lowercased), add a flag to indicate the transformation rather than forcing all callers to change or breaking their expectations.

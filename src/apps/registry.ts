@@ -13,6 +13,7 @@ export type AppManifest = {
   minSize?: { w: number; h: number };
   allowMultiple?: boolean;
   githubRepo?: string;
+  _searchable?: string;
 };
 
 export const apps: AppManifest[] = [
@@ -99,3 +100,9 @@ export const apps: AppManifest[] = [
     githubRepo: 'schmug/qr-me',
   },
 ];
+
+// Pre-compute searchable strings at module load time to avoid O(N) string allocation
+// and toLowerCase() calls during every keystroke render in the Launcher.
+for (const app of apps) {
+  app._searchable = `${app.name} ${app.description} ${app.id}`.toLowerCase();
+}
