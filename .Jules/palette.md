@@ -1,0 +1,3 @@
+## 2023-10-27 - Proxy Focus States for Custom Inputs
+**Learning:** In custom input components (like those in ProjectsApp, BlogApp, and Launcher) where the native `<input>` uses `outline-none` for styling purposes, the focus indicator is lost. This is a common accessibility issue. To fix this without breaking the design, the focus state needs to be proxied to the parent wrapper container.
+**Action:** Use `focus-within` utility classes (e.g., `focus-within:border-[var(--color-amber)] focus-within:ring-1 focus-within:ring-[var(--color-amber)]`) on the parent `div` to show a visible focus indicator when the child input receives focus. This ensures keyboard accessibility while maintaining the custom design.
