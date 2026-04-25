@@ -1,0 +1,3 @@
+## 2024-05-14 - Pre-computing searchable strings avoids render-loop thrashing
+**Learning:** In the `Launcher` component, dynamically constructing and lowercasing the search string for every application on every keystroke (`apps.filter((a) => matches(a, query))`) inside a `useMemo` block was causing unnecessary string allocations and garbage collection during the render cycle.
+**Action:** Pre-compute static optimization fields (like `_searchable` containing lowercased name, description, and ID) at module load time in `src/apps/registry.ts` and for dynamic apps in `src/hooks/useFeaturedApps.ts`. Also, lowercase the user's query just once per render loop before filtering, instead of inside the mapping function for each app.

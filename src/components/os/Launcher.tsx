@@ -9,10 +9,16 @@ type Props = {
   onClose: () => void;
 };
 
-export function matches(app: AppManifest, q: string) {
+/**
+ * Performance: Uses pre-computed _searchable if available, and avoids
+ * redundant query lowercasing if isLowercased is true.
+ */
+export function matches(app: AppManifest, q: string, isLowercased = false) {
   if (!q) return true;
-  const hay = `${app.name} ${app.description} ${app.id}`.toLowerCase();
-  return hay.includes(q.toLowerCase());
+
+  const hay = app._searchable ?? `${app.name} ${app.description} ${app.id}`.toLowerCase();
+  const search = isLowercased ? q : q.toLowerCase();
+  return hay.includes(search);
 }
 
 export function Launcher({ open, onClose }: Props) {
@@ -22,7 +28,11 @@ export function Launcher({ open, onClose }: Props) {
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const filtered = useMemo(() => apps.filter((a) => matches(a, query)), [apps, query]);
+  const filtered = useMemo(() => {
+    // Performance: lowercase the query once per render instead of per app
+    const lowerQ = query.toLowerCase();
+    return apps.filter((a) => matches(a, lowerQ, true));
+  }, [apps, query]);
 
   useEffect(() => {
     if (open) {

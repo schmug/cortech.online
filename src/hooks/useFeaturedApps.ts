@@ -18,16 +18,22 @@ export function featuredRepoToApp(repo: FeaturedRepo): AppManifest {
     githubRepo: repo.fullName,
   } as const;
 
+  // Performance: pre-compute lowercase search string
+  const appBase = {
+    ...base,
+    _searchable: `${base.name} ${base.description} ${base.id}`.toLowerCase(),
+  };
+
   if (repo.homepage) {
     return {
-      ...base,
+      ...appBase,
       type: 'iframe',
       url: repo.homepage,
     };
   }
 
   return {
-    ...base,
+    ...appBase,
     type: 'native',
     component: () => import('../components/os/apps/RepoInfoApp'),
     componentProps: { repo },

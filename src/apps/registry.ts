@@ -13,9 +13,10 @@ export type AppManifest = {
   minSize?: { w: number; h: number };
   allowMultiple?: boolean;
   githubRepo?: string;
+  _searchable?: string; // Performance: pre-computed lowercase string for faster search filtering
 };
 
-export const apps: AppManifest[] = [
+const baseApps: Omit<AppManifest, '_searchable'>[] = [
   {
     id: 'about',
     name: 'About Schmug',
@@ -99,3 +100,10 @@ export const apps: AppManifest[] = [
     githubRepo: 'schmug/qr-me',
   },
 ];
+
+// Performance: Pre-compute search strings at module load to avoid
+// expensive string allocation and lowercasing during React render cycles.
+export const apps: AppManifest[] = baseApps.map((app) => ({
+  ...app,
+  _searchable: `${app.name} ${app.description} ${app.id}`.toLowerCase(),
+}));
