@@ -13,9 +13,11 @@ export type AppManifest = {
   minSize?: { w: number; h: number };
   allowMultiple?: boolean;
   githubRepo?: string;
+  // ⚡ Bolt: Pre-computed search string to avoid re-calculating on every keystroke
+  _searchable?: string;
 };
 
-export const apps: AppManifest[] = [
+const rawApps: AppManifest[] = [
   {
     id: 'about',
     name: 'About Schmug',
@@ -99,3 +101,9 @@ export const apps: AppManifest[] = [
     githubRepo: 'schmug/qr-me',
   },
 ];
+
+// ⚡ Bolt: Compute search strings once at load time instead of during every Launcher render
+export const apps: AppManifest[] = rawApps.map((app) => ({
+  ...app,
+  _searchable: `${app.name} ${app.description} ${app.id}`.toLowerCase(),
+}));
