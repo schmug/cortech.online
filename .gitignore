@@ -36,3 +36,7 @@ playwright/.cache/
 
 # vitest coverage report
 coverage/
+
+# Jules agent run logs (Palette/Sentinel bots)
+.Jules/
+.jules/
