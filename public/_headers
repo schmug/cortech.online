@@ -6,3 +6,9 @@
   Link: </.well-known/api-catalog>; rel="api-catalog"
   Link: </rss.xml>; rel="alternate"; type="application/rss+xml"
   Link: </sitemap-index.xml>; rel="sitemap"; type="application/xml"
+
+/*
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
