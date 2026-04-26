@@ -23,14 +23,15 @@ export function Desktop() {
       items.push({
         label: 'Open in new tab',
         icon: '⎋',
-        onClick: () => window.open(app.url, '_blank', 'noopener'),
+        onClick: () => window.open(app.url, '_blank', 'noopener,noreferrer'),
       });
     }
     if (app.githubRepo) {
       items.push({
         label: 'View source on GitHub',
         icon: '⟘',
-        onClick: () => window.open(`https://github.com/${app.githubRepo}`, '_blank', 'noopener'),
+        onClick: () =>
+          window.open(`https://github.com/${app.githubRepo}`, '_blank', 'noopener,noreferrer'),
       });
     }
     return items;
