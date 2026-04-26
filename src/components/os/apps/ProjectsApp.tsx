@@ -32,7 +32,7 @@ export default function ProjectsApp() {
             </span>
           )}
         </div>
-        <div className="mt-2 flex items-center gap-2 rounded-md border border-[var(--color-border)] bg-[var(--color-shadow)] px-3 py-1.5 focus-within:border-[var(--color-amber)] focus-within:ring-1 focus-within:ring-[var(--color-amber)]">
+        <div className="mt-2 flex items-center gap-2 rounded-md border border-[var(--color-border)] bg-[var(--color-shadow)] px-3 py-1.5 transition-shadow duration-200 focus-within:border-[var(--color-amber)] focus-within:ring-1 focus-within:ring-[var(--color-amber)]">
           <span className="font-mono text-[11px] text-[var(--color-amber)]">›</span>
           <input
             value={query}

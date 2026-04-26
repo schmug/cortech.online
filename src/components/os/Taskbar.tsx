@@ -77,7 +77,7 @@ export function Taskbar({ onOpenLauncher }: Props) {
                 else focusWindow(win.id);
               }}
               className={[
-                'flex items-center gap-2 rounded-md border px-2.5 py-1 text-xs transition',
+                'flex items-center gap-2 rounded-md border px-2.5 py-1 text-xs transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]',
                 focused
                   ? 'border-[var(--color-amber)] bg-[var(--color-amber)]/10 text-[var(--color-amber)]'
                   : win.minimized
