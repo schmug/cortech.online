@@ -22,7 +22,7 @@ export function Dock() {
               type="button"
               onClick={() => openApp(app.id)}
               aria-label={`Open ${app.name}`}
-              className="flex h-[56px] w-[56px] items-center justify-center rounded-[16px] border border-[var(--color-border)] bg-[var(--color-panel)] text-2xl transition active:scale-95 active:border-[var(--color-amber)]/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]"
+              className="flex h-[56px] w-[56px] items-center justify-center rounded-[16px] border border-[var(--color-border)] bg-[var(--color-panel)] text-2xl transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)] active:scale-95 active:border-[var(--color-amber)]/60"
             >
               <span aria-hidden="true" className="flex items-center justify-center">
                 {renderIcon(app.icon, 'h-7 w-7')}
