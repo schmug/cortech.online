@@ -75,7 +75,7 @@ export function Launcher({ open, onClose }: Props) {
         onClick={(e) => e.stopPropagation()}
         onKeyDown={onKey}
       >
-        <div className="flex items-center gap-3 border-b border-[var(--color-border)] bg-[var(--color-panel-hi)] px-4 py-3 focus-within:border-[var(--color-amber)] focus-within:ring-1 focus-within:ring-[var(--color-amber)]">
+        <div className="flex items-center gap-3 border-b border-[var(--color-border)] bg-[var(--color-panel-hi)] px-4 py-3 focus-within:border-[var(--color-amber)] focus-within:ring-1 focus-within:ring-[var(--color-amber)] transition-shadow duration-200">
           <span className="font-mono text-xs text-[var(--color-amber)]">›</span>
           <input
             ref={inputRef}
