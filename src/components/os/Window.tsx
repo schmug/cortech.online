@@ -74,18 +74,20 @@ export function Window({ window: win, viewport, children, minSize }: Props) {
           <div className="flex items-center gap-1.5" role="group" aria-label="Window actions">
             <button
               type="button"
-              aria-label={`Close ${win.title}`}
+              aria-label={`Close ${win.title} (⌘W)`}
+              title="Close (⌘W)"
               onClick={(e) => {
                 e.stopPropagation();
                 closeWindow(win.id);
               }}
               className="group relative h-3 w-3 rounded-full bg-[var(--color-hot)] transition hover:brightness-110 focus-visible:outline-2 focus-visible:outline-[var(--color-amber)]"
             >
-              <span className="sr-only">Close</span>
+              <span className="sr-only">Close (⌘W)</span>
             </button>
             <button
               type="button"
               aria-label={`Minimize ${win.title}`}
+              title="Minimize"
               onClick={(e) => {
                 e.stopPropagation();
                 minimizeWindow(win.id);
@@ -97,6 +99,7 @@ export function Window({ window: win, viewport, children, minSize }: Props) {
             <button
               type="button"
               aria-label={`${win.maximized ? 'Restore' : 'Maximize'} ${win.title}`}
+              title={win.maximized ? 'Restore' : 'Maximize'}
               onClick={(e) => {
                 e.stopPropagation();
                 toggleMaximize(win.id, viewport);
