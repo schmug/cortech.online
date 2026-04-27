@@ -30,7 +30,7 @@ export function Taskbar({ onOpenLauncher }: Props) {
       <button
         type="button"
         onClick={onOpenLauncher}
-        className="group flex items-center gap-2 rounded-md border border-[var(--color-border)] bg-[var(--color-panel)] px-3 py-1.5 text-sm font-semibold text-[var(--color-text)] transition hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]"
+        className="group flex items-center gap-2 rounded-md border border-[var(--color-border)] bg-[var(--color-panel)] px-3 py-1.5 text-sm font-semibold text-[var(--color-text)] transition hover:border-[var(--color-amber)] hover:text-[var(--color-amber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]"
         aria-label="Open launcher"
       >
         <svg width="18" height="18" viewBox="0 0 32 32" aria-hidden="true">
@@ -99,7 +99,7 @@ export function Taskbar({ onOpenLauncher }: Props) {
           href="https://github.com/schmug"
           rel="noopener noreferrer"
           target="_blank"
-          className="font-mono text-[11px] text-[var(--color-muted)] transition hover:text-[var(--color-amber)]"
+          className="rounded-sm font-mono text-[11px] text-[var(--color-muted)] transition hover:text-[var(--color-amber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]"
           title="github.com/schmug"
         >
           /schmug
