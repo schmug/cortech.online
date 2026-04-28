@@ -85,7 +85,7 @@ export default function SupportApp() {
                   href={app.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-mono text-[10px] text-[var(--color-muted)] hover:text-[var(--color-amber)]"
+                  className="rounded-sm font-mono text-[10px] text-[var(--color-muted)] hover:text-[var(--color-amber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]"
                 >
                   open ↗
                 </a>
@@ -113,7 +113,7 @@ function Tier(props: {
   disabled?: boolean;
 }) {
   const base =
-    'flex h-full flex-col justify-between rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition';
+    'flex h-full flex-col justify-between rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-4 transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]';
   const active = 'hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]';
   const disabled = 'opacity-50 cursor-not-allowed';
   const cls = `${base} ${props.disabled ? disabled : active}`;

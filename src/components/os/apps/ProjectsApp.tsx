@@ -78,7 +78,7 @@ export default function ProjectsApp() {
                   href={repo.html_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="block px-1 py-2 transition hover:bg-[var(--color-panel-hi)]"
+                  className="block rounded-md px-1 py-2 transition hover:bg-[var(--color-panel-hi)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-amber)]"
                 >
                   <div className="flex items-baseline justify-between gap-3">
                     <span className="font-mono text-sm font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]">

@@ -136,7 +136,7 @@ function LinkCard({
     <a
       href={href}
       {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-      className="group rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-3 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)]"
+      className="group rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-3 transition hover:border-[var(--color-amber)]/60 hover:bg-[var(--color-panel-hi)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]"
     >
       <div className="flex items-center gap-1.5 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
         {icon}
