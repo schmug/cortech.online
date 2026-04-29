@@ -12,10 +12,10 @@ draft: false
 |---|---|
 | Version | 1.0.0 |
 | License | CC-BY-4.0 |
-| Canonical URL | https://cortech.online/blog/rent2owned-thesis/ |
+| Canonical URL | https://cortech.online/blog/2026-04-18-rent2owned-thesis/ |
 | Last updated | 2026-04-18 |
 | Status | living document |
-| Companion to | [Rent2Owned: The Case](/blog/rent2owned-the-case/), [Rent2Owned: The Playbook](/blog/rent2owned-the-playbook/) |
+| Companion to | [Rent2Owned: The Case](/blog/2026-04-16-rent2owned-the-case/), [Rent2Owned: The Playbook](/blog/2026-04-17-rent2owned-the-playbook/) |
 
 ## Abstract
 
@@ -318,10 +318,10 @@ Fork it. Extend its claims. Challenge its reasoning. Localize it to your jurisdi
 
 ## Companion posts
 
-- [Rent2Owned: The Case for Taking Back Our Stack](/blog/rent2owned-the-case/) - the narrative why.
-- [Rent2Owned: The Playbook](/blog/rent2owned-the-playbook/) - the operational how.
+- [Rent2Owned: The Case for Taking Back Our Stack](/blog/2026-04-16-rent2owned-the-case/) - the narrative why.
+- [Rent2Owned: The Playbook](/blog/2026-04-17-rent2owned-the-playbook/) - the operational how.
 
 ---
 
-*Part three of three. Companion to [Rent2Owned: The Case](/blog/rent2owned-the-case/) and [Rent2Owned: The Playbook](/blog/rent2owned-the-playbook/).
+*Part three of three. Companion to [Rent2Owned: The Case](/blog/2026-04-16-rent2owned-the-case/) and [Rent2Owned: The Playbook](/blog/2026-04-17-rent2owned-the-playbook/).
 Published as part of [cortech.online](https://cortech.online).*
