@@ -15,27 +15,32 @@ export type Repo = {
   updated_at: string;
   fork: boolean;
   archived: boolean;
+  private?: boolean;
   topics?: string[];
 };
 
 export async function fetchAllRepos(username: string): Promise<Repo[]> {
   const url = `https://api.github.com/users/${username}/repos?per_page=100&sort=updated`;
-  try {
-    const res = await fetch(url, {
-      headers: {
-        'User-Agent': 'cortech.online-portfolio',
-        Accept: 'application/vnd.github+json',
-      },
-    });
-    if (!res.ok) {
-      console.warn(`GitHub API returned ${res.status} for ${username}; returning empty repo list.`);
-      return [];
-    }
-    return (await res.json()) as Repo[];
-  } catch (err) {
-    console.warn(`GitHub API fetch failed for ${username}; returning empty repo list.`, err);
-    return [];
+  const headers: Record<string, string> = {
+    'User-Agent': 'cortech.online-portfolio',
+    Accept: 'application/vnd.github+json',
+  };
+  // Server-only: process.env is never bundled to the client, and this module
+  // is imported only by prerendered routes that run at build time.
+  const token = process.env.GITHUB_TOKEN;
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(url, { headers });
+  if (!res.ok) {
+    throw new Error(
+      `GitHub API ${res.status} ${res.statusText} for ${url}` +
+        (token ? '' : ' — set GITHUB_TOKEN to lift the unauthenticated 60/hr rate limit'),
+    );
   }
+  const all = (await res.json()) as Repo[];
+  // /users/{username}/repos returns only public repos, but filter explicitly
+  // so a future endpoint or token-scope change can't accidentally leak private.
+  return all.filter((r) => !r.private);
 }
 
 export async function fetchOriginalRepos(username: string): Promise<Repo[]> {
