@@ -32,6 +32,8 @@ jobs:
       - run: npm test
 
       - run: npm run build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   e2e:
     name: E2E (Playwright)

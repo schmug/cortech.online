@@ -30,6 +30,8 @@ Cloudflare Pages:
 | Output directory | `dist`          |
 | Node version     | 22              |
 
+Required build-time env var: **`GITHUB_TOKEN`** — a fine-grained PAT with **public-repo read-only** access (no scopes need to be granted beyond that). The build calls `https://api.github.com/users/schmug/repos` to prerender `/api/projects.json` and the Projects page; without auth, Cloudflare's shared build IPs hit the 60/hr unauthenticated rate limit and the build now fails loudly rather than silently shipping an empty list. Set the var as **encrypted** in Pages → Settings → Environment variables.
+
 `public/_routes.json` ships `{ include: [], exclude: ["/*"] }` so Pages bypasses the Functions runtime entirely — every path is served as a static asset. See [`docs/architecture.md`](docs/architecture.md#deploy-contract) for why.
 
 ## Tech stack
