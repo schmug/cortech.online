@@ -117,7 +117,7 @@ export default function BlogApp() {
               <li key={post.slug}>
                 <a
                   href={`/blog/${post.slug}/`}
-                  className="block px-1 py-3 transition hover:bg-[var(--color-panel-hi)]"
+                  className="block rounded-md px-1 py-3 transition hover:bg-[var(--color-panel-hi)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--color-amber)]"
                 >
                   <div className="flex items-baseline justify-between gap-3">
                     <span className="text-sm font-[var(--font-display)] font-semibold text-[var(--color-text)] hover:text-[var(--color-amber)]">
