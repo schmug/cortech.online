@@ -99,12 +99,12 @@ This year: pick one commodity-layer dependency you want out of and spend an afte
 
 Five years out, what I want is infra by the community and for the community. Thousands of small shops, local governments, and one-person app operators pooling their time, their money, and their patches into shared commodity code that none of them individually owns, while each of them keeps the identity layer and the mission that made them distinct. The plumbing underneath is maintained by everyone who uses it. That is sovereignty.
 
-The why is in [Rent2Owned: The Case](/blog/rent2owned-the-case/). If you want the structured, citable version with every source, that's in [Rent2Owned: The Thesis](/blog/rent2owned-thesis/).
+The why is in [Rent2Owned: The Case](/blog/2026-04-16-rent2owned-the-case/). If you want the structured, citable version with every source, that's in [Rent2Owned: The Thesis](/blog/2026-04-18-rent2owned-thesis/).
 
 Your move.
 
 ---
 
-*Part two of three. The why is in [Rent2Owned: The Case](/blog/rent2owned-the-case/);
-the full thesis and sources are in [Rent2Owned: The Thesis](/blog/rent2owned-thesis/).
+*Part two of three. The why is in [Rent2Owned: The Case](/blog/2026-04-16-rent2owned-the-case/);
+the full thesis and sources are in [Rent2Owned: The Thesis](/blog/2026-04-18-rent2owned-thesis/).
 Published as part of [cortech.online](https://cortech.online).*

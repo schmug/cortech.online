@@ -98,12 +98,12 @@ I keep coming back to a simpler version of this. It's really about the community
 
 The ask is small. Audit what you already own and what owns you. Pick one tool or service in your stack where the lock-in is starting to cost you something you can see, and go look at the open alternative. Ask your next vendor for an SBOM. If you're a builder, find the library that saved you the most time this year and send its maintainer the cost of a coffee or a commit.
 
-The how - the architecture, the workforce, the objections - is in [the playbook](/blog/rent2owned-the-playbook/). If you want the structured, citable version with all the sources, that's [the thesis](/blog/rent2owned-thesis/).
+The how - the architecture, the workforce, the objections - is in [the playbook](/blog/2026-04-17-rent2owned-the-playbook/). If you want the structured, citable version with all the sources, that's [the thesis](/blog/2026-04-18-rent2owned-thesis/).
 
 We've been renting. The door is not locked.
 
 ---
 
-*Part one of three. The how is in [Rent2Owned: The Playbook](/blog/rent2owned-the-playbook/);
-the full thesis and sources are in [Rent2Owned: The Thesis](/blog/rent2owned-thesis/).
+*Part one of three. The how is in [Rent2Owned: The Playbook](/blog/2026-04-17-rent2owned-the-playbook/);
+the full thesis and sources are in [Rent2Owned: The Thesis](/blog/2026-04-18-rent2owned-thesis/).
 Published as part of [cortech.online](https://cortech.online).*
