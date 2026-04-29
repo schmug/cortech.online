@@ -17,20 +17,50 @@ export type ProjectsPayload = {
   fetchedAt: string;
 };
 
+// Module-level cache to deduplicate concurrent requests and reuse data
+// Expected performance impact: Reduces redundant network requests for `/api/projects.json` to exactly 1
+// when multiple components (e.g. Launcher, Desktop, WindowManager) mount simultaneously.
+let cachedPayload: ProjectsPayload | null = null;
+let cachedError: string | null = null;
+let fetchPromise: Promise<ProjectsPayload> | null = null;
+
 export function useProjects() {
-  const [payload, setPayload] = useState<ProjectsPayload | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [payload, setPayload] = useState<ProjectsPayload | null>(cachedPayload);
+  const [error, setError] = useState<string | null>(cachedError);
 
   useEffect(() => {
+    // If we already have a cached result, no need to fetch again
+    if (cachedPayload || cachedError) {
+      return;
+    }
+
     let cancelled = false;
-    fetch('/api/projects.json')
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+
+    // Deduplicate concurrent fetch requests using a shared promise
+    if (!fetchPromise) {
+      fetchPromise = fetch('/api/projects.json').then((r) =>
+        r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))
+      );
+    }
+
+    fetchPromise
       .then((data: ProjectsPayload) => {
+        cachedPayload = data;
         if (!cancelled) setPayload(data);
       })
       .catch((err) => {
-        if (!cancelled) setError(err instanceof Error ? err.message : 'failed to load');
+        const errMsg = err instanceof Error ? err.message : 'failed to load';
+        cachedError = errMsg;
+        if (!cancelled) setError(errMsg);
+      })
+      .finally(() => {
+        // Clear the promise so future failures can retry,
+        // but successful calls will rely on the cache.
+        if (cachedError) {
+          fetchPromise = null;
+        }
       });
+
     return () => {
       cancelled = true;
     };
