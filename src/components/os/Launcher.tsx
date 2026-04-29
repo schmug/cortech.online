@@ -86,6 +86,7 @@ export function Launcher({ open, onClose }: Props) {
             aria-label="Search apps"
             autoComplete="off"
             spellCheck={false}
+            maxLength={100} // Security: prevent DoS via extremely long input strings
           />
           <span className="font-mono text-[10px] text-[var(--color-muted)]">Esc</span>
         </div>

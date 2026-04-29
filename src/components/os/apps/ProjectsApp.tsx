@@ -40,6 +40,7 @@ export default function ProjectsApp() {
             placeholder="Filter by name, language, or description"
             className="flex-1 bg-transparent text-xs text-[var(--color-text)] outline-none placeholder:text-[var(--color-muted)]"
             aria-label="Filter projects"
+            maxLength={100} // Security: prevent DoS via extremely long input strings
           />
         </div>
       </header>

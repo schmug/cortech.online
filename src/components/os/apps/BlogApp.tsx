@@ -76,6 +76,7 @@ export default function BlogApp() {
             placeholder="Filter by title, tag, or summary"
             className="flex-1 bg-transparent text-xs text-[var(--color-text)] outline-none placeholder:text-[var(--color-muted)]"
             aria-label="Filter posts"
+            maxLength={100} // Security: prevent DoS via extremely long input strings
           />
         </div>
       </header>
