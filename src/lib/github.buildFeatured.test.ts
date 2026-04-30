@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { FeaturedRepoConfig } from '../apps/featuredRepos';
+import { featuredRepos, type FeaturedRepoConfig } from '../apps/featuredRepos';
 import { buildFeaturedRepos, type Repo } from './github';
 
 const repo = (overrides: Partial<Repo> = {}): Repo => ({
@@ -86,5 +86,17 @@ describe('buildFeaturedRepos', () => {
     const configs: FeaturedRepoConfig[] = [{ fullName: 'schmug/b' }, { fullName: 'schmug/a' }];
     const out = buildFeaturedRepos([repo({ name: 'a' }), repo({ name: 'b' })], configs);
     expect(out.map((r) => r.name)).toEqual(['b', 'a']);
+  });
+
+  // Regression for issue #27: with the production featuredRepos config, an
+  // empty API response silently degrades to only the manual-fallback entries.
+  // Locks in the silent-drop behaviour so any future config change that adds
+  // more manual fallbacks will need to update this assertion deliberately.
+  it('keeps only manual-fallback entries when given an empty repo list', () => {
+    const out = buildFeaturedRepos([], featuredRepos);
+    const survivors = out.map((r) => r.fullName);
+    const expected = featuredRepos.filter((c) => c.manual).map((c) => c.fullName);
+    expect(survivors).toEqual(expected);
+    expect(out.every((r) => r.private === true)).toBe(true);
   });
 });
