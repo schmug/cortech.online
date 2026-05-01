@@ -1,0 +1,3 @@
+## 2024-05-18 - Accessibility and UX Improvements
+**Learning:** `aria-live="polite"` should not be used on continuously updating components like clocks (e.g., in the taskbar), as it causes screen readers to constantly interrupt the user. A semantic `<time>` element with `dateTime` provides better accessibility. Additionally, search/filter inputs benefit greatly from a quick "clear" (x) button to reset the query without having to manually backspace, which improves usability and accessibility.
+**Action:** Always use `<time>` elements for dates/times without `aria-live`. Consistently add accessible clear buttons to custom search/filter inputs.
