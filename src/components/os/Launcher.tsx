@@ -9,10 +9,12 @@ type Props = {
   onClose: () => void;
 };
 
-export function matches(app: AppManifest, q: string) {
+// ⚡ Bolt: Added optional isLowercased flag to avoid redundant string transformations
+// in O(n) filter loops, while preserving backward compatibility for tests.
+export function matches(app: AppManifest, q: string, isLowercased = false) {
   if (!q) return true;
   const hay = `${app.name} ${app.description} ${app.id}`.toLowerCase();
-  return hay.includes(q.toLowerCase());
+  return hay.includes(isLowercased ? q : q.toLowerCase());
 }
 
 export function Launcher({ open, onClose }: Props) {
@@ -22,7 +24,12 @@ export function Launcher({ open, onClose }: Props) {
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const filtered = useMemo(() => apps.filter((a) => matches(a, query)), [apps, query]);
+  // ⚡ Bolt: Lowercase query once outside the loop to prevent O(N) redundant string allocations.
+  const filtered = useMemo(() => {
+    if (!query) return apps;
+    const lowerQuery = query.toLowerCase();
+    return apps.filter((a) => matches(a, lowerQuery, true));
+  }, [apps, query]);
 
   useEffect(() => {
     if (open) {
