@@ -15,6 +15,12 @@ type BlogPayload = {
   fetchedAt: string;
 };
 
+// Module-level cache to prevent duplicate fetches when BlogApp is frequently
+// mounted/unmounted. This reduces redundant network requests and improves load time
+// for the user when re-opening the blog application.
+let fetchPromise: Promise<BlogPayload> | null = null;
+let cachedPayload: BlogPayload | null = null;
+
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'short',
@@ -22,20 +28,34 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
 });
 
 export default function BlogApp() {
-  const [payload, setPayload] = useState<BlogPayload | null>(null);
+  const [payload, setPayload] = useState<BlogPayload | null>(cachedPayload);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/blog.json')
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+
+    if (cachedPayload) {
+      setPayload(cachedPayload);
+      return;
+    }
+
+    if (!fetchPromise) {
+      fetchPromise = fetch('/api/blog.json').then((r) =>
+        r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`)),
+      );
+    }
+
+    fetchPromise
       .then((data: BlogPayload) => {
+        cachedPayload = data;
         if (!cancelled) setPayload(data);
       })
       .catch((err) => {
+        fetchPromise = null; // Allow retry on error
         if (!cancelled) setError(err instanceof Error ? err.message : 'failed to load');
       });
+
     return () => {
       cancelled = true;
     };
