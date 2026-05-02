@@ -1,0 +1,26 @@
+
+> cortech@0.0.1 predev /app
+> node scripts/check-deps.mjs
+
+
+> cortech@0.0.1 dev /app
+> astro dev
+
+[vite] connected.
+11:27:34 [types] Generated 1ms
+[vite] connected.
+11:27:35 [content] Syncing content
+11:27:35 [content] Synced content
+11:27:35 [vite] Re-optimizing dependencies because vite config has changed
+ astro  v6.1.9 ready in 3185 ms
+┃ Local    http://localhost:4321/
+┃ Network  use --host to expose
+11:27:35 watching for file changes...
+
+ update  ▶ New version of Astro available: 6.2.1
+  Run pnpm dlx @astrojs/upgrade to update
+
+11:28:51 [200] / 284ms
+11:28:52 [vite] ✨ new dependencies optimized: astro/runtime/client/dev-toolbar/entrypoint.js
+11:28:52 [vite] ✨ optimized dependencies changed. reloading
+11:28:54 [200] /api/projects.json 514ms
