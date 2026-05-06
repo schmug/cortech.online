@@ -88,6 +88,19 @@ export function Launcher({ open, onClose }: Props) {
             spellCheck={false}
             maxLength={100} // Security: prevent DoS via extremely long input strings
           />
+          {query && (
+            <button
+              type="button"
+              aria-label="Clear search"
+              onClick={() => {
+                setQuery('');
+                inputRef.current?.focus();
+              }}
+              className="flex h-5 w-5 items-center justify-center rounded-sm text-[var(--color-muted)] hover:bg-[var(--color-shadow)] hover:text-[var(--color-text)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]"
+            >
+              ✕
+            </button>
+          )}
           <span className="font-mono text-[10px] text-[var(--color-muted)]">Esc</span>
         </div>
 
