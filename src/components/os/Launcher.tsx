@@ -88,6 +88,31 @@ export function Launcher({ open, onClose }: Props) {
             spellCheck={false}
             maxLength={100} // Security: prevent DoS via extremely long input strings
           />
+          {query && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setQuery('');
+                inputRef.current?.focus();
+              }}
+              aria-label="Clear search"
+              className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[var(--color-border)] text-[var(--color-muted)] hover:bg-[var(--color-amber)] hover:text-[var(--color-void)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-2.5 w-2.5"
+              >
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          )}
           <span className="font-mono text-[10px] text-[var(--color-muted)]">Esc</span>
         </div>
 
