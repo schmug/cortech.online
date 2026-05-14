@@ -104,9 +104,9 @@ export function Taskbar({ onOpenLauncher }: Props) {
         >
           /schmug
         </a>
-        <span className="font-mono text-xs text-[var(--color-dim)] tabular-nums" aria-live="polite">
+        <time className="font-mono text-xs text-[var(--color-dim)] tabular-nums" dateTime={now.toISOString()}>
           {formatTime(now)}
-        </span>
+        </time>
       </div>
     </div>
   );
