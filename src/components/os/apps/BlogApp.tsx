@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { X } from 'lucide-react';
 import { relativeTime } from '../../../hooks/useProjects';
 
 type BlogPost = {
@@ -21,21 +22,47 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
   day: 'numeric',
 });
 
+// Module-level cache to prevent duplicate fetches when the component
+// unmounts and remounts (e.g., when the blog window is closed and reopened).
+let fetchPromise: Promise<BlogPayload> | null = null;
+let cachedPayload: BlogPayload | null = null;
+
 export default function BlogApp() {
-  const [payload, setPayload] = useState<BlogPayload | null>(null);
+  const [payload, setPayload] = useState<BlogPayload | null>(cachedPayload);
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/api/blog.json')
-      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+
+    if (cachedPayload) {
+      setPayload(cachedPayload);
+      return;
+    }
+
+    if (!fetchPromise) {
+      // Security: timeout prevents DoS via hung network requests
+      fetchPromise = fetch('/api/blog.json', { signal: AbortSignal.timeout(10000) })
+        .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+        .then((data: BlogPayload) => {
+          cachedPayload = data;
+          return data;
+        })
+        .catch((err) => {
+          fetchPromise = null; // Allow retry on error
+          throw err;
+        });
+    }
+
+    fetchPromise
       .then((data: BlogPayload) => {
         if (!cancelled) setPayload(data);
       })
       .catch((err) => {
         if (!cancelled) setError(err instanceof Error ? err.message : 'failed to load');
       });
+
     return () => {
       cancelled = true;
     };
@@ -71,6 +98,7 @@ export default function BlogApp() {
         <div className="mt-2 flex items-center gap-2 rounded-md border border-[var(--color-border)] bg-[var(--color-shadow)] px-3 py-1.5 transition-shadow duration-200 focus-within:border-[var(--color-amber)] focus-within:ring-1 focus-within:ring-[var(--color-amber)]">
           <span className="font-mono text-[11px] text-[var(--color-amber)]">›</span>
           <input
+            ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Filter by title, tag, or summary"
@@ -78,6 +106,19 @@ export default function BlogApp() {
             aria-label="Filter posts"
             maxLength={100} // Security: prevent DoS via extremely long input strings
           />
+          {query && (
+            <button
+              type="button"
+              onClick={() => {
+                setQuery('');
+                inputRef.current?.focus();
+              }}
+              aria-label="Clear filter"
+              className="text-[var(--color-muted)] transition hover:text-[var(--color-amber)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-amber)]"
+            >
+              <X size={14} aria-hidden="true" />
+            </button>
+          )}
         </div>
       </header>
 
