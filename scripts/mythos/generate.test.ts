@@ -78,6 +78,22 @@ describe('renderPost()', () => {
       renderPost({ oldDigest, newDigest, triggers, allKnownCves, callLlm }),
     ).rejects.toThrow(GenerationError);
   });
+
+  it('throws when called with no triggers', async () => {
+    const callLlm = vi.fn();
+    await expect(
+      renderPost({ oldDigest, newDigest, triggers: [], allKnownCves, callLlm }),
+    ).rejects.toThrow(GenerationError);
+    expect(callLlm).not.toHaveBeenCalled();
+  });
+
+  it('retries once then throws GenerationError when callLlm rejects', async () => {
+    const callLlm = vi.fn().mockRejectedValue(new Error('API down'));
+    await expect(
+      renderPost({ oldDigest, newDigest, triggers, allKnownCves, callLlm }),
+    ).rejects.toThrow(GenerationError);
+    expect(callLlm).toHaveBeenCalledTimes(2);
+  });
 });
 
 describe('deriveSlug()', () => {

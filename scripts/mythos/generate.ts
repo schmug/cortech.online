@@ -32,6 +32,7 @@ export type Post = {
 const CVE_REGEX = /\bCVE-\d{4}-\d{4,7}\b/g;
 const MIN_WORDS = 120;
 const MAX_WORDS = 400;
+const MAX_ATTEMPTS = 2;
 
 const SYSTEM_PROMPT = `You are writing a daily tracker post for cortech.online about \
 vulnerabilities discovered by Claude Mythos Preview, Anthropic's AI security research tool. \
@@ -52,6 +53,9 @@ export type RenderOpts = {
 
 export async function renderPost(opts: RenderOpts): Promise<Post> {
   const now = opts.now ?? new Date();
+  if (opts.triggers.length === 0) {
+    throw new GenerationError('renderPost called with empty triggers — caller should skip');
+  }
   const requiredCves = opts.triggers
     .filter((t): t is Extract<Trigger, { kind: 'revealed' }> => t.kind === 'revealed')
     .map((t) => t.cve_id);
@@ -61,9 +65,15 @@ export async function renderPost(opts: RenderOpts): Promise<Post> {
 
   let lastDraft = '';
   let lastError = '';
-  for (let attempt = 0; attempt < 2; attempt++) {
+  for (let attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
     const corrective = attempt === 0 ? '' : `\n\nPrior attempt failed: ${lastError}. Try again.`;
-    const body = (await opts.callLlm(SYSTEM_PROMPT, userPrompt + corrective)).trim();
+    let body: string;
+    try {
+      body = (await opts.callLlm(SYSTEM_PROMPT, userPrompt + corrective)).trim();
+    } catch (err) {
+      lastError = `callLlm threw: ${err instanceof Error ? err.message : String(err)}`;
+      continue;
+    }
     lastDraft = body;
 
     const wordCount = body.split(/\s+/).filter(Boolean).length;
