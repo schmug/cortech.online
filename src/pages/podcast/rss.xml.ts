@@ -28,8 +28,10 @@ function escapeXml(s: string): string {
 export async function GET(context: APIContext) {
   const episodes = await fetchEpisodes();
   const site = context.site!;
+  const feedSelfUrl = new URL('/podcast/rss.xml', site).toString();
 
   const channelExtras = [
+    `<atom:link href="${escapeXml(feedSelfUrl)}" rel="self" type="application/rss+xml" />`,
     `<language>en-us</language>`,
     `<itunes:author>${escapeXml(AUTHOR)}</itunes:author>`,
     `<itunes:summary>${escapeXml(PODCAST_DESCRIPTION)}</itunes:summary>`,
@@ -46,7 +48,10 @@ export async function GET(context: APIContext) {
     title: PODCAST_TITLE,
     description: PODCAST_DESCRIPTION,
     site,
-    xmlns: { itunes: 'http://www.itunes.com/dtds/podcast-1.0.dtd' },
+    xmlns: {
+      itunes: 'http://www.itunes.com/dtds/podcast-1.0.dtd',
+      atom: 'http://www.w3.org/2005/Atom',
+    },
     customData: channelExtras,
     items: episodes.map((ep, idx) => {
       const episodeNumber = totalEpisodes - idx; // newest is highest

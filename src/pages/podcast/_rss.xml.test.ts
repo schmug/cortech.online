@@ -59,6 +59,17 @@ describe('podcast rss.xml route', () => {
     expect(countItems(xml)).toBe(0);
   });
 
+  it('declares an atom:link rel="self" pointing at the feed URL', async () => {
+    const xml = await getXml();
+    expect(xml).toContain('xmlns:atom="http://www.w3.org/2005/Atom"');
+    // The serializer in @astrojs/rss may emit the self-closing tag with or
+    // without a space before "/>", so match by structural pieces rather than
+    // the exact whitespace.
+    expect(xml).toMatch(
+      /<atom:link href="https:\/\/cortech\.online\/podcast\/rss\.xml" rel="self" type="application\/rss\+xml"\s*\/>/,
+    );
+  });
+
   it('declares required channel-level iTunes tags', async () => {
     const xml = await getXml();
     expect(xml).toContain('<itunes:author>');
