@@ -45,22 +45,14 @@ const totalMs = Math.round(episode.duration_s * 1000);
         <span>{formatChapterTimestamp(totalMs)}</span>
         <span>{episode.chapters.length} chapters</span>
       </div>
-      <h1
-        class="mt-4 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl"
-      >
+      <h1 class="mt-4 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl">
         {episode.title}
       </h1>
       <p class="mt-3 text-base text-[var(--color-dim)]">{episode.description}</p>
     </header>
 
     <div class="mt-8">
-      <audio
-        id="episode-audio"
-        controls
-        preload="metadata"
-        src={episode.mp3_url}
-        class="w-full"
-      >
+      <audio id="episode-audio" controls preload="metadata" src={episode.mp3_url} class="w-full">
         Your browser does not support the audio element.
         <a href={episode.mp3_url} class="text-[var(--color-amber)] hover:underline">
           Download the MP3
@@ -80,7 +72,7 @@ const totalMs = Math.round(episode.duration_s * 1000);
                 <button
                   type="button"
                   data-start-ms={chapter.start_ms}
-                  class="chapter-jump shrink-0 font-mono text-xs tabular-nums text-[var(--color-muted)] transition hover:text-[var(--color-amber)]"
+                  class="chapter-jump shrink-0 font-mono text-xs text-[var(--color-muted)] tabular-nums transition hover:text-[var(--color-amber)]"
                   aria-label={`Jump to ${chapter.title}`}
                 >
                   {formatChapterTimestamp(chapter.start_ms)}

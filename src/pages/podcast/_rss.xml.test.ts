@@ -4,9 +4,7 @@ import type { Episode } from '../../lib/episodes';
 const episodesRef: { current: Episode[] } = { current: [] };
 
 vi.mock('../../lib/episodes', async () => {
-  const actual = await vi.importActual<typeof import('../../lib/episodes')>(
-    '../../lib/episodes',
-  );
+  const actual = await vi.importActual<typeof import('../../lib/episodes')>('../../lib/episodes');
   return {
     ...actual,
     fetchEpisodes: async () => episodesRef.current,

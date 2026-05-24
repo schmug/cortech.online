@@ -26,16 +26,16 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
       </h1>
       <p class="mt-3 max-w-xl text-sm text-[var(--color-muted)]">
         AI-narrated daily walk through the links in my morning queue. Subscribe via the
-        <a href="/podcast/rss.xml" class="text-[var(--color-amber)] hover:underline">podcast feed</a>.
-        Individual episodes also publish to Spotify — see the per-episode page for the link.
+        <a href="/podcast/rss.xml" class="text-[var(--color-amber)] hover:underline">podcast feed</a
+        >. Individual episodes also publish to Spotify — see the per-episode page for the link.
       </p>
     </div>
 
     {
       episodes.length === 0 ? (
         <p class="mt-12 rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-6 text-sm text-[var(--color-muted)]">
-          No episodes published yet — the manifest at <code>EPISODES_MANIFEST_URL</code> is
-          empty or unset. Check back soon.
+          No episodes published yet — the manifest at <code>EPISODES_MANIFEST_URL</code> is empty or
+          unset. Check back soon.
         </p>
       ) : (
         <ul class="mt-10 divide-y divide-[var(--color-border)]">

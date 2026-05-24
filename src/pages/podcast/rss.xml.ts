@@ -61,9 +61,7 @@ export async function GET(context: APIContext) {
         `<itunes:duration>${durationSeconds}</itunes:duration>`,
         `<itunes:episode>${episodeNumber}</itunes:episode>`,
         `<itunes:explicit>${ep.explicit ? 'true' : 'false'}</itunes:explicit>`,
-        ep.cover_url
-          ? `<itunes:image href="${escapeXml(ep.cover_url)}" />`
-          : '',
+        ep.cover_url ? `<itunes:image href="${escapeXml(ep.cover_url)}" />` : '',
       ]
         .filter(Boolean)
         .join('');
