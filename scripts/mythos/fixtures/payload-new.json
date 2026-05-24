@@ -1,16 +1,15 @@
 {
   "as_of": "2026-05-23T17:27:03Z",
-  "total_disclosed": 1010,
-  "total_acknowledged": 910,
-  "total_fixed": 92,
-  "total_cves": 82,
   "headline": {
+    "disclosed": 1010,
+    "acknowledged": 910,
+    "fixed_in_response": 92,
     "advisories": 82,
     "analyzed": 20050,
     "triaged": 1520,
-    "verified": 1320
+    "verified": 1320,
+    "tpr_pct": 95
   },
-  "fp_rate": 0.05,
   "median_days_to_ack": 7,
   "median_days_to_patch": 21,
   "by_bug_class": { "heap-buffer-overflow": 130, "xss": 40 },

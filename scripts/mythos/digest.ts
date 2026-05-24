@@ -2,18 +2,16 @@ import type { Digest, SeverityBucket } from './types';
 
 type RawPayload = {
   as_of: string;
-  total_disclosed: number;
-  total_acknowledged: number;
-  total_fixed: number;
-  total_cves: number;
   headline: {
+    disclosed: number;
+    acknowledged: number;
+    fixed_in_response: number;
     advisories: number;
     analyzed: number;
     triaged: number;
     verified: number;
-    tpr_pct?: number;
+    tpr_pct: number;
   };
-  fp_rate: number;
   median_days_to_ack: number;
   median_days_to_patch: number;
   by_bug_class: Record<string, number>;
@@ -33,19 +31,16 @@ export function digest(raw: RawPayload, fetchedAt: string): Digest {
     as_of: raw.as_of,
     fetched_at: fetchedAt,
     headline: {
-      disclosed: raw.total_disclosed,
-      acknowledged: raw.total_acknowledged,
-      fixed: raw.total_fixed,
+      disclosed: raw.headline.disclosed,
+      acknowledged: raw.headline.acknowledged,
+      fixed: raw.headline.fixed_in_response,
       advisories: raw.headline.advisories,
       candidates: raw.headline.analyzed,
       reviewed: raw.headline.triaged,
       verified: raw.headline.verified,
     },
     rates: {
-      true_positive_pct:
-        raw.headline.tpr_pct !== undefined
-          ? raw.headline.tpr_pct
-          : Math.round((1 - raw.fp_rate) * 1000) / 10,
+      true_positive_pct: raw.headline.tpr_pct,
       median_days_to_ack: raw.median_days_to_ack,
       median_days_to_patch: raw.median_days_to_patch,
     },
