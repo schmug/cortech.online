@@ -1,0 +1,36 @@
+{
+  "as_of": "2026-05-23T17:27:03Z",
+  "headline": {
+    "disclosed": 1010,
+    "acknowledged": 910,
+    "fixed_in_response": 92,
+    "advisories": 82,
+    "analyzed": 20050,
+    "triaged": 1520,
+    "verified": 1320,
+    "tpr_pct": 95
+  },
+  "median_days_to_ack": 7,
+  "median_days_to_patch": 21,
+  "by_bug_class": { "heap-buffer-overflow": 130, "xss": 40 },
+  "by_ecosystem": {
+    "Other": { "critical": 4, "high": 12, "medium": 5, "low": 0, "unknown": 0 }
+  },
+  "by_project": [
+    { "project": "wolfSSL", "ecosystem": "Other", "cve_ids": ["CVE-2026-0001", "CVE-2026-0002"] },
+    { "project": "curl", "ecosystem": "Other", "cve_ids": ["CVE-2026-9001"] }
+  ],
+  "cve_records": [
+    {
+      "identifier": "CVE-2026-0001",
+      "findings": [
+        { "project": "wolfSSL", "bug_class": "heap-buffer-overflow", "ecosystem": "Other" }
+      ]
+    },
+    {
+      "identifier": "CVE-2026-0002",
+      "findings": [{ "project": "wolfSSL", "bug_class": "use-after-free", "ecosystem": "Other" }]
+    }
+  ],
+  "ghsa_records": []
+}
