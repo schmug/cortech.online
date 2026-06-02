@@ -7,11 +7,11 @@ import { fetchEpisodes } from '../../lib/episodes';
 // and <itunes:duration>. The bytes-accurate `length` on <enclosure> is
 // load-bearing for some podcatchers; clodcast supplies it from ffprobe.
 
-const PODCAST_TITLE = 'Daily Digest — Cortech';
+const PODCAST_TITLE = 'Cortech — Daily Digest Podcast';
 const PODCAST_DESCRIPTION =
   'A daily, AI-narrated digest of links worth your morning — AI tooling, security, Cloudflare, and developer ergonomics. Produced by Cory Schmug.';
-const AUTHOR = 'Cory Schmug';
-const OWNER_NAME = 'Cory Schmug';
+const AUTHOR = 'Schmug';
+const OWNER_NAME = 'Schmug';
 const OWNER_EMAIL = 'cory@cortech.online';
 const CATEGORY = 'Technology';
 // Apple Podcasts & Spotify require square cover art, 1400–3000px. og-image.png
