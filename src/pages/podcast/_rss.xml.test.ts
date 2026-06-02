@@ -78,6 +78,24 @@ describe('podcast rss.xml route', () => {
     expect(xml).toContain('<itunes:owner>');
   });
 
+  it('titles the channel "Cortech — Daily Digest Podcast" with the em dash', async () => {
+    const xml = await getXml();
+    expect(xml).toContain('Cortech — Daily Digest Podcast');
+  });
+
+  it('credits "Schmug" as the channel and item author', async () => {
+    episodesRef.current = [makeEpisode()];
+    const xml = await getXml();
+    // channel + item level both render the constant
+    const authorTags = xml.match(/<itunes:author>Schmug<\/itunes:author>/g) ?? [];
+    expect(authorTags.length).toBe(2);
+  });
+
+  it('names "Schmug" as the iTunes owner contact', async () => {
+    const xml = await getXml();
+    expect(xml).toContain('<itunes:name>Schmug</itunes:name>');
+  });
+
   it('emits an <enclosure> with byte length and audio/mpeg type', async () => {
     episodesRef.current = [
       makeEpisode({
