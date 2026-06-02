@@ -2,7 +2,7 @@ import rss from '@astrojs/rss';
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
 import { fetchOriginalRepos } from '../lib/github';
-import { fetchEpisodes } from '../lib/episodes';
+import { fetchEpisodes, summaryText } from '../lib/episodes';
 
 export async function GET(context: APIContext) {
   const [repos, posts, episodes] = await Promise.all([
@@ -29,7 +29,10 @@ export async function GET(context: APIContext) {
 
   const episodeItems = episodes.map((ep) => ({
     title: ep.title,
-    description: ep.description,
+    // ep.description is Spotify-flavored HTML (lead summary + a <p> per chapter).
+    // This general feed carries short plain-text blurbs like the repo/post items,
+    // so use the lead summary; full show notes live in /podcast/rss.xml.
+    description: summaryText(ep.description),
     link: new URL(`/podcast/${ep.slug}/`, context.site!).toString(),
     pubDate: ep.pubDate,
     categories: ['podcast'],

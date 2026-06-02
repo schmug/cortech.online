@@ -46,7 +46,8 @@ vi.mock('../lib/github', () => ({
   fetchOriginalRepos: async () => reposRef.current,
 }));
 
-vi.mock('../lib/episodes', () => ({
+vi.mock('../lib/episodes', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('../lib/episodes')>()),
   fetchEpisodes: async () => episodesRef.current,
 }));
 
@@ -259,5 +260,37 @@ describe('rss.xml route', () => {
     expect(listTitles(xml)).toEqual(['Newest Episode', 'Middle Post', 'older-repo']);
     expect(xml).toContain('https://cortech.online/podcast/newest-episode/');
     expect(xml).toContain('<category>podcast</category>');
+  });
+
+  it('reduces a Spotify-flavored episode description to a clean summary blurb', async () => {
+    // The everything-feed is a general aggregator (no enclosures) where repos
+    // and posts carry short plain-text blurbs. An episode entry should match —
+    // the lead summary, not the full HTML chapter list the dedicated podcast
+    // feed keeps as show notes.
+    episodesRef.current = [
+      {
+        slug: 'episode-with-chapters',
+        title: 'Episode With Chapters',
+        description:
+          '<p>The clean lead summary.</p><p>(0:00) - Intro</p>' +
+          '<p>(1:23) - Topic - <a href="https://example.com/story">source</a></p>',
+        pubDate: new Date('2026-04-20T00:00:00Z'),
+        mp3_url: 'https://audio.cortech.online/ep.mp3',
+        mp3_bytes: 1000,
+        duration_s: 100,
+        chapters: [],
+        spotify_uri: null,
+        cover_url: null,
+        explicit: false,
+      },
+    ];
+
+    const xml = await getXml();
+    const itemBlock = xml.split('<item>').find((b) => b.includes('episode-with-chapters')) ?? '';
+    expect(itemBlock).toContain('The clean lead summary.');
+    expect(itemBlock).not.toContain('(0:00)');
+    expect(itemBlock).not.toContain('(1:23)');
+    expect(itemBlock).not.toContain('example.com');
+    expect(itemBlock).not.toContain('&lt;p&gt;');
   });
 });
