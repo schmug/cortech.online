@@ -1,6 +1,11 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { fetchEpisodes, formatChapterTimestamp, type Episode } from '../../lib/episodes';
+import {
+  fetchEpisodes,
+  formatChapterTimestamp,
+  summaryText,
+  type Episode,
+} from '../../lib/episodes';
 
 export async function getStaticPaths() {
   const episodes = await fetchEpisodes();
@@ -20,11 +25,14 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
 });
 
 const totalMs = Math.round(episode.duration_s * 1000);
+// description is Spotify-flavored HTML (lead summary + a <p> per chapter);
+// reduce it to plain lead prose — chapters render natively below.
+const summary = summaryText(episode.description);
 ---
 
 <Base
   title={episode.title}
-  description={episode.description}
+  description={summary || undefined}
   canonical={`https://cortech.online/podcast/${episode.slug}`}
 >
   <article class="mx-auto max-w-2xl px-6 pt-16 pb-16">
@@ -48,7 +56,7 @@ const totalMs = Math.round(episode.duration_s * 1000);
       <h1 class="mt-4 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl">
         {episode.title}
       </h1>
-      <p class="mt-3 text-base text-[var(--color-dim)]">{episode.description}</p>
+      {summary && <p class="mt-3 text-base text-[var(--color-dim)]">{summary}</p>}
     </header>
 
     <div class="mt-8">

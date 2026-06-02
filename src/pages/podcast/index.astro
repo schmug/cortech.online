@@ -1,6 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { fetchEpisodes, formatChapterTimestamp } from '../../lib/episodes';
+import { fetchEpisodes, formatChapterTimestamp, summaryText } from '../../lib/episodes';
 
 const episodes = await fetchEpisodes();
 
@@ -57,7 +57,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
                 <h2 class="mt-1 text-xl font-[var(--font-display)] font-semibold text-[var(--color-text)] group-hover:text-[var(--color-amber)]">
                   {ep.title}
                 </h2>
-                <p class="mt-1 text-sm text-[var(--color-dim)]">{ep.description}</p>
+                <p class="mt-1 text-sm text-[var(--color-dim)]">{summaryText(ep.description)}</p>
               </a>
             </li>
           ))}

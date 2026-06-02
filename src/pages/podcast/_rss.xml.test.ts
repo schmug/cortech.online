@@ -116,6 +116,19 @@ describe('podcast rss.xml route', () => {
     expect(xml).toContain('https://cortech.online/podcast/foo-bar/');
   });
 
+  it('entity-escapes Spotify-flavored HTML descriptions instead of injecting raw tags', async () => {
+    // The manifest description is HTML; in RSS that is delivered as
+    // entity-escaped markup (the standard for show notes), so podcatchers
+    // decode and render it — never raw, unescaped tags in the XML.
+    episodesRef.current = [
+      makeEpisode({ description: '<p>Lead summary.</p><p>(0:00) - Intro</p>' }),
+    ];
+    const xml = await getXml();
+    const itemBlock = xml.split('<item>')[1] ?? '';
+    expect(itemBlock).toContain('&lt;p&gt;Lead summary.&lt;/p&gt;');
+    expect(itemBlock).not.toContain('<description><p>');
+  });
+
   it('marks explicit episodes per-item', async () => {
     episodesRef.current = [makeEpisode({ explicit: true })];
     const xml = await getXml();

@@ -81,6 +81,67 @@ export async function fetchEpisodes(): Promise<Episode[]> {
   return parsed.data.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
 }
 
+const NAMED_ENTITIES: Record<string, string> = {
+  amp: '&',
+  lt: '<',
+  gt: '>',
+  quot: '"',
+  apos: "'",
+  nbsp: ' ',
+};
+
+/** Decode the HTML entities clodcast emits (named + numeric) in one pass, so
+ * left-to-right replacement gets the `&amp;lt;` ordering right. Unknown
+ * entities are left intact. */
+function decodeEntities(text: string): string {
+  return text.replace(/&(#x[0-9a-fA-F]+|#\d+|[a-zA-Z][a-zA-Z0-9]*);/g, (match, body) => {
+    if (body[0] === '#') {
+      const codePoint =
+        body[1].toLowerCase() === 'x' ? parseInt(body.slice(2), 16) : parseInt(body.slice(1), 10);
+      if (codePoint < 0 || codePoint > 0x10ffff) return match;
+      try {
+        return String.fromCodePoint(codePoint);
+      } catch {
+        return match;
+      }
+    }
+    return NAMED_ENTITIES[body.toLowerCase()] ?? match;
+  });
+}
+
+const CHAPTER_LINE = /^\(\d{1,2}:\d{2}(?::\d{2})?\)/;
+
+/**
+ * Reduce the manifest `description` to a plain-text lead summary.
+ *
+ * Clodcast emits Spotify-flavored HTML — a lead `<p>summary</p>` followed by one
+ * `<p>(mm:ss) - Title - <a>source</a></p>` per chapter — because Spotify renders
+ * HTML with clickable timestamps in that field. On the web the chapters are
+ * rendered natively from `chapters[]`, and an escaped `{}` expression would show
+ * the tags literally, so we keep only the lead prose (paragraphs before the
+ * first timestamped chapter line), strip tags, and decode entities. The result
+ * is always plain text — callers render it through Astro's escaping, never
+ * `set:html`, so feed-derived content can't reach the DOM unescaped.
+ */
+export function summaryText(description: string): string {
+  const toText = (s: string) =>
+    decodeEntities(s.replace(/<[^>]+>/g, ''))
+      .replace(/\s+/g, ' ')
+      .trim();
+
+  const paragraphs = [...description.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/gi)].map((m) =>
+    toText(m[1]),
+  );
+  if (paragraphs.length === 0) return toText(description);
+
+  const lead: string[] = [];
+  for (const paragraph of paragraphs) {
+    if (CHAPTER_LINE.test(paragraph)) break;
+    if (paragraph) lead.push(paragraph);
+  }
+  return lead.join(' ');
+}
+
 /**
  * Format milliseconds as `H:MM:SS` (or `M:SS` under one hour) for chapter timestamps.
  */
