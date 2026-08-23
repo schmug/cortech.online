@@ -1,0 +1,27 @@
+[
+  {
+    "slug": "e2e-fixture-episode",
+    "title": "E2E Fixture Episode",
+    "description": "<p>A fixture episode built for the Playwright suite. Its chapters carry deliberately long source URLs so the layout is exercised at mobile widths.</p>",
+    "pubDate": "2026-01-02T10:00:00.000Z",
+    "mp3_url": "https://example.com/e2e-fixture-episode.mp3",
+    "mp3_bytes": 1234567,
+    "duration_s": 488.5,
+    "spotify_uri": "spotify:episode:0e2eFixtureEpisodeIdent",
+    "explicit": false,
+    "chapters": [
+      { "title": "Intro", "start_ms": 0, "source_url": null },
+      {
+        "title": "A chapter whose source URL is longer than the column",
+        "start_ms": 30109,
+        "source_url": "https://techcrunch.com/2026/08/21/private-equity-firm-apollo-confirms-data-breach-amid-hacking-wave-targeting-financial-giants/"
+      },
+      {
+        "title": "A chapter with a short source URL",
+        "start_ms": 79340,
+        "source_url": "https://danluu.com/perf-opt/"
+      },
+      { "title": "Sign-off", "start_ms": 471293, "source_url": null }
+    ]
+  }
+]
