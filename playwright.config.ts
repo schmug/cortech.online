@@ -1,4 +1,11 @@
+import { readFileSync } from 'node:fs';
 import { defineConfig, devices } from '@playwright/test';
+
+// The podcast routes only exist when EPISODES_MANIFEST_URL resolves, so the
+// suite serves its own fixture manifest inline as a data: URL — no network,
+// no R2 credentials, and production builds stay on the real manifest.
+const fixtureManifest = readFileSync('e2e/fixtures/podcast-manifest.json');
+const EPISODES_MANIFEST_URL = `data:application/json;base64,${fixtureManifest.toString('base64')}`;
 
 export default defineConfig({
   testDir: './e2e',
@@ -19,6 +26,7 @@ export default defineConfig({
     command: process.env.CI ? 'npm run build && npm run preview' : 'npm run dev',
     url: 'http://localhost:4321',
     reuseExistingServer: !process.env.CI,
+    env: { EPISODES_MANIFEST_URL },
     timeout: process.env.CI ? 120_000 : 60_000,
   },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
