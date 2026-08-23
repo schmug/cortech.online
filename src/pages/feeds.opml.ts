@@ -25,8 +25,9 @@ export const FEEDS: FeedEntry[] = [
     pagePath: '/mythos',
   },
   {
-    title: 'Daily Digest — Cortech',
-    description: 'A daily, AI-narrated digest of links worth your morning',
+    title: 'Cortech Daily',
+    description:
+      'About nine minutes each morning on AI, security, and Cloudflare — every item sourced',
     feedPath: '/podcast/rss.xml',
     pagePath: '/podcast',
   },

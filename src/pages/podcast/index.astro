@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { fetchEpisodes, formatChapterTimestamp, summaryText } from '../../lib/episodes';
+import { PODCAST_SOURCE_COUNT } from '../../lib/podcast-sources';
 
 const episodes = await fetchEpisodes();
 
@@ -13,10 +14,10 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
 
 <Base
   title="Podcast"
-  description="Daily Digest — a daily AI-narrated digest of links worth your morning. By Cory Schmug."
+  description="Cortech Daily — about nine minutes each morning on AI, security, and Cloudflare, every item linked to its source. By Schmug."
   canonical="https://cortech.online/podcast"
   feedUrl="/podcast/rss.xml"
-  feedTitle="Daily Digest — Cortech"
+  feedTitle="Cortech Daily"
 >
   <section class="mx-auto max-w-2xl px-6 pt-16 pb-10">
     <div>
@@ -24,12 +25,22 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
         Podcast
       </p>
       <h1 class="mt-2 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl">
-        Daily Digest
+        Cortech Daily
       </h1>
       <p class="mt-3 max-w-xl text-sm text-[var(--color-muted)]">
         AI-narrated daily walk through the links in my morning queue. Subscribe via the
         <a href="/podcast/rss.xml" class="text-[var(--color-amber)] hover:underline">podcast feed</a
         >. Individual episodes also publish to Spotify — see the per-episode page for the link.
+      </p>
+      <p class="mt-3 max-w-xl text-sm text-[var(--color-muted)]">
+        Want the sources instead of the summary? The <a
+          href="/podcast/sources.opml"
+          class="text-[var(--color-amber)] hover:underline"
+          >{PODCAST_SOURCE_COUNT} feeds this show reads</a
+        > are published as an OPML file your reader can import in one click — curated in <a
+          href="https://donthype.me"
+          class="text-[var(--color-amber)] hover:underline">Don't Hype Me</a
+        >. It's a snapshot, not a live mirror of my reader.
       </p>
     </div>
 
