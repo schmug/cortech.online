@@ -69,17 +69,29 @@ const meta =
     <header
       class="border-b border-[var(--color-border)] bg-[var(--color-void)]/80 backdrop-blur supports-[backdrop-filter]:bg-[var(--color-void)]/60"
     >
-      <div class="mx-auto flex max-w-4xl items-center justify-between gap-4 px-6 py-4 text-sm">
+      <div
+        class="mx-auto flex max-w-4xl flex-wrap items-center justify-between gap-x-3 gap-y-2 px-6 py-4 text-sm sm:gap-x-4"
+      >
         <a href="/" class="transition hover:text-[var(--color-amber)]">
           <Logo size={22} label="cortech.online" />
         </a>
-        <nav aria-label="Primary" class="flex items-center gap-5 text-[var(--color-muted)]">
-          <a href="/about" class="transition hover:text-[var(--color-text)]">About</a>
-          <a href="/projects" class="transition hover:text-[var(--color-text)]">Projects</a>
+        <!-- Sub-`sm` this row keeps a single line down to ~375px (tight gaps, no ↗);
+          narrower than that the nav wraps to its own line rather than overflowing the
+          viewport. `whitespace-nowrap` stops a label breaking apart mid-word. -->
+        <nav
+          aria-label="Primary"
+          class="flex flex-wrap items-center gap-x-3 gap-y-1 text-[var(--color-muted)] sm:gap-x-5"
+        >
+          <a href="/about" class="whitespace-nowrap transition hover:text-[var(--color-text)]"
+            >About</a
+          >
+          <a href="/projects" class="whitespace-nowrap transition hover:text-[var(--color-text)]"
+            >Projects</a
+          >
           <a
             href="https://github.com/schmug"
-            class="transition hover:text-[var(--color-text)]"
-            rel="noopener noreferrer">GitHub ↗</a
+            class="whitespace-nowrap transition hover:text-[var(--color-text)]"
+            rel="noopener noreferrer">GitHub<span class="hidden sm:inline"> ↗</span></a
           >
         </nav>
       </div>
