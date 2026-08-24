@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import RootShell from '../components/RootShell.tsx';
 import { apps } from '../apps/registry.ts';
+import { SHOWS } from '../lib/shows.ts';
 
 const flagships = apps.filter((a) => a.type === 'iframe');
 ---
@@ -59,6 +60,7 @@ const flagships = apps.filter((a) => a.type === 'iframe');
           <nav class="flex items-center gap-5 text-[var(--color-muted)]">
             <a href="/about" class="hover:text-[var(--color-text)]">About</a>
             <a href="/projects" class="hover:text-[var(--color-text)]">Projects</a>
+            <a href="/podcast" class="hover:text-[var(--color-text)]">Podcasts</a>
             <a
               href="https://github.com/schmug"
               rel="noopener noreferrer"
@@ -105,6 +107,43 @@ const flagships = apps.filter((a) => a.type === 'iframe');
                     </a>
                   </div>
                   <p class="mt-1 text-sm text-[var(--color-dim)]">{app.description}</p>
+                </li>
+              ))
+            }
+          </ul>
+        </section>
+
+        <section class="mt-10">
+          <h2 class="font-mono text-[11px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
+            Podcasts
+          </h2>
+          <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+            {
+              SHOWS.map((show) => (
+                <li class="flex gap-3 rounded-[var(--ct-radius)] border border-[var(--color-border)] p-4">
+                  <img
+                    src={show.coverSrc}
+                    alt={`${show.name} cover art`}
+                    width="1400"
+                    height="1400"
+                    class="h-12 w-12 shrink-0 rounded-md border border-[var(--color-border)]"
+                  />
+                  <div class="min-w-0">
+                    <a
+                      href={show.pagePath}
+                      class="font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]"
+                    >
+                      {show.name}
+                    </a>
+                    <p class="mt-1 text-sm text-[var(--color-dim)]">{show.tagline}</p>
+                    <a
+                      href={show.spotifyUrl}
+                      rel="noopener noreferrer"
+                      class="mt-2 inline-block text-sm text-[var(--color-amber)] hover:underline"
+                    >
+                      Listen on Spotify ↗
+                    </a>
+                  </div>
                 </li>
               ))
             }

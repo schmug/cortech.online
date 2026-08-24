@@ -2,8 +2,10 @@
 import Base from '../../layouts/Base.astro';
 import { formatChapterTimestamp, summaryText } from '../../lib/episodes';
 import { fetchFrontierEpisodes } from '../../lib/frontierEpisodes';
+import { showById } from '../../lib/shows';
 
 const episodes = await fetchFrontierEpisodes();
+const show = showById('frontier-commits')!;
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
@@ -44,12 +46,20 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
       </div>
     </div>
 
-    <p class="mt-6 max-w-xl text-sm text-[var(--color-muted)]">
-      Subscribe in any podcast app with the <a
-        href="/frontier-commits/rss.xml"
-        class="text-[var(--color-amber)] hover:underline">show feed</a
-      > — it carries the audio, so paste it straight into your player.
-    </p>
+    <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
+      <a
+        href={show.spotifyUrl}
+        rel="noopener noreferrer"
+        class="rounded-md bg-[var(--color-amber)] px-4 py-2 text-sm font-medium text-[var(--color-void)] transition hover:opacity-90"
+        >Listen on Spotify ↗</a
+      >
+      <p class="text-sm text-[var(--color-muted)]">
+        or subscribe in any player with the <a
+          href="/frontier-commits/rss.xml"
+          class="text-[var(--color-amber)] hover:underline">show feed</a
+        > — it carries the audio.
+      </p>
+    </div>
 
     {
       episodes.length === 0 ? (
