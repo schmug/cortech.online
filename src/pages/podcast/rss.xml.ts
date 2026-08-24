@@ -20,8 +20,11 @@ const PODCAST_DESCRIPTION =
 const AUTHOR = 'Schmug';
 const OWNER_NAME = 'Schmug';
 // Spotify re-verifies show ownership through this address; it must stay
-// deliverable (cortech.online is on Cloudflare Email Routing).
-const OWNER_EMAIL = 'cory@cortech.online';
+// deliverable (cortech.online is on Cloudflare Email Routing). Shared with
+// Frontier Commits so show mail is separable from personal mail — which also
+// means one broken routing rule takes down ownership verification for BOTH
+// shows, including this already-listed one.
+const OWNER_EMAIL = 'clodcast@cortech.online';
 const COPYRIGHT = '© 2026 Schmug';
 
 // Apple allows up to three categories, and only exact Apple Podcasts strings

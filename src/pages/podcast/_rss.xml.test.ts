@@ -82,6 +82,18 @@ describe('podcast rss.xml route', () => {
   // search, the blurb a stranger reads before subscribing, and the categories
   // that decide where it gets browsed. Pin every field so a future edit has to
   // be deliberate rather than accidental. Rationale: docs/podcast-metadata.md.
+  it('names clodcast@cortech.online as the owner, where Spotify mails the code', async () => {
+    // Both shows now route owner mail to one address, so show mail is separable
+    // from personal mail rather than from each other. This address is where
+    // Spotify re-verifies ownership of an already-listed show, so it must stay
+    // deliverable on Cloudflare Email Routing — losing it means losing the
+    // ability to prove ownership of a live show. Rationale:
+    // docs/podcast-metadata.md.
+    const xml = await getXml();
+    expect(xml).toContain('<itunes:name>Schmug</itunes:name>');
+    expect(xml).toContain('<itunes:email>clodcast@cortech.online</itunes:email>');
+  });
+
   it('titles the channel "Cortech Daily" with no special characters', async () => {
     const xml = await getXml();
     // The channel <title> is the first one in the document.
