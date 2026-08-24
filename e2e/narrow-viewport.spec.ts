@@ -17,6 +17,7 @@ const BASE_LAYOUT_PAGES = [
   '/blog',
   '/mythos',
   '/feeds',
+  '/podcasts',
   '/podcast',
   '/frontier-commits',
 ];

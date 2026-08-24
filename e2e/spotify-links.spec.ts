@@ -21,6 +21,52 @@ test.describe('show pages link Spotify', () => {
   }
 });
 
+test.describe('/podcasts index', () => {
+  // The nav item has always been labelled "Podcasts" while landing on Cortech
+  // Daily's own show page. This page is what the plural promises: every show in
+  // one place, rendered from SHOWS so a third one needs no edit here.
+
+  test('renders a complete card for every show', async ({ page }) => {
+    await page.goto('/podcasts');
+
+    for (const show of SHOWS) {
+      const card = page.locator('main li', { hasText: show.name }).first();
+
+      await expect(card.getByRole('link', { name: show.name })).toHaveAttribute(
+        'href',
+        show.pagePath,
+      );
+      await expect(
+        card.locator(`a[href="${show.spotifyUrl}"]`),
+        `${show.name} Spotify link`,
+      ).toBeVisible();
+      await expect(
+        card.locator(`a[href="${show.feedPath}"]`),
+        `${show.name} feed link`,
+      ).toBeVisible();
+      await expect(card.getByRole('img', { name: `${show.name} cover art` })).toBeVisible();
+    }
+  });
+
+  test('is where the primary nav sends Podcasts', async ({ page }) => {
+    await page.goto('/about');
+    await expect(
+      page.locator('header nav[aria-label="Primary"]').getByRole('link', { name: 'Podcasts' }),
+    ).toHaveAttribute('href', '/podcasts');
+  });
+
+  // /podcast and /podcasts are one character apart and both land in the
+  // sitemap. Distinct canonicals are what keeps them from reading as a
+  // duplicate of each other.
+  test('declares its own canonical', async ({ page }) => {
+    await page.goto('/podcasts');
+    await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+      'href',
+      'https://cortech.online/podcasts',
+    );
+  });
+});
+
 test.describe('homepage static layer', () => {
   // The static layer is hidden the moment JS runs, so it can only be asserted
   // with JS off — which is also exactly how crawlers and no-JS visitors see it.
@@ -49,7 +95,7 @@ test.describe('homepage static layer', () => {
     await page.goto('/');
     await expect(
       page.locator('#static-layer header').getByRole('link', { name: 'Podcasts' }),
-    ).toHaveAttribute('href', '/podcast');
+    ).toHaveAttribute('href', '/podcasts');
   });
 });
 
