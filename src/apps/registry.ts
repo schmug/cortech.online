@@ -48,6 +48,17 @@ export const apps: AppManifest[] = [
     allowMultiple: false,
   },
   {
+    id: 'podcasts',
+    name: 'Podcasts',
+    description: 'Cortech Daily and Frontier Commits — on Spotify or by feed.',
+    icon: '🎙️',
+    type: 'native',
+    component: () => import('../components/os/apps/PodcastsApp'),
+    defaultSize: { w: 720, h: 620 },
+    minSize: { w: 380, h: 420 },
+    allowMultiple: false,
+  },
+  {
     id: 'support',
     name: 'Support',
     description: 'Sponsor, tip, or star my work.',
