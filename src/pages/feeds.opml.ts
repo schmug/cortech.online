@@ -1,9 +1,10 @@
 import type { APIContext } from 'astro';
 
 // OPML 2.0 "subscription list" — a single file an RSS reader can import to
-// subscribe to every Cortech feed at once. The site's three feeds form a
-// hub-and-spoke: /rss.xml is the everything-firehose; mythos and podcast are
-// topic spokes. Keep this list in sync when a feed is added or removed.
+// subscribe to every Cortech feed at once. The site's feeds form a
+// hub-and-spoke: /rss.xml is the everything-firehose; mythos and the two
+// podcasts are topic spokes. Keep this list in sync when a feed is added or
+// removed — /feeds renders straight from it.
 type FeedEntry = {
   title: string;
   description: string;
@@ -30,6 +31,13 @@ export const FEEDS: FeedEntry[] = [
       'About nine minutes each morning on AI, security, and Cloudflare — every item sourced',
     feedPath: '/podcast/rss.xml',
     pagePath: '/podcast',
+  },
+  {
+    title: 'Frontier Commits',
+    description:
+      'Weekly, on what Anthropic, OpenAI, Google DeepMind, and xAI shipped on GitHub in public',
+    feedPath: '/frontier-commits/rss.xml',
+    pagePath: '/frontier-commits',
   },
 ];
 

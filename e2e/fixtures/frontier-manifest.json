@@ -1,0 +1,22 @@
+[
+  {
+    "slug": "e2e-frontier-fixture",
+    "title": "Frontier Commits — E2E Fixture Week",
+    "description": "<p>A fixture episode built for the Playwright suite: the labs' public GitHub activity for a week that never happened.</p><p>(0:00) - Intro</p>",
+    "pubDate": "2026-01-05T13:00:00.000Z",
+    "mp3_url": "https://example.com/e2e-frontier-fixture.mp3",
+    "mp3_bytes": 5242880,
+    "duration_s": 401.2,
+    "spotify_uri": null,
+    "explicit": false,
+    "chapters": [
+      { "title": "Intro", "start_ms": 0, "source_url": null },
+      {
+        "title": "A chapter whose source URL is longer than the column",
+        "start_ms": 32000,
+        "source_url": "https://github.com/anthropics/some-repository-with-a-deliberately-long-name/releases/tag/v2026.08.17"
+      },
+      { "title": "Sign-off", "start_ms": 395000, "source_url": null }
+    ]
+  }
+]
