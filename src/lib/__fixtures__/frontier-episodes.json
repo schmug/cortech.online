@@ -1,0 +1,36 @@
+[
+  {
+    "slug": "2026-08-17-frontier-commits",
+    "title": "Frontier Commits — week of August 17, 2026",
+    "description": "<p>Anthropic opens a new agents repo, OpenAI archives two evals harnesses, and DeepMind cuts its first release in a month.</p><p>(0:00) - Intro</p><p>(0:32) - anthropics/agent-runtime goes public - <a href=\"https://github.com/anthropics\">source</a></p><p>(6:41) - Sign-off</p>",
+    "pubDate": "2026-08-17T13:00:00Z",
+    "mp3_url": "https://clodcast.cortech.online/2026-08-17-frontier-commits.mp3",
+    "mp3_bytes": 5242880,
+    "duration_s": 401.2,
+    "chapters": [
+      { "title": "Intro", "start_ms": 0, "source_url": null },
+      {
+        "title": "anthropics/agent-runtime goes public",
+        "start_ms": 32000,
+        "source_url": "https://github.com/anthropics"
+      },
+      { "title": "Sign-off", "start_ms": 395000, "source_url": null }
+    ],
+    "spotify_uri": null,
+    "cover_url": null,
+    "explicit": false
+  },
+  {
+    "slug": "2026-08-10-frontier-commits",
+    "title": "Frontier Commits — week of August 10, 2026",
+    "description": "<p>A quiet week at the labs: three releases, one archival, and a rename nobody announced.</p><p>(0:00) - Intro</p>",
+    "pubDate": "2026-08-10T13:00:00Z",
+    "mp3_url": "https://clodcast.cortech.online/2026-08-10-frontier-commits.mp3",
+    "mp3_bytes": 4718592,
+    "duration_s": 362.8,
+    "chapters": [{ "title": "Intro", "start_ms": 0, "source_url": null }],
+    "spotify_uri": null,
+    "cover_url": null,
+    "explicit": false
+  }
+]

@@ -5,6 +5,10 @@ import { z } from 'zod';
 // under <bucket>/manifest.json and one mp3 under <bucket>/<slug>.mp3.
 // The manifest is a flat array of EpisodeEntry — the newest episodes
 // first, but the consumer sorts defensively anyway.
+//
+// Every clodcast show writes this same entry shape to its own manifest, so
+// the schema and the loader below are shared: a second show adds a module
+// that supplies a URL (see frontierEpisodes.ts), not a second copy of this.
 
 const chapterSchema = z.object({
   title: z.string(),
@@ -12,7 +16,7 @@ const chapterSchema = z.object({
   source_url: z.url().nullable().optional(),
 });
 
-const episodeSchema = z.object({
+export const episodeSchema = z.object({
   slug: z.string().regex(/^[a-z0-9-]+$/, 'slug must be lowercase kebab-case'),
   title: z.string(),
   description: z.string(),
@@ -43,8 +47,16 @@ function manifestUrl(): string | null {
   return url && url.trim() ? url.trim() : null;
 }
 
-export async function fetchEpisodes(): Promise<Episode[]> {
-  const url = manifestUrl();
+/**
+ * Load one show's manifest at build time, newest episode first.
+ *
+ * Never throws and never fails the build: a null URL, a 404 (the manifest of a
+ * show whose first episode hasn't shipped), a transport error, malformed JSON,
+ * and a schema mismatch all degrade to an empty list, which every consumer
+ * renders as an empty state. `label` only tags the warnings, so one show's
+ * broken manifest is identifiable in the build log.
+ */
+export async function fetchEpisodeManifest(url: string | null, label: string): Promise<Episode[]> {
   if (!url) return [];
 
   let res: Response;
@@ -54,13 +66,13 @@ export async function fetchEpisodes(): Promise<Episode[]> {
       signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
     });
   } catch (err) {
-    console.warn(`[episodes] manifest fetch failed: ${(err as Error).message}`);
+    console.warn(`[${label}] manifest fetch failed: ${(err as Error).message}`);
     return [];
   }
 
   if (res.status === 404) return [];
   if (!res.ok) {
-    console.warn(`[episodes] manifest ${url} returned ${res.status} ${res.statusText}`);
+    console.warn(`[${label}] manifest ${url} returned ${res.status} ${res.statusText}`);
     return [];
   }
 
@@ -68,17 +80,21 @@ export async function fetchEpisodes(): Promise<Episode[]> {
   try {
     raw = await res.json();
   } catch (err) {
-    console.warn(`[episodes] manifest parse failed: ${(err as Error).message}`);
+    console.warn(`[${label}] manifest parse failed: ${(err as Error).message}`);
     return [];
   }
 
   const parsed = manifestSchema.safeParse(raw);
   if (!parsed.success) {
-    console.warn(`[episodes] manifest validation failed: ${parsed.error.message}`);
+    console.warn(`[${label}] manifest validation failed: ${parsed.error.message}`);
     return [];
   }
 
   return parsed.data.sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+}
+
+export async function fetchEpisodes(): Promise<Episode[]> {
+  return fetchEpisodeManifest(manifestUrl(), 'episodes');
 }
 
 const NAMED_ENTITIES: Record<string, string> = {

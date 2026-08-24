@@ -1,5 +1,9 @@
 # Podcast show metadata — decisions and rationale
 
+The site publishes two shows. Everything above the "Frontier Commits" heading is about
+**Cortech Daily** ([src/pages/podcast/](../src/pages/podcast/)); the second show has its own
+section at the bottom.
+
 The channel block in [src/pages/podcast/rss.xml.ts](../src/pages/podcast/rss.xml.ts) stopped
 being page metadata on **2026-08-23**, when the feed became the source of record for a public
 Spotify show ([2r9MIeNT0aVkbcaLRUeMqM](https://open.spotify.com/show/2r9MIeNT0aVkbcaLRUeMqM)).
@@ -74,3 +78,47 @@ are optional.
 
 `_rss.xml.test.ts` pins the channel metadata and proves that inserting an older episode does not
 renumber existing ones.
+
+---
+
+# Frontier Commits
+
+The second clodcast show — weekly, on what the frontier AI labs (Anthropic, OpenAI, Google
+DeepMind, xAI) push to their public GitHub orgs. Page and feed:
+[src/pages/frontier-commits/](../src/pages/frontier-commits/); manifest loader:
+[src/lib/frontierEpisodes.ts](../src/lib/frontierEpisodes.ts). Added by
+[#192](https://github.com/schmug/cortech.online/issues/192).
+
+**This show is RSS-first.** Nothing publishes it to a directory on its behalf, so
+`rss.xml` _is_ the show: the URL a listener subscribes to and the one submitted to Spotify
+([#193](https://github.com/schmug/cortech.online/issues/193)). The same one-way door applies —
+once a directory has polled the feed, `<title>` renames a public show.
+
+## Decisions
+
+| Field                 | Value                                                                | Why                                                                                                                                                                                                                                                                    |
+| --------------------- | -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PODCAST_TITLE`       | `Frontier Commits`                                                   | Two words, no special characters, no generic "podcast"/"pod" — the same SEO checklist Cortech Daily's title was rewritten against. Names the subject (the labs' commits) rather than the format.                                                                       |
+| `PODCAST_DESCRIPTION` | see source                                                           | Leads with listener value, names the four labs by name so search has keywords to match, and states the promise (weekly, sourced). **The AI-narration disclosure is load-bearing and must stay** — Spotify prunes undisclosed AI-generated shows.                       |
+| `OWNER_EMAIL`         | `clodcast@cortech.online`                                            | Distinct from Cortech Daily's `cory@cortech.online` so show mail is separable. Spotify mails the submission verification code here, so **it must be a deliverable address on Cloudflare Email Routing before #193 is attempted** — that routing was not verified here. |
+| `CATEGORIES`          | `Technology`; `News` → `Tech News`                                   | Exact Apple strings; invented ones are silently dropped. Two rather than the allowed three — the show is genuinely tech news, and no third category fits without inventing a stretch. `Education > How To` in particular does not apply.                               |
+| `COVER_URL`           | [`frontier-commits-cover.jpg`](../public/frontier-commits-cover.jpg) | 1400×1400 JPEG, the square minimum both Apple and Spotify accept. Because "Frontier Commits" does not itself convey the subject, the art carries the tagline "the labs' open-source moves, weekly".                                                                    |
+| `language`            | `en-us`                                                              | Matches Cortech Daily rather than a bare `en`; both are valid and consistency wins.                                                                                                                                                                                    |
+
+## No `itunes:episode`
+
+Cortech Daily derives its episode number from the publish date against a fixed epoch, because
+deriving it from feed position renumbered the back catalogue whenever an older episode was
+back-filled. Frontier Commits emits **no** `itunes:episode` at all: the tag is optional for an
+`episodic` show, a weekly number needs an epoch, and the first episode has not shipped, so there
+is no date to anchor one to. Add numbering when episode 1 has a publish date — never from
+position in the feed.
+
+## Until the first episode ships
+
+`FRONTIER_MANIFEST_URL` defaults to the real R2 path, which **404s until clodcast publishes**, so
+every build until then degrades to an empty episode list and a clean empty state. That is the
+production path on merge day, not an edge case, and
+[frontierEpisodes.test.ts](../src/lib/frontierEpisodes.test.ts) pins it. The env var exists to
+point a build at a fixture (the Playwright suite does) or, set empty, to opt a build out of the
+fetch entirely.

@@ -7,10 +7,19 @@ const NARROW = { width: 320, height: 640 };
 
 // Content pages that render the shared header/footer from src/layouts/Base.astro.
 // `/` is excluded — it hydrates the OS shell, which owns its own layout. Episode
-// detail pages (`/podcast/<slug>`) are excluded because their slugs come from a
-// remote manifest at build time; the `/podcast` index is deterministic (the fetch
-// degrades to an empty list) so it is covered here.
-const BASE_LAYOUT_PAGES = ['/about', '/projects', '/blog', '/mythos', '/feeds', '/podcast'];
+// detail pages (`/podcast/<slug>`, `/frontier-commits/<slug>`) are excluded
+// because their slugs come from a remote manifest at build time; both show
+// indexes are deterministic (the fetch degrades to an empty list) so they are
+// covered here.
+const BASE_LAYOUT_PAGES = [
+  '/about',
+  '/projects',
+  '/blog',
+  '/mythos',
+  '/feeds',
+  '/podcast',
+  '/frontier-commits',
+];
 
 /** Elements whose right edge sticks out past the viewport, with a 1px slack for
  * subpixel rounding. Returns tag + class so a failure names the culprit. */
