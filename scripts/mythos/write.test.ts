@@ -70,4 +70,30 @@ describe('writePostAndSnapshot()', () => {
     const snap = JSON.parse(readFileSync(snapPath, 'utf8'));
     expect(snap.revealed_cve_ids).toEqual(['CVE-2026-0001', 'CVE-2026-0002']);
   });
+
+  it('emits markdown that is already prettier-clean, even with many ids', async () => {
+    // A real catch-up post carries ~94 identifiers and ~112 projects. Inline
+    // flow arrays blow past printWidth, so prettier rewrites the file and
+    // format:check fails CI on every generated post.
+    const many: Post = {
+      ...post,
+      frontmatter: {
+        ...post.frontmatter,
+        cve_ids: Array.from({ length: 94 }, (_, i) => `CVE-2026-${10000 + i}`),
+        projects: Array.from({ length: 112 }, (_, i) => `org-${i}/project-${i}`),
+      },
+    };
+    writePostAndSnapshot({
+      post: many,
+      digest,
+      postsDir: join(dir, 'src/content/mythos'),
+      snapshotPath: join(dir, 'src/content/mythos/_data/snapshot.json'),
+    });
+    const written = readFileSync(join(dir, `src/content/mythos/${many.slug}.md`), 'utf8');
+
+    const prettier = await import('prettier');
+    const config = await prettier.resolveConfig('post.md');
+    const formatted = await prettier.format(written, { ...config, parser: 'markdown' });
+    expect(formatted).toBe(written);
+  });
 });

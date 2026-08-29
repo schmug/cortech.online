@@ -25,9 +25,9 @@ function renderMarkdown(post: Post): string {
     `title: ${yamlString(fm.title)}`,
     `description: ${yamlString(fm.description)}`,
     `pubDate: ${fm.pubDate}`,
-    `triggers: [${fm.triggers.map(yamlString).join(', ')}]`,
-    `cve_ids: [${fm.cve_ids.map(yamlString).join(', ')}]`,
-    `projects: [${fm.projects.map(yamlString).join(', ')}]`,
+    yamlList('triggers', fm.triggers),
+    yamlList('cve_ids', fm.cve_ids),
+    yamlList('projects', fm.projects),
     `headline_snapshot:`,
     `  disclosed: ${fm.headline_snapshot.disclosed}`,
     `  acknowledged: ${fm.headline_snapshot.acknowledged}`,
@@ -35,6 +35,17 @@ function renderMarkdown(post: Post): string {
     `  advisories: ${fm.headline_snapshot.advisories}`,
   ].join('\n');
   return `---\n${yaml}\n---\n\n${post.body}\n`;
+}
+
+/**
+ * Block-style sequence, one item per line. A catch-up post carries ~94
+ * identifiers and ~112 projects; as an inline flow array that overruns
+ * prettier's printWidth, so prettier rewrites the file and every generated
+ * post fails format:check in CI. Block style is stable at any length.
+ */
+function yamlList(key: string, items: string[]): string {
+  if (items.length === 0) return `${key}: []`;
+  return [`${key}:`, ...items.map((i) => `  - ${yamlString(i)}`)].join('\n');
 }
 
 function yamlString(s: string): string {
