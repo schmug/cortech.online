@@ -1,14 +1,31 @@
 /**
- * Generates synthetic history.jsonl for visual mockup of the timeline.
+ * Retired: generates SYNTHETIC history for a visual mockup of the timeline.
  *
- * Real history will be appended by the daily workflow once it lands; this
- * script seeds enough days of plausible data to demo the chart before then.
- * Re-run anytime: it overwrites the file.
+ * The 90 rows this once wrote were live on /mythos for three months, charting
+ * `mulberry32` noise as if it were disclosure history (#223). Real history is
+ * recoverable from `headline.severity_cube` and is rebuilt by
+ * `npm run mythos:history`; run.ts appends a real row per tracker run. Nothing
+ * here is real data — do not point it at the published file.
  *
- *   npx tsx scripts/mythos/seed-history.ts
+ * Kept only for redesigning the chart against a long series offline, and it now
+ * refuses to run without both flags, so it cannot clobber real history again:
+ *
+ *   npx tsx scripts/mythos/seed-history.ts --seed --out=/tmp/mockup.jsonl
  */
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
+
+const args = process.argv.slice(2);
+const outFlag = args.find((a) => a.startsWith('--out='))?.slice('--out='.length);
+if (!args.includes('--seed') || !outFlag) {
+  console.error(
+    'seed-history.ts writes SYNTHETIC data and is retired.\n' +
+      'Real history: npm run mythos:history (rebuild) or npm run mythos:run (append).\n' +
+      'To generate a throwaway mockup anyway:\n' +
+      '  npx tsx scripts/mythos/seed-history.ts --seed --out=/tmp/mockup.jsonl',
+  );
+  process.exit(1);
+}
 
 type HistoryRow = {
   date: string;
@@ -110,7 +127,7 @@ for (let i = 0; i < DAYS; i++) {
   });
 }
 
-const out = resolve('src/content/mythos/_data/history.jsonl');
+const out = resolve(outFlag);
 mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, rows.map((r) => JSON.stringify(r)).join('\n') + '\n', 'utf8');
 console.log(`wrote ${rows.length} rows → ${out}`);

@@ -6,8 +6,14 @@ export type HistoryRow = {
   acknowledged: number;
   fixed: number;
   advisories: number;
-  median_days_to_ack: number;
-  median_days_to_patch: number;
+  /**
+   * Absent on rows reconstructed from the dashboard's severity cube: the
+   * payload carries the medians only as current scalars, with no per-day
+   * history. The lag readout hides itself for a row that has none rather than
+   * substituting a value that was never measured.
+   */
+  median_days_to_ack?: number;
+  median_days_to_patch?: number;
   severity: {
     critical: number;
     high: number;
@@ -145,18 +151,33 @@ export default function Timeline({ history }: Props) {
     });
   }, [stackedSeries, xFor, yFor]);
 
-  // Lag bar — twin sparklines
-  const lagMax = useMemo(
-    () => Math.max(1, ...history.map((r) => r.median_days_to_patch)) * 1.1,
+  // Lag bar — twin sparklines. Drawn only over the days that actually measured a
+  // lag; a run of backfilled rows in the middle would otherwise be drawn as a
+  // straight line through values nobody recorded.
+  const hasLag = useMemo(
+    () => history.some((r) => r.median_days_to_patch != null || r.median_days_to_ack != null),
     [history],
   );
+  const lagMax = useMemo(() => {
+    const vals = history.map((r) => r.median_days_to_patch).filter((v): v is number => v != null);
+    return Math.max(1, ...vals) * 1.1;
+  }, [history]);
   const lagPath = useCallback(
     (key: 'median_days_to_ack' | 'median_days_to_patch') => {
       let d = '';
+      let pen: 'M' | 'L' = 'M';
       history.forEach((row, i) => {
+        const v = row[key];
+        if (v == null) {
+          // Lift the pen: the next defined point starts a new segment rather
+          // than bridging the gap.
+          pen = 'M';
+          return;
+        }
         const x = xFor(i);
-        const y = LAG_HEIGHT - (row[key] / lagMax) * LAG_HEIGHT;
-        d += (i === 0 ? 'M' : 'L') + x.toFixed(1) + ',' + y.toFixed(1);
+        const y = LAG_HEIGHT - (v / lagMax) * LAG_HEIGHT;
+        d += pen + x.toFixed(1) + ',' + y.toFixed(1);
+        pen = 'L';
       });
       return d;
     },
@@ -300,12 +321,14 @@ export default function Timeline({ history }: Props) {
               Patch debt{' '}
               <span className="text-[var(--color-text)]">{patchGap.toLocaleString()}</span>
             </span>
-            <span className="text-[var(--color-muted)]">
-              Median patch lag{' '}
-              <span className="text-[var(--color-text)]">
-                {active?.median_days_to_patch.toFixed(1)}d
+            {active?.median_days_to_patch != null && (
+              <span className="text-[var(--color-muted)]">
+                Median patch lag{' '}
+                <span className="text-[var(--color-text)]">
+                  {active.median_days_to_patch.toFixed(1)}d
+                </span>
               </span>
-            </span>
+            )}
           </>
         ) : (
           <>
@@ -443,60 +466,68 @@ export default function Timeline({ history }: Props) {
         </g>
       </svg>
 
-      {/* Lag bar */}
-      <div className="mt-2 border-t border-[var(--color-border)]/60 pt-2">
-        <div className="flex items-center justify-between font-mono text-[10px] tracking-wide text-[var(--color-muted)] uppercase">
-          <span>Median lag (days)</span>
-          <span className="flex gap-3">
-            <span>
-              <span
-                className="mr-1 inline-block h-1.5 w-3 align-middle"
-                style={{ background: 'var(--color-cyan)' }}
-              />
-              ack {active?.median_days_to_ack.toFixed(2)}d
+      {/* Lag bar — only for a series that carries measured lags at all. */}
+      {hasLag && (
+        <div className="mt-2 border-t border-[var(--color-border)]/60 pt-2">
+          <div className="flex items-center justify-between font-mono text-[10px] tracking-wide text-[var(--color-muted)] uppercase">
+            <span>Median lag (days)</span>
+            <span className="flex gap-3">
+              <span>
+                <span
+                  className="mr-1 inline-block h-1.5 w-3 align-middle"
+                  style={{ background: 'var(--color-cyan)' }}
+                />
+                ack{' '}
+                {active?.median_days_to_ack != null
+                  ? `${active.median_days_to_ack.toFixed(2)}d`
+                  : 'n/a'}
+              </span>
+              <span>
+                <span
+                  className="mr-1 inline-block h-1.5 w-3 align-middle"
+                  style={{ background: 'var(--color-hot)' }}
+                />
+                patch{' '}
+                {active?.median_days_to_patch != null
+                  ? `${active.median_days_to_patch.toFixed(1)}d`
+                  : 'n/a'}
+              </span>
             </span>
-            <span>
-              <span
-                className="mr-1 inline-block h-1.5 w-3 align-middle"
-                style={{ background: 'var(--color-hot)' }}
+          </div>
+          <svg
+            viewBox={`0 0 ${width} ${LAG_HEIGHT}`}
+            width="100%"
+            height={LAG_HEIGHT}
+            className="block"
+          >
+            <g transform={`translate(${PAD.left} 0)`}>
+              <path
+                d={lagPath('median_days_to_patch')}
+                fill="none"
+                stroke="var(--color-hot)"
+                strokeWidth={1.5}
               />
-              patch {active?.median_days_to_patch.toFixed(1)}d
-            </span>
-          </span>
+              <path
+                d={lagPath('median_days_to_ack')}
+                fill="none"
+                stroke="var(--color-cyan)"
+                strokeWidth={1.5}
+              />
+              {cursor != null && (
+                <line
+                  x1={xFor(cursor)}
+                  x2={xFor(cursor)}
+                  y1={0}
+                  y2={LAG_HEIGHT}
+                  stroke="var(--color-text)"
+                  strokeOpacity={0.5}
+                  strokeDasharray="3 3"
+                />
+              )}
+            </g>
+          </svg>
         </div>
-        <svg
-          viewBox={`0 0 ${width} ${LAG_HEIGHT}`}
-          width="100%"
-          height={LAG_HEIGHT}
-          className="block"
-        >
-          <g transform={`translate(${PAD.left} 0)`}>
-            <path
-              d={lagPath('median_days_to_patch')}
-              fill="none"
-              stroke="var(--color-hot)"
-              strokeWidth={1.5}
-            />
-            <path
-              d={lagPath('median_days_to_ack')}
-              fill="none"
-              stroke="var(--color-cyan)"
-              strokeWidth={1.5}
-            />
-            {cursor != null && (
-              <line
-                x1={xFor(cursor)}
-                x2={xFor(cursor)}
-                y1={0}
-                y2={LAG_HEIGHT}
-                stroke="var(--color-text)"
-                strokeOpacity={0.5}
-                strokeDasharray="3 3"
-              />
-            )}
-          </g>
-        </svg>
-      </div>
+      )}
 
       <p className="mt-3 text-[10px] text-[var(--color-muted)]">
         Hover, click a legend chip, or focus the chart and use ← → (shift = week, home/end = bounds)

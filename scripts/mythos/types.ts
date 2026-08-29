@@ -56,3 +56,23 @@ export type Trigger =
       top_reason: string;
       top_reason_count: number;
     };
+
+/** One day of a `headline.severity_cube` series: items that landed that day, by severity cell. */
+export type CubeDay = { date: string; cells: Record<string, number> };
+export type CubeSeries = { days: CubeDay[] };
+
+/**
+ * Only the series the backfills read; the real cube carries more. Cell keys are
+ * `claude|maintainer|vendor` severity triples, and each series' days sum to its
+ * headline total — which is what makes a running total genuine history rather
+ * than an interpolation.
+ */
+export type SeverityCube = {
+  disclosed: CubeSeries;
+  acknowledged: CubeSeries;
+  fixed_in_response: CubeSeries;
+  advisories: CubeSeries;
+  analyzed: CubeSeries;
+  triaged: CubeSeries;
+  verified: CubeSeries;
+};
