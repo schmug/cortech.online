@@ -104,4 +104,38 @@ describe('triggersFor()', () => {
       bug_class: 'xss',
     });
   });
+  it('detects a withdrawal surge and carries its denominator', () => {
+    const ts = triggersFor(loadDigest('old'), loadDigest('new'), loadRaw('new'));
+    const surges = ts.filter((t) => t.kind === 'withdrawal_surge');
+    expect(surges).toHaveLength(1);
+    expect(surges[0]).toMatchObject({
+      kind: 'withdrawal_surge',
+      delta: 6,
+      total: 8,
+      of_total: 16,
+      top_reason: 'mistake',
+      top_reason_count: 5,
+    });
+  });
+
+  it('ignores a withdrawal delta below the threshold', () => {
+    const o = loadDigest('new');
+    const n: Digest = {
+      ...o,
+      ledger: {
+        ...o.ledger!,
+        withdrawals: { ...o.ledger!.withdrawals, total: o.ledger!.withdrawals.total + 1 },
+      },
+    };
+    expect(triggersFor(o, n).filter((t) => t.kind === 'withdrawal_surge')).toEqual([]);
+  });
+
+  it('skips the withdrawal trigger when the previous snapshot predates ledger aggregation', () => {
+    // The snapshot on main was written before digest() read the ledger.
+    const legacy: Digest = { ...loadDigest('old') };
+    delete legacy.ledger;
+    const ts = triggersFor(legacy, loadDigest('new'), loadRaw('new'));
+    expect(ts.filter((t) => t.kind === 'withdrawal_surge')).toEqual([]);
+    expect(ts.filter((t) => t.kind === 'revealed')).toHaveLength(1);
+  });
 });

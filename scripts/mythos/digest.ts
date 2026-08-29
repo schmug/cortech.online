@@ -1,3 +1,5 @@
+import { aggregateLedger } from './ledger';
+import type { LedgerEntry } from './ledger';
 import type { Digest, SeverityBucket } from './types';
 
 type RawPayload = {
@@ -26,6 +28,7 @@ type RawPayload = {
     identifier: string;
     findings: Array<{ project: string; bug_class: string; ecosystem: string }>;
   }>;
+  ledger?: LedgerEntry[];
 };
 
 export function digest(raw: RawPayload, fetchedAt: string): Digest {
@@ -59,5 +62,6 @@ export function digest(raw: RawPayload, fetchedAt: string): Digest {
     by_ecosystem: { ...raw.by_ecosystem },
     project_names: projectNames,
     revealed_cve_ids: cveIds,
+    ...(raw.ledger ? { ledger: aggregateLedger(raw.ledger) } : {}),
   };
 }

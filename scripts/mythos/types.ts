@@ -1,3 +1,5 @@
+import type { LedgerAggregates } from './ledger';
+
 export type SeverityBucket = {
   critical: number;
   high: number;
@@ -27,6 +29,11 @@ export type Digest = {
   by_ecosystem: Record<string, SeverityBucket>;
   project_names: string[];
   revealed_cve_ids: string[];
+  /**
+   * Aggregates over the payload's `ledger[]`. Optional because snapshots
+   * written before ledger support have no such block; readers must guard.
+   */
+  ledger?: LedgerAggregates;
 };
 
 export type Trigger =
@@ -39,4 +46,13 @@ export type Trigger =
       from: number;
       to: number;
       pct_change: number;
+    }
+  | {
+      kind: 'withdrawal_surge';
+      delta: number;
+      total: number;
+      /** Ledger entries the `total` is drawn from. */
+      of_total: number;
+      top_reason: string;
+      top_reason_count: number;
     };

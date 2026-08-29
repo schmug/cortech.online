@@ -20,7 +20,9 @@ const mythos = defineCollection({
     title: z.string(),
     description: z.string(),
     pubDate: z.coerce.date(),
-    triggers: z.array(z.enum(['revealed', 'new_project', 'bug_class_shift', 'funnel_shift'])),
+    triggers: z.array(
+      z.enum(['revealed', 'new_project', 'bug_class_shift', 'funnel_shift', 'withdrawal_surge']),
+    ),
     cve_ids: z.array(z.string()).default([]),
     projects: z.array(z.string()).default([]),
     headline_snapshot: z.object({

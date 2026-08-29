@@ -46,4 +46,43 @@ describe('digest()', () => {
     expect(d.as_of).toBe('2026-05-23T17:27:03Z');
     expect(d.fetched_at).toBe('2026-05-24T19:00:00Z');
   });
+  it('aggregates the ledger, carrying a denominator for every sparse figure', () => {
+    const d = digest(rawNew, '2026-05-24T19:00:00Z');
+    expect(d.ledger?.total).toBe(16);
+    expect(d.ledger?.withdrawals).toEqual({ total: 8, by_reason: { duplicate: 3, mistake: 5 } });
+    expect(d.ledger?.funnel).toEqual({
+      acknowledged_by_maintainer: 2,
+      discovered: 9,
+      revealed: 3,
+      sent: 2,
+    });
+    expect(d.ledger?.severity_agreement).toEqual({
+      rated_pairs: 4,
+      agree: 1,
+      disagree: 3,
+      claude_higher: 2,
+      maintainer_higher: 1,
+      disagree_pct: 75,
+    });
+    expect(d.ledger?.latency.discovery_to_reveal).toEqual({
+      median_days: 100,
+      sample: 3,
+      excluded_negative: 0,
+    });
+  });
+
+  it('excludes the fixture patch dated before its discovery from the median', () => {
+    const d = digest(rawNew, '2026-05-24T19:00:00Z');
+    expect(d.ledger?.latency.discovery_to_patch).toEqual({
+      median_days: 45,
+      sample: 2,
+      excluded_negative: 1,
+    });
+  });
+
+  it('omits the ledger block for a payload that has no ledger', () => {
+    const withoutLedger = { ...rawNew };
+    delete withoutLedger.ledger;
+    expect(digest(withoutLedger, '2026-05-24T19:00:00Z').ledger).toBeUndefined();
+  });
 });

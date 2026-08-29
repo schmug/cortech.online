@@ -3,6 +3,7 @@ import type { Digest, Trigger } from './types';
 export const BUG_CLASS_MIN_DELTA = 5;
 export const BUG_CLASS_MIN_PCT = 25;
 export const FUNNEL_MIN_PCT = 5;
+export const WITHDRAWAL_MIN_DELTA = 5;
 
 // Shape of the raw payload fields we need for enrichment. Matches the real
 // red.anthropic.com payload: cve_records[].identifier + findings[0] with
@@ -78,6 +79,28 @@ export function triggersFor(oldD: Digest, newD: Digest, newRaw?: RawForEnrichmen
     const pct = Math.abs(((to - from) / from) * 100);
     if (pct < FUNNEL_MIN_PCT) continue;
     triggers.push({ kind: 'funnel_shift', metric, from, to, pct_change: pct });
+  }
+
+  const oldLedger = oldD.ledger;
+  const newLedger = newD.ledger;
+  // Both sides need aggregates: a snapshot written before ledger support has
+  // none, and treating its absence as zero would report every withdrawal ever
+  // recorded as today's surge.
+  if (oldLedger && newLedger) {
+    const delta = newLedger.withdrawals.total - oldLedger.withdrawals.total;
+    if (delta >= WITHDRAWAL_MIN_DELTA) {
+      const [topReason, topCount] = Object.entries(newLedger.withdrawals.by_reason).sort(
+        ([, a], [, b]) => b - a,
+      )[0] ?? ['unspecified', 0];
+      triggers.push({
+        kind: 'withdrawal_surge',
+        delta,
+        total: newLedger.withdrawals.total,
+        of_total: newLedger.total,
+        top_reason: topReason,
+        top_reason_count: topCount,
+      });
+    }
   }
 
   return triggers;
