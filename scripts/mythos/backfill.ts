@@ -36,7 +36,7 @@ import type { RawPayload, RevealRecord } from './digest';
 import { triggersFor } from './triggers';
 import { renderPost } from './generate';
 import { claudeCliCallLlm, type CallLlm } from './llm';
-import { writePost } from './write';
+import { prettyBody, writePost } from './write';
 import type { Digest, Trigger } from './types';
 
 const PAYLOAD_URL = 'https://red.anthropic.com/2026/cvd/data/payload.json';
@@ -294,18 +294,6 @@ export function eventScopedLlm(base: CallLlm, event: RevealEvent): CallLlm {
   };
 }
 
-/**
- * Normalize a generated body to prettier's own output. The model emits
- * `*emphasis*` some runs and `_emphasis_` others; prettier rewrites the first
- * form, so an unnormalized post fails format:check in CI and blocks the PR —
- * the same class of failure #214 fixed for generated frontmatter.
- */
-export async function prettyBody(body: string): Promise<string> {
-  const prettier = await import('prettier');
-  const config = await prettier.resolveConfig(join(POSTS_DIR, 'post.md'));
-  return (await prettier.format(body, { ...config, parser: 'markdown' })).trimEnd();
-}
-
 function summarize(event: RevealEvent): string {
   const projects = new Map<string, number>();
   const classes = new Map<string, number>();
@@ -390,7 +378,7 @@ async function main(): Promise<void> {
       console.log(post.body);
       continue;
     }
-    writePost({ post, postsDir: POSTS_DIR });
+    await writePost({ post, postsDir: POSTS_DIR });
     console.log(
       `[backfill] wrote ${post.slug}.md (${post.frontmatter.cve_ids.length} identifiers)`,
     );
