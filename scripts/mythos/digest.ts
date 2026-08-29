@@ -2,7 +2,19 @@ import { aggregateLedger } from './ledger';
 import type { LedgerEntry } from './ledger';
 import type { Digest, SeverityBucket } from './types';
 
-type RawPayload = {
+/**
+ * One revealed identifier. `revealed_at` / `discovered_on` are unused by
+ * digest() but are the whole basis of the one-off backfill in backfill.ts,
+ * which partitions the payload by reveal date.
+ */
+export type RevealRecord = {
+  identifier: string;
+  revealed_at: string;
+  discovered_on: string;
+  findings: Array<{ project: string; bug_class: string; ecosystem: string }>;
+};
+
+export type RawPayload = {
   as_of: string;
   headline: {
     disclosed: number;
@@ -19,15 +31,9 @@ type RawPayload = {
   by_bug_class: Record<string, number>;
   by_ecosystem: Record<string, SeverityBucket>;
   by_project: Array<{ project: string; ecosystem: string; cve_ids: string[] }>;
-  cve_records: Array<{
-    identifier: string;
-    findings: Array<{ project: string; bug_class: string; ecosystem: string }>;
-  }>;
+  cve_records: RevealRecord[];
   // TODO: field name is misleading — ghsa_records has the same shape as cve_records
-  ghsa_records: Array<{
-    identifier: string;
-    findings: Array<{ project: string; bug_class: string; ecosystem: string }>;
-  }>;
+  ghsa_records: RevealRecord[];
   ledger?: LedgerEntry[];
 };
 

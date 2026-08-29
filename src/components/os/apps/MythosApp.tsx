@@ -16,10 +16,15 @@ type MythosPayload = {
   fetchedAt: string;
 };
 
+// pubDate is the reveal event's last revealed_at, in UTC. This renders in the
+// viewer's browser, so without pinning the zone a post revealed just after
+// midnight UTC shows a different day than its slug — and a different day than
+// the same post on /mythos.
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'short',
   day: 'numeric',
+  timeZone: 'UTC',
 });
 
 // Module-level cache to prevent duplicate fetches when the component

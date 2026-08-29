@@ -10,12 +10,26 @@ export type WriteOpts = {
   snapshotPath: string;
 };
 
-export function writePostAndSnapshot({ post, digest, postsDir, snapshotPath }: WriteOpts): void {
-  mkdirSync(postsDir, { recursive: true });
-  mkdirSync(dirname(snapshotPath), { recursive: true });
+export type WritePostOpts = {
+  post: Post;
+  postsDir: string;
+};
 
-  const md = renderMarkdown(post);
-  writeFileSync(join(postsDir, `${post.slug}.md`), md, 'utf8');
+/**
+ * Post only, deliberately no snapshot. snapshot.json is the forward-only live
+ * path's record of "latest state seen"; the backfill writes ten backdated
+ * posts, and advancing (or rewinding) the snapshot for any of them would make
+ * the next scheduled run regenerate or skip — a break that would not surface
+ * until the next real trigger day.
+ */
+export function writePost({ post, postsDir }: WritePostOpts): void {
+  mkdirSync(postsDir, { recursive: true });
+  writeFileSync(join(postsDir, `${post.slug}.md`), renderMarkdown(post), 'utf8');
+}
+
+export function writePostAndSnapshot({ post, digest, postsDir, snapshotPath }: WriteOpts): void {
+  writePost({ post, postsDir });
+  mkdirSync(dirname(snapshotPath), { recursive: true });
   writeFileSync(snapshotPath, JSON.stringify(digest, null, 2) + '\n', 'utf8');
 }
 
@@ -25,6 +39,7 @@ function renderMarkdown(post: Post): string {
     `title: ${yamlString(fm.title)}`,
     `description: ${yamlString(fm.description)}`,
     `pubDate: ${fm.pubDate}`,
+    ...(fm.backfilled ? ['backfilled: true'] : []),
     yamlList('triggers', fm.triggers),
     yamlList('cve_ids', fm.cve_ids),
     yamlList('projects', fm.projects),
