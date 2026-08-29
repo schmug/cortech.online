@@ -41,7 +41,13 @@ const PAD = { top: 16, right: 16, bottom: 28, left: 44 };
 const HEIGHT = 280;
 const LAG_HEIGHT = 56;
 
-const dateFmt = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric' });
+// history rows are bare YYYY-MM-DD dates parsed as UTC midnight, and this axis
+// renders in the viewer's browser — pin the zone so the labels match the data.
+const dateFmt = new Intl.DateTimeFormat('en-US', {
+  month: 'short',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
 
 export default function Timeline({ history }: Props) {
   const [view, setView] = useState<View>('funnel');

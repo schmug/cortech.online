@@ -14,10 +14,14 @@ type Props = { post: CollectionEntry<'blog'> };
 const { post } = Astro.props;
 const { Content } = await render(post);
 
+// Blog frontmatter carries a bare YYYY-MM-DD, which z.coerce.date() parses as
+// UTC midnight. Without pinning the zone the date renders as the previous day
+// on any negative-offset build host, contradicting the <time datetime> beside it.
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
+  timeZone: 'UTC',
 });
 ---
 

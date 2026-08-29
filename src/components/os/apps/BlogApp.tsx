@@ -16,10 +16,14 @@ type BlogPayload = {
   fetchedAt: string;
 };
 
+// pubDate is UTC midnight from the post's bare YYYY-MM-DD frontmatter. This
+// renders in the viewer's browser, so without pinning the zone a reader in
+// Los Angeles sees a different day than one in Berlin for the same post.
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'short',
   day: 'numeric',
+  timeZone: 'UTC',
 });
 
 // Module-level cache to prevent duplicate fetches when the component

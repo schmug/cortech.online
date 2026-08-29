@@ -18,10 +18,13 @@ export async function getStaticPaths() {
 type Props = { episode: Episode };
 const { episode } = Astro.props;
 
+// pubDate comes from the feed in UTC. Without pinning the zone the rendered
+// date is a property of the build host rather than of the episode.
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'long',
   day: 'numeric',
+  timeZone: 'UTC',
 });
 
 const totalMs = Math.round(episode.duration_s * 1000);
