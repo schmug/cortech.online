@@ -1,6 +1,6 @@
 import { aggregateLedger } from './ledger';
 import type { LedgerEntry } from './ledger';
-import type { Digest, SeverityBucket } from './types';
+import type { Digest, SeverityBucket, SeverityCube } from './types';
 
 /**
  * One revealed identifier. `revealed_at` / `discovered_on` are unused by
@@ -25,6 +25,12 @@ export type RawPayload = {
     triaged: number;
     verified: number;
     tpr_pct: number;
+    /**
+     * Per-day counts by severity cell. Optional because digest() itself never
+     * reads it, but the live run needs it for the timeline's severity bands —
+     * the only place those are recoverable per day.
+     */
+    severity_cube?: SeverityCube;
   };
   median_days_to_ack: number;
   median_days_to_patch: number;

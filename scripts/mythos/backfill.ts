@@ -37,27 +37,13 @@ import { triggersFor } from './triggers';
 import { renderPost } from './generate';
 import { claudeCliCallLlm, type CallLlm } from './llm';
 import { prettyBody, writePost } from './write';
-import type { Digest, Trigger } from './types';
+import { cumulative } from './history';
+import type { Digest, SeverityCube, Trigger } from './types';
 
 const PAYLOAD_URL = 'https://red.anthropic.com/2026/cvd/data/payload.json';
 const MODEL = 'claude-sonnet-4-6';
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const POSTS_DIR = join(REPO_ROOT, 'src/content/mythos');
-
-/** One day of `headline.severity_cube`: items that landed that day, by severity cell. */
-export type CubeDay = { date: string; cells: Record<string, number> };
-export type CubeSeries = { days: CubeDay[] };
-
-/** Only the series the backfill reads; the real cube carries more. */
-export type SeverityCube = {
-  disclosed: CubeSeries;
-  acknowledged: CubeSeries;
-  fixed_in_response: CubeSeries;
-  advisories: CubeSeries;
-  analyzed: CubeSeries;
-  triaged: CubeSeries;
-  verified: CubeSeries;
-};
 
 export type BackfillPayload = RawPayload & {
   first_disclosure_at: string;
@@ -105,21 +91,11 @@ export function previousDay(date: string): string {
 }
 
 /**
- * Running total of a severity_cube series through `date`. The cube enumerates
- * every item by the day it landed and its days sum to the headline totals, so
- * the running total is the exact historical value — nothing is interpolated. A
- * series that stops before `date` contributes its full total, which is why the
- * three August events carry the dashboard's current numbers.
+ * Headline totals at the end of `date`, as running totals over the cube — the
+ * exact historical values, nothing interpolated. A series that stops before
+ * `date` contributes its full total, which is why the three August events carry
+ * the dashboard's current numbers. See cumulative() in history.ts.
  */
-function cumulative(series: CubeSeries, date: string): number {
-  let total = 0;
-  for (const day of series.days) {
-    if (day.date > date) continue;
-    for (const count of Object.values(day.cells)) total += count;
-  }
-  return total;
-}
-
 export function headlineAsOf(cube: SeverityCube, date: string): Digest['headline'] {
   return {
     disclosed: cumulative(cube.disclosed, date),

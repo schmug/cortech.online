@@ -25,7 +25,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "mythos:run": "tsx scripts/mythos/run.ts",
-    "mythos:backfill": "tsx scripts/mythos/backfill.ts"
+    "mythos:backfill": "tsx scripts/mythos/backfill.ts",
+    "mythos:history": "tsx scripts/mythos/backfill-history.ts"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.7",

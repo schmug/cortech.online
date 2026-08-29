@@ -9,6 +9,7 @@ import { renderPost } from './generate';
 import { claudeCliCallLlm } from './llm';
 import type { Post } from './generate';
 import { writePostAndSnapshot } from './write';
+import { appendHistory, historyRowForRun } from './history';
 import type { Digest } from './types';
 
 const PAYLOAD_URL = 'https://red.anthropic.com/2026/cvd/data/payload.json';
@@ -16,6 +17,7 @@ const MODEL = 'claude-sonnet-4-6';
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const POSTS_DIR = join(REPO_ROOT, 'src/content/mythos');
 const SNAPSHOT_PATH = join(POSTS_DIR, '_data/snapshot.json');
+const HISTORY_PATH = join(POSTS_DIR, '_data/history.jsonl');
 const DRY_RUN = process.argv.includes('--dry-run');
 
 async function main(): Promise<void> {
@@ -23,6 +25,12 @@ async function main(): Promise<void> {
   const raw = (await fetchPayload(PAYLOAD_URL)) as Parameters<typeof digest>[0];
   const fetchedAt = new Date().toISOString();
   const newDigest = digest(raw, fetchedAt);
+
+  // Ahead of every gate below: the timeline records dashboard state, not post
+  // activity, so a day that fires no trigger is still a real day worth charting.
+  // The row is keyed on the payload's as_of, so a second run for an unchanged
+  // as_of rewrites the same row byte for byte and leaves the file untouched.
+  recordHistory(newDigest, raw);
 
   if (!existsSync(SNAPSHOT_PATH)) {
     bail('snapshot missing — please re-create from Task 2 bootstrap', 1);
@@ -88,6 +96,37 @@ async function main(): Promise<void> {
   setGitHubOutput('branch', branch);
   setGitHubOutput('title', post.frontmatter.title);
   console.log(`[mythos] wrote post + snapshot; branch=${branch}`);
+}
+
+/**
+ * Upsert one timeline row for this run's as_of date.
+ *
+ * Headline counts come from the digest so the chart's right edge always agrees
+ * with the stat cards rendered from the same snapshot; the severity split has no
+ * scalar equivalent in the payload and comes from the cube, whose series sum to
+ * those same totals. A payload without a cube is skipped rather than banded from
+ * something else — an absent row is correct where the data is not there.
+ */
+function recordHistory(newDigest: Digest, raw: Parameters<typeof digest>[0]): void {
+  const cube = raw.headline.severity_cube;
+  if (!cube) {
+    console.log('[mythos] payload carries no severity_cube; skipping history row');
+    return;
+  }
+  const row = historyRowForRun(newDigest, cube);
+  const bandSum = Object.values(row.severity).reduce((a, b) => a + b, 0);
+  if (bandSum !== row.disclosed) {
+    console.warn(
+      `[mythos] severity bands (${bandSum}) disagree with headline disclosed (${row.disclosed}) ` +
+        `on ${row.date}; recording both as the payload reports them`,
+    );
+  }
+  if (DRY_RUN) {
+    console.log('[mythos] dry run; history row not written:', JSON.stringify(row));
+    return;
+  }
+  appendHistory({ historyPath: HISTORY_PATH, row });
+  console.log(`[mythos] history row upserted for ${row.date}`);
 }
 
 function bootstrapPost(): Post {
