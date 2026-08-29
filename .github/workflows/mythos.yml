@@ -1,8 +1,10 @@
 name: Mythos tracker
 
 on:
-  schedule:
-    - cron: '0 19 * * *' # 2pm EST / 3pm EDT
+  # The daily schedule now lives in the "Mythos tracker" Claude Code routine,
+  # which runs on the Claude subscription and opens PRs under a real account so
+  # required checks actually fire (PRs pushed with GITHUB_TOKEN never trigger
+  # workflows — see #136). This workflow stays as a manual fallback.
   workflow_dispatch:
 
 permissions:
