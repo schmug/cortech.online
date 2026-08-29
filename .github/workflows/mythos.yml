@@ -25,11 +25,30 @@ jobs:
 
       - run: npm ci
 
+      # Generation goes through the Claude Code CLI so the tracker bills the
+      # Claude subscription (CLAUDE_CODE_OAUTH_TOKEN) rather than API credits.
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Verify Claude auth
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          if [ -z "${CLAUDE_CODE_OAUTH_TOKEN}" ]; then
+            echo "::error::CLAUDE_CODE_OAUTH_TOKEN is not set. Generate one with 'claude setup-token' and add it as a repo secret."
+            exit 1
+          fi
+          # Fail loudly on a dead token here rather than after the payload diff,
+          # so an auth problem can never hide behind an unchanged-payload no-op.
+          echo "ping" | claude -p --restricted --output-format json --model claude-sonnet-4-6 \
+            --append-system-prompt 'Reply with the single word: ok' > /tmp/auth-probe.json
+          node -e 'const r=require("/tmp/auth-probe.json"); if(r.is_error||typeof r.result!=="string"){console.error("::error::Claude auth probe failed:",JSON.stringify(r).slice(0,400));process.exit(1)} console.log("auth ok:",r.result.trim())'
+
       - name: Run tracker
         id: tracker
-        run: npm run mythos:run
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: npm run mythos:run
 
       - name: Configure git
         if: steps.tracker.outputs.branch
