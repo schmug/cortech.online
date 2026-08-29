@@ -6,10 +6,14 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
 );
 
+// Blog frontmatter carries a bare YYYY-MM-DD, which z.coerce.date() parses as
+// UTC midnight. Without pinning the zone the date renders as the previous day
+// on any negative-offset build host, contradicting the <time datetime> beside it.
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'short',
   day: 'numeric',
+  timeZone: 'UTC',
 });
 ---
 

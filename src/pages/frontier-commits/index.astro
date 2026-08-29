@@ -7,10 +7,13 @@ import { showById } from '../../lib/shows';
 const episodes = await fetchFrontierEpisodes();
 const show = showById('frontier-commits')!;
 
+// pubDate comes from the feed in UTC. Without pinning the zone the rendered
+// date is a property of the build host rather than of the episode.
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'short',
   day: 'numeric',
+  timeZone: 'UTC',
 });
 ---
 
