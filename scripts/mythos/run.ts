@@ -39,7 +39,7 @@ async function main(): Promise<void> {
   if (isBootstrap) {
     console.log(`[mythos] bootstrap: writing placeholder post + snapshot`);
     if (!DRY_RUN) {
-      writePostAndSnapshot({
+      await writePostAndSnapshot({
         post: bootstrapPost(),
         digest: newDigest,
         postsDir: POSTS_DIR,
@@ -78,7 +78,7 @@ async function main(): Promise<void> {
     return;
   }
 
-  writePostAndSnapshot({
+  await writePostAndSnapshot({
     post,
     digest: newDigest,
     postsDir: POSTS_DIR,

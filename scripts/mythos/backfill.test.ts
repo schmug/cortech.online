@@ -8,7 +8,6 @@ import {
   headlineAsOf,
   lastHeadlineDay,
   partitionByRevealDate,
-  prettyBody,
   previousDay,
   type BackfillPayload,
 } from './backfill';
@@ -228,17 +227,6 @@ describe('eventGuidance()', () => {
     const guidance = eventGuidance(event);
     expect(guidance).toMatch(/Open with two or three sentences/);
     expect(guidance).toMatch(/Close with two or three sentences/);
-  });
-});
-
-describe('prettyBody()', () => {
-  it('rewrites emphasis the model varies on, so the post survives format:check', async () => {
-    expect(await prettyBody('*Source: dashboard*')).toBe('_Source: dashboard_');
-  });
-
-  it('leaves an already-clean body alone', async () => {
-    const clean = 'Ten identifiers landed.\n\n_Backfilled: reconstructed from the payload._';
-    expect(await prettyBody(clean)).toBe(clean);
   });
 });
 

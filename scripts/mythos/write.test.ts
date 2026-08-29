@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { mkdtempSync, readFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { writePost, writePostAndSnapshot } from './write';
+import { prettyBody, writePost, writePostAndSnapshot } from './write';
 import type { Digest } from './types';
 import type { Post } from './generate';
 
@@ -49,8 +49,8 @@ describe('mythos post writer', () => {
     revealed_cve_ids: ['CVE-2026-0001', 'CVE-2026-0002'],
   };
 
-  it('writes a valid frontmatter markdown post and the snapshot JSON', () => {
-    writePostAndSnapshot({
+  it('writes a valid frontmatter markdown post and the snapshot JSON', async () => {
+    await writePostAndSnapshot({
       post,
       digest,
       postsDir: join(dir, 'src/content/mythos'),
@@ -71,11 +71,11 @@ describe('mythos post writer', () => {
     expect(snap.revealed_cve_ids).toEqual(['CVE-2026-0001', 'CVE-2026-0002']);
   });
 
-  it('writePost() leaves the snapshot alone', () => {
+  it('writePost() leaves the snapshot alone', async () => {
     // The backfill backdates ten posts against a snapshot that must stay put:
     // it is the forward-only live path's record of "latest state seen", and
     // moving it would make the next scheduled run regenerate or skip.
-    writePost({ post, postsDir: join(dir, 'src/content/mythos') });
+    await writePost({ post, postsDir: join(dir, 'src/content/mythos') });
 
     expect(existsSync(join(dir, 'src/content/mythos/2026-05-24-wolfssl-cve-2026-0002.md'))).toBe(
       true,
@@ -83,8 +83,8 @@ describe('mythos post writer', () => {
     expect(existsSync(join(dir, 'src/content/mythos/_data/snapshot.json'))).toBe(false);
   });
 
-  it('writePost() marks a backfilled post in its frontmatter', () => {
-    writePost({
+  it('writePost() marks a backfilled post in its frontmatter', async () => {
+    await writePost({
       post: { ...post, frontmatter: { ...post.frontmatter, backfilled: true } },
       postsDir: join(dir, 'src/content/mythos'),
     });
@@ -95,8 +95,8 @@ describe('mythos post writer', () => {
     expect(md).toContain('backfilled: true');
   });
 
-  it('omits the backfilled key on live posts', () => {
-    writePost({ post, postsDir: join(dir, 'src/content/mythos') });
+  it('omits the backfilled key on live posts', async () => {
+    await writePost({ post, postsDir: join(dir, 'src/content/mythos') });
     const md = readFileSync(
       join(dir, 'src/content/mythos/2026-05-24-wolfssl-cve-2026-0002.md'),
       'utf8',
@@ -116,7 +116,7 @@ describe('mythos post writer', () => {
         projects: Array.from({ length: 112 }, (_, i) => `org-${i}/project-${i}`),
       },
     };
-    writePostAndSnapshot({
+    await writePostAndSnapshot({
       post: many,
       digest,
       postsDir: join(dir, 'src/content/mythos'),
@@ -128,5 +128,42 @@ describe('mythos post writer', () => {
     const config = await prettier.resolveConfig('post.md');
     const formatted = await prettier.format(written, { ...config, parser: 'markdown' });
     expect(formatted).toBe(written);
+  });
+
+  it('normalizes emphasis the model varies on, so the live post survives format:check', async () => {
+    // run.ts writes whatever the model returned. Some runs it closes on
+    // `*Source: ...*`, which prettier rewrites to `_`, failing format:check and
+    // blocking the tracker's own auto-merge PR for a reason unrelated to the
+    // content. Normalize deterministically on the way to disk instead.
+    await writePost({
+      post: { ...post, body: 'Ten identifiers landed.\n\n*Source: Mythos CVD dashboard.*' },
+      postsDir: join(dir, 'src/content/mythos'),
+    });
+    const md = readFileSync(join(dir, `src/content/mythos/${post.slug}.md`), 'utf8');
+    expect(md).toContain('_Source: Mythos CVD dashboard._');
+    expect(md).not.toContain('*Source:');
+
+    const prettier = await import('prettier');
+    const config = await prettier.resolveConfig('post.md');
+    expect(await prettier.format(md, { ...config, parser: 'markdown' })).toBe(md);
+  });
+
+  it('writes an already-clean body byte-identical', async () => {
+    const clean = 'Ten identifiers landed.\n\n_Source: Mythos CVD dashboard._';
+    await writePost({ post: { ...post, body: clean }, postsDir: join(dir, 'src/content/mythos') });
+    const md = readFileSync(join(dir, `src/content/mythos/${post.slug}.md`), 'utf8');
+    const sep = '\n---\n\n';
+    expect(md.slice(md.indexOf(sep) + sep.length)).toBe(`${clean}\n`);
+  });
+
+  describe('prettyBody()', () => {
+    it('rewrites emphasis the model varies on', async () => {
+      expect(await prettyBody('*Source: dashboard*')).toBe('_Source: dashboard_');
+    });
+
+    it('leaves an already-clean body alone', async () => {
+      const clean = 'Ten identifiers landed.\n\n_Backfilled: reconstructed from the payload._';
+      expect(await prettyBody(clean)).toBe(clean);
+    });
   });
 });

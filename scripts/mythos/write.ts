@@ -1,4 +1,5 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import type { Digest } from './types';
 import type { Post } from './generate';
@@ -16,24 +17,54 @@ export type WritePostOpts = {
 };
 
 /**
+ * Anchors prettier config resolution inside the repo, not in `postsDir` — the
+ * latter is a scratch directory under test, where the repo's .prettierrc is
+ * not on the lookup path and the formatting would silently diverge from CI's.
+ */
+const CONFIG_ANCHOR = join(dirname(fileURLToPath(import.meta.url)), 'post.md');
+
+/**
+ * Normalize a generated body to prettier's own output. The model emits
+ * `*emphasis*` some runs and `_emphasis_` others; prettier rewrites the first
+ * form, so an unnormalized post fails format:check in CI and blocks the
+ * tracker's own PR — the same class of failure #214 fixed for generated
+ * frontmatter.
+ *
+ * Delimiter and whitespace normalization only: it runs after renderPost()'s
+ * validation, on the way to disk, and never adds or removes an identifier or
+ * a figure. It is not a way to launder a body past those checks.
+ */
+export async function prettyBody(body: string): Promise<string> {
+  const prettier = await import('prettier');
+  const config = await prettier.resolveConfig(CONFIG_ANCHOR);
+  return (await prettier.format(body, { ...config, parser: 'markdown' })).trimEnd();
+}
+
+/**
  * Post only, deliberately no snapshot. snapshot.json is the forward-only live
  * path's record of "latest state seen"; the backfill writes ten backdated
  * posts, and advancing (or rewinding) the snapshot for any of them would make
  * the next scheduled run regenerate or skip — a break that would not surface
  * until the next real trigger day.
  */
-export function writePost({ post, postsDir }: WritePostOpts): void {
+export async function writePost({ post, postsDir }: WritePostOpts): Promise<void> {
+  const body = await prettyBody(post.body);
   mkdirSync(postsDir, { recursive: true });
-  writeFileSync(join(postsDir, `${post.slug}.md`), renderMarkdown(post), 'utf8');
+  writeFileSync(join(postsDir, `${post.slug}.md`), renderMarkdown(post, body), 'utf8');
 }
 
-export function writePostAndSnapshot({ post, digest, postsDir, snapshotPath }: WriteOpts): void {
-  writePost({ post, postsDir });
+export async function writePostAndSnapshot({
+  post,
+  digest,
+  postsDir,
+  snapshotPath,
+}: WriteOpts): Promise<void> {
+  await writePost({ post, postsDir });
   mkdirSync(dirname(snapshotPath), { recursive: true });
   writeFileSync(snapshotPath, JSON.stringify(digest, null, 2) + '\n', 'utf8');
 }
 
-function renderMarkdown(post: Post): string {
+function renderMarkdown(post: Post, body: string): string {
   const fm = post.frontmatter;
   const yaml = [
     `title: ${yamlString(fm.title)}`,
@@ -49,7 +80,7 @@ function renderMarkdown(post: Post): string {
     `  fixed: ${fm.headline_snapshot.fixed}`,
     `  advisories: ${fm.headline_snapshot.advisories}`,
   ].join('\n');
-  return `---\n${yaml}\n---\n\n${post.body}\n`;
+  return `---\n${yaml}\n---\n\n${body}\n`;
 }
 
 /**
