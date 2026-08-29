@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import Anthropic from '@anthropic-ai/sdk';
 import { existsSync, readFileSync, appendFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
@@ -7,13 +6,13 @@ import { fetchPayload } from './fetch';
 import { digest } from './digest';
 import { triggersFor } from './triggers';
 import { renderPost } from './generate';
+import { claudeCliCallLlm } from './llm';
 import type { Post } from './generate';
 import { writePostAndSnapshot } from './write';
 import type { Digest } from './types';
 
 const PAYLOAD_URL = 'https://red.anthropic.com/2026/cvd/data/payload.json';
 const MODEL = 'claude-sonnet-4-6';
-const MAX_TOKENS = 1024;
 const REPO_ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const POSTS_DIR = join(REPO_ROOT, 'src/content/mythos');
 const SNAPSHOT_PATH = join(POSTS_DIR, '_data/snapshot.json');
@@ -61,18 +60,7 @@ async function main(): Promise<void> {
     triggers.map((t) => t.kind),
   );
 
-  const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-  const callLlm = async (system: string, user: string): Promise<string> => {
-    const msg = await client.messages.create({
-      model: MODEL,
-      max_tokens: MAX_TOKENS,
-      system,
-      messages: [{ role: 'user', content: user }],
-    });
-    const block = msg.content[0];
-    if (block.type !== 'text') throw new Error('expected text response');
-    return block.text;
-  };
+  const callLlm = claudeCliCallLlm({ model: MODEL });
 
   const allKnownCves = newDigest.revealed_cve_ids;
   const post = await renderPost({
