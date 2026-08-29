@@ -24,7 +24,8 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "mythos:run": "tsx scripts/mythos/run.ts"
+    "mythos:run": "tsx scripts/mythos/run.ts",
+    "mythos:backfill": "tsx scripts/mythos/backfill.ts"
   },
   "dependencies": {
     "@astrojs/react": "^5.0.7",

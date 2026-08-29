@@ -7,7 +7,10 @@ const mythosFrontmatter = z.object({
   title: z.string(),
   description: z.string(),
   pubDate: z.coerce.date(),
-  triggers: z.array(z.enum(['revealed', 'new_project', 'bug_class_shift', 'funnel_shift'])),
+  triggers: z.array(
+    z.enum(['revealed', 'new_project', 'bug_class_shift', 'funnel_shift', 'withdrawal_surge']),
+  ),
+  backfilled: z.boolean().default(false),
   cve_ids: z.array(z.string()).default([]),
   projects: z.array(z.string()).default([]),
   headline_snapshot: z.object({
@@ -29,6 +32,19 @@ describe('mythos frontmatter schema', () => {
     });
     expect(result.cve_ids).toEqual([]);
     expect(result.projects).toEqual([]);
+    expect(result.backfilled).toBe(false);
+  });
+
+  it('accepts a backdated post marked as backfilled', () => {
+    const result = mythosFrontmatter.parse({
+      title: 'Test',
+      description: 'desc',
+      pubDate: '2026-05-20',
+      backfilled: true,
+      triggers: ['revealed'],
+      headline_snapshot: { disclosed: 1, acknowledged: 1, fixed: 1, advisories: 1 },
+    });
+    expect(result.backfilled).toBe(true);
   });
 
   it('rejects unknown trigger kinds', () => {

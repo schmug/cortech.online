@@ -18,6 +18,9 @@ export type Post = {
     title: string;
     description: string;
     pubDate: string;
+    /** Set only by the one-off backfill; live posts omit it and the collection
+     * schema defaults it to false. */
+    backfilled?: boolean;
     triggers: Array<Trigger['kind']>;
     cve_ids: string[];
     projects: string[];

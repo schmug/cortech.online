@@ -23,6 +23,9 @@ const mythos = defineCollection({
     triggers: z.array(
       z.enum(['revealed', 'new_project', 'bug_class_shift', 'funnel_shift', 'withdrawal_surge']),
     ),
+    // True on the ten posts reconstructed from the payload's revealed_at dates
+    // by scripts/mythos/backfill.ts; live tracker posts omit it.
+    backfilled: z.boolean().default(false),
     cve_ids: z.array(z.string()).default([]),
     projects: z.array(z.string()).default([]),
     headline_snapshot: z.object({

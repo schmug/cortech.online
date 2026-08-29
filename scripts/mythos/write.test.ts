@@ -3,11 +3,11 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { mkdtempSync, readFileSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { writePostAndSnapshot } from './write';
+import { writePost, writePostAndSnapshot } from './write';
 import type { Digest } from './types';
 import type { Post } from './generate';
 
-describe('writePostAndSnapshot()', () => {
+describe('mythos post writer', () => {
   let dir: string;
   beforeEach(() => {
     dir = mkdtempSync(join(tmpdir(), 'mythos-write-'));
@@ -69,6 +69,39 @@ describe('writePostAndSnapshot()', () => {
     expect(existsSync(snapPath)).toBe(true);
     const snap = JSON.parse(readFileSync(snapPath, 'utf8'));
     expect(snap.revealed_cve_ids).toEqual(['CVE-2026-0001', 'CVE-2026-0002']);
+  });
+
+  it('writePost() leaves the snapshot alone', () => {
+    // The backfill backdates ten posts against a snapshot that must stay put:
+    // it is the forward-only live path's record of "latest state seen", and
+    // moving it would make the next scheduled run regenerate or skip.
+    writePost({ post, postsDir: join(dir, 'src/content/mythos') });
+
+    expect(existsSync(join(dir, 'src/content/mythos/2026-05-24-wolfssl-cve-2026-0002.md'))).toBe(
+      true,
+    );
+    expect(existsSync(join(dir, 'src/content/mythos/_data/snapshot.json'))).toBe(false);
+  });
+
+  it('writePost() marks a backfilled post in its frontmatter', () => {
+    writePost({
+      post: { ...post, frontmatter: { ...post.frontmatter, backfilled: true } },
+      postsDir: join(dir, 'src/content/mythos'),
+    });
+    const md = readFileSync(
+      join(dir, 'src/content/mythos/2026-05-24-wolfssl-cve-2026-0002.md'),
+      'utf8',
+    );
+    expect(md).toContain('backfilled: true');
+  });
+
+  it('omits the backfilled key on live posts', () => {
+    writePost({ post, postsDir: join(dir, 'src/content/mythos') });
+    const md = readFileSync(
+      join(dir, 'src/content/mythos/2026-05-24-wolfssl-cve-2026-0002.md'),
+      'utf8',
+    );
+    expect(md).not.toContain('backfilled');
   });
 
   it('emits markdown that is already prettier-clean, even with many ids', async () => {

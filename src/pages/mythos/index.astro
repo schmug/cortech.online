@@ -10,10 +10,15 @@ const posts = (await getCollection('mythos')).sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
 );
 
+// The ten backfilled reveal-event posts plus the bootstrap placeholder already
+// exceed the old cap of 10, which silently dropped the oldest event.
+const RECENT_POST_LIMIT = 20;
+
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   year: 'numeric',
   month: 'short',
   day: 'numeric',
+  timeZone: 'UTC',
 });
 
 const topBugClasses = (Object.entries(snapshot.by_bug_class) as [string, number][])
@@ -108,7 +113,7 @@ try {
         </p>
       ) : (
         <ul class="mt-2 space-y-3">
-          {posts.slice(0, 10).map((p) => (
+          {posts.slice(0, RECENT_POST_LIMIT).map((p) => (
             <li>
               <a href={`/mythos/${p.id}/`} class="text-[var(--color-amber)] hover:underline">
                 {p.data.title}
