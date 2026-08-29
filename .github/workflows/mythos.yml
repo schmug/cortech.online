@@ -38,11 +38,24 @@ jobs:
             echo "::error::CLAUDE_CODE_OAUTH_TOKEN is not set. Generate one with 'claude setup-token' and add it as a repo secret."
             exit 1
           fi
+          echo "claude version: $(claude --version 2>&1 || echo '(version check failed)')"
           # Fail loudly on a dead token here rather than after the payload diff,
           # so an auth problem can never hide behind an unchanged-payload no-op.
+          # Capture both streams: a probe that fails without showing the CLI's
+          # own stderr is useless, which is exactly how run 33225215935 failed.
+          set +e
           echo "ping" | claude -p --restricted --output-format json --model claude-sonnet-4-6 \
-            --append-system-prompt 'Reply with the single word: ok' > /tmp/auth-probe.json
-          node -e 'const r=require("/tmp/auth-probe.json"); if(r.is_error||typeof r.result!=="string"){console.error("::error::Claude auth probe failed:",JSON.stringify(r).slice(0,400));process.exit(1)} console.log("auth ok:",r.result.trim())'
+            --append-system-prompt 'Reply with the single word: ok' \
+            >/tmp/auth-probe.out 2>/tmp/auth-probe.err
+          status=$?
+          set -e
+          if [ "$status" -ne 0 ]; then
+            echo "::error::claude CLI exited ${status} during auth probe"
+            echo "--- stderr ---"; cat /tmp/auth-probe.err
+            echo "--- stdout ---"; cat /tmp/auth-probe.out
+            exit 1
+          fi
+          node -e 'const fs=require("fs");const raw=fs.readFileSync("/tmp/auth-probe.out","utf8");let r;try{r=JSON.parse(raw)}catch(e){console.error("::error::auth probe output was not JSON:",raw.slice(0,400));process.exit(1)}if(r.is_error||typeof r.result!=="string"){console.error("::error::Claude auth probe failed:",JSON.stringify(r).slice(0,400));process.exit(1)}console.log("auth ok:",r.result.trim())'
 
       - name: Run tracker
         id: tracker
