@@ -1,3 +1,5 @@
+import { missingDenominators, sparseFiguresFor, unsupportedFigures } from './validate';
+import type { LedgerAggregates } from './ledger';
 import type { Digest, Trigger } from './types';
 
 export class GenerationError extends Error {
@@ -43,7 +45,13 @@ You are a security-news tracker, not a hype outlet. Be specific, cite CVE IDs, n
 beyond the data you are given. Output ONLY the body of the post in markdown. No frontmatter. \
 Aim for 120-${MAX_WORDS} words. Lead with the most concrete item (a revealed CVE or new \
 project). End with a single line crediting Anthropic's dashboard at \
-https://red.anthropic.com/2026/cvd/ as the source.`;
+https://red.anthropic.com/2026/cvd/ as the source.
+
+Numbers are checked before publication. Every numeral you write must appear verbatim in \
+the brief below — if a figure is not there, do not state it, and do not compute new ones. \
+Where the brief gives a figure as "N of M", keep the "of M" denominator; those figures come \
+from fields that only a fraction of findings carry, and without the denominator they read as \
+claims about the whole corpus. Write any date in ISO form (YYYY-MM-DD).`;
 
 export type RenderOpts = {
   oldDigest: Digest;
@@ -65,6 +73,7 @@ export async function renderPost(opts: RenderOpts): Promise<Post> {
   const knownSet = new Set(opts.allKnownCves);
 
   const userPrompt = buildUserPrompt(opts.oldDigest, opts.newDigest, opts.triggers);
+  const sparseFigures = opts.newDigest.ledger ? sparseFiguresFor(opts.newDigest.ledger) : [];
 
   let lastDraft = '';
   let lastError = '';
@@ -99,6 +108,21 @@ export async function renderPost(opts: RenderOpts): Promise<Post> {
       lastError = `hallucinated CVEs not present in payload: ${hallucinated.join(', ')}`;
       continue;
     }
+    // Validate against the base prompt, never `userPrompt + corrective`: the
+    // corrective quotes the numbers that were just rejected, and admitting
+    // those would let a bad figure pass on the retry that names it.
+    const unsupported = unsupportedFigures(body, userPrompt);
+    if (unsupported.length > 0) {
+      lastError = `figures not supported by the brief: ${unsupported.join(', ')}`;
+      continue;
+    }
+    const undenominated = missingDenominators(body, sparseFigures);
+    if (undenominated.length > 0) {
+      lastError =
+        `these figures need their denominator: ` +
+        undenominated.map((f) => `${f.value} (${f.label}, of ${f.denominator})`).join('; ');
+      continue;
+    }
 
     return {
       slug: deriveSlug(now, opts.triggers),
@@ -122,17 +146,76 @@ export async function renderPost(opts: RenderOpts): Promise<Post> {
   throw new GenerationError(`generation failed after retry: ${lastError}`, lastDraft);
 }
 
-function buildUserPrompt(oldD: Digest, newD: Digest, triggers: Trigger[]): string {
+export function buildUserPrompt(oldD: Digest, newD: Digest, triggers: Trigger[]): string {
   return [
     `As of ${newD.as_of}, the Mythos dashboard reports:`,
     `- ${newD.headline.disclosed} disclosed (was ${oldD.headline.disclosed})`,
     `- ${newD.headline.acknowledged} acknowledged (was ${oldD.headline.acknowledged})`,
     `- ${newD.headline.fixed} patched (was ${oldD.headline.fixed})`,
     `- ${newD.headline.advisories} CVEs/GHSAs published (was ${oldD.headline.advisories})`,
+    ...(newD.ledger ? ['', ...ledgerBrief(newD.ledger)] : []),
     ``,
     `Today's triggers to cover:`,
     JSON.stringify(triggers, null, 2),
   ].join('\n');
+}
+
+/**
+ * Renders the ledger aggregates as the model is expected to quote them. Every
+ * figure drawn from a sparse field is written "N of M" here so the required
+ * shape is modelled rather than only demanded; `missingDenominators()` then
+ * enforces it on the way out.
+ */
+function ledgerBrief(agg: LedgerAggregates): string[] {
+  const lines = [
+    `Ledger context — every figure below is derived from the payload's ledger of ` +
+      `${agg.total} findings, and several come from fields most findings do not carry:`,
+    `- Withdrawn: ${agg.withdrawals.total} of ${agg.total} findings.` +
+      (agg.withdrawals.total === 0
+        ? ''
+        : ` By reason: ${Object.entries(agg.withdrawals.by_reason)
+            .sort(([, a], [, b]) => b - a)
+            .map(([reason, n]) => `${reason} ${n} of ${agg.withdrawals.total}`)
+            .join(', ')}.`),
+    `- Reveal-tier funnel across all ${agg.total} findings: ${Object.entries(agg.funnel)
+      .map(([tier, n]) => `${tier} ${n}`)
+      .join(', ')}.`,
+  ];
+
+  const sev = agg.severity_agreement;
+  lines.push(
+    sev.rated_pairs === 0
+      ? `- Severity: no finding carries both a Claude and a maintainer rating, so nothing can ` +
+          `be said about how often they agree.`
+      : `- Severity: ${sev.rated_pairs} findings carry both a Claude and a maintainer rating. ` +
+          `The two disagree on ${sev.disagree} of ${sev.rated_pairs} (${sev.disagree_pct}%) and ` +
+          `agree on ${sev.agree} of ${sev.rated_pairs}; Claude rated higher on ` +
+          `${sev.claude_higher} of ${sev.rated_pairs}, the maintainer on ` +
+          `${sev.maintainer_higher} of ${sev.rated_pairs}.`,
+  );
+
+  for (const [label, stat] of [
+    ['discovery to reveal', agg.latency.discovery_to_reveal],
+    ['discovery to patch', agg.latency.discovery_to_patch],
+  ] as const) {
+    if (stat.median_days === null) {
+      lines.push(`- Median ${label}: too few findings carry both dates to state a median.`);
+      continue;
+    }
+    // The excluded negatives are disclosed rather than dropped silently: the
+    // payload's dates are not strictly ordered, and the reader is owed that.
+    const excluded =
+      stat.excluded_negative === 0
+        ? ''
+        : ` ${stat.excluded_negative} further findings were excluded because their recorded ` +
+          `end date precedes their discovery date.`;
+    lines.push(
+      `- Median ${label}: ${stat.median_days} days over ${stat.sample} findings carrying ` +
+        `both dates.${excluded}`,
+    );
+  }
+
+  return lines;
 }
 
 function deriveTitle(triggers: Trigger[]): string {
@@ -153,6 +236,7 @@ function deriveDescription(triggers: Trigger[], newD: Digest): string {
   if (triggers.some((t) => t.kind === 'new_project')) parts.push(`New project added.`);
   if (triggers.some((t) => t.kind === 'bug_class_shift' || t.kind === 'funnel_shift'))
     parts.push(`Funnel or bug-class shift.`);
+  if (triggers.some((t) => t.kind === 'withdrawal_surge')) parts.push(`Findings withdrawn.`);
   parts.push(`${newD.headline.disclosed} total disclosed.`);
   return parts.join(' ');
 }
