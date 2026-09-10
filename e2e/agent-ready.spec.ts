@@ -34,6 +34,10 @@ test.describe('agent readiness', () => {
     const anchors = data.linkset.map((e: { anchor: string }) => e.anchor);
     expect(anchors).toContain('https://cortech.online/api/blog.json');
     expect(anchors).toContain('https://cortech.online/api/projects.json');
+    expect(anchors).toContain('https://cortech.online/api/mythos.json');
     expect(anchors).toContain('https://cortech.online/rss.xml');
+    expect(anchors).toContain('https://cortech.online/mythos/rss.xml');
+    expect(anchors).toContain('https://cortech.online/podcast/rss.xml');
+    expect(anchors).toContain('https://cortech.online/feeds.opml');
   });
 });

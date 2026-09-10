@@ -19,6 +19,15 @@
       ]
     },
     {
+      "anchor": "https://cortech.online/api/mythos.json",
+      "describedby": [
+        { "href": "https://cortech.online/mythos", "type": "text/html" }
+      ],
+      "type": [
+        { "href": "https://cortech.online/api/mythos.json" }
+      ]
+    },
+    {
       "anchor": "https://cortech.online/rss.xml",
       "alternate": [
         { "href": "https://cortech.online/rss.xml", "type": "application/rss+xml" }
