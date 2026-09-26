@@ -50,7 +50,7 @@ export const apps: AppManifest[] = [
   {
     id: 'podcasts',
     name: 'Podcasts',
-    description: 'Cortech Daily and Frontier Commits — on Spotify or by feed.',
+    description: 'Cortech Daily, Frontier Commits, and Show Your Work — by feed or on Spotify.',
     icon: '🎙️',
     type: 'native',
     component: () => import('../components/os/apps/PodcastsApp'),

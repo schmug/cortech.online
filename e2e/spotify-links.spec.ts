@@ -1,13 +1,28 @@
 import { test, expect } from '@playwright/test';
-import { SHOWS } from '../src/lib/shows';
+import { SHOWS, type Show } from '../src/lib/shows';
 
-// Both shows are listed on Spotify, which is where listeners actually are. The
-// link is the whole point of the surface, so assert the exact href rather than
-// just "a link exists" — a `?si=` share token or a stale show id would still
-// render a perfectly clickable, wrong link.
+// Cortech Daily and Frontier Commits are listed on Spotify, which is where
+// listeners actually are. The link is the whole point of the surface, so assert
+// the exact href rather than just "a link exists" — a `?si=` share token or a
+// stale show id would still render a perfectly clickable, wrong link. Show Your
+// Work is RSS-first (spotifyUrl null): every surface must drop the Spotify link
+// for it rather than render one to nowhere.
+const ON_SPOTIFY = SHOWS.filter((s): s is Show & { spotifyUrl: string } => s.spotifyUrl !== null);
+const RSS_ONLY = SHOWS.filter((s) => s.spotifyUrl === null);
 
 test.describe('show pages link Spotify', () => {
-  for (const show of SHOWS) {
+  for (const show of RSS_ONLY) {
+    test(`${show.pagePath} leads with the ${show.name} feed and no Spotify link`, async ({
+      page,
+    }) => {
+      await page.goto(show.pagePath);
+
+      await expect(page.getByRole('link', { name: /spotify/i })).toHaveCount(0);
+      await expect(page.locator(`main a[href="${show.feedPath}"]`).first()).toBeVisible();
+    });
+  }
+
+  for (const show of ON_SPOTIFY) {
     test(`${show.pagePath} links ${show.name} on Spotify, feed intact`, async ({ page }) => {
       await page.goto(show.pagePath);
 
@@ -36,10 +51,14 @@ test.describe('/podcasts index', () => {
         'href',
         show.pagePath,
       );
-      await expect(
-        card.locator(`a[href="${show.spotifyUrl}"]`),
-        `${show.name} Spotify link`,
-      ).toBeVisible();
+      if (show.spotifyUrl) {
+        await expect(
+          card.locator(`a[href="${show.spotifyUrl}"]`),
+          `${show.name} Spotify link`,
+        ).toBeVisible();
+      } else {
+        await expect(card.getByRole('link', { name: /spotify/i })).toHaveCount(0);
+      }
       await expect(
         card.locator(`a[href="${show.feedPath}"]`),
         `${show.name} feed link`,
@@ -72,7 +91,7 @@ test.describe('homepage static layer', () => {
   // with JS off — which is also exactly how crawlers and no-JS visitors see it.
   test.use({ javaScriptEnabled: false });
 
-  test('lists both shows with their Spotify links', async ({ page }) => {
+  test('lists every show with its Spotify link or, failing that, its feed', async ({ page }) => {
     await page.goto('/');
 
     const podcasts = page.locator('#static-layer section', { hasText: 'Podcasts' }).first();
@@ -84,8 +103,8 @@ test.describe('homepage static layer', () => {
         show.pagePath,
       );
       await expect(
-        podcasts.locator(`a[href="${show.spotifyUrl}"]`),
-        `${show.name} Spotify link`,
+        podcasts.locator(`a[href="${show.spotifyUrl ?? show.feedPath}"]`),
+        `${show.name} ${show.spotifyUrl ? 'Spotify' : 'feed'} link`,
       ).toBeVisible();
       await expect(podcasts.getByRole('img', { name: `${show.name} cover art` })).toBeVisible();
     }
@@ -109,7 +128,7 @@ test.describe('CortechOS Podcasts app', () => {
     );
   });
 
-  test('opens from its desktop icon and links both shows out to Spotify', async ({ page }) => {
+  test('opens from its desktop icon and links every show to its page', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const splash = page.locator('[aria-label="CortechOS booting"]');
@@ -124,7 +143,7 @@ test.describe('CortechOS Podcasts app', () => {
 
     for (const show of SHOWS) {
       await expect(win.getByRole('heading', { name: show.name })).toBeVisible();
-      await expect(win.locator(`a[href="${show.spotifyUrl}"]`)).toHaveCount(1);
+      if (show.spotifyUrl) await expect(win.locator(`a[href="${show.spotifyUrl}"]`)).toHaveCount(1);
       await expect(win.locator(`a[href="${show.pagePath}"]`)).toHaveCount(1);
     }
   });

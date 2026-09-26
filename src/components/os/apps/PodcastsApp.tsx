@@ -8,11 +8,11 @@ export default function PodcastsApp() {
           Podcasts
         </div>
         <h1 className="mt-1 text-2xl font-[var(--font-display)] font-semibold tracking-tight">
-          Two shows, both AI-narrated.
+          Three shows, all AI-narrated.
         </h1>
         <p className="mt-2 text-sm text-[var(--color-muted)]">
-          Written and produced by Schmug. Both are on Spotify — or paste the feed into whatever
-          player you already use.
+          Produced by Schmug. Paste any feed into whatever player you already use — Cortech Daily
+          and Frontier Commits are on Spotify too.
         </p>
       </header>
 
@@ -41,14 +41,16 @@ function ShowCard({ show }: { show: Show }) {
         </h2>
         <p className="mt-1 text-sm text-[var(--color-muted)]">{show.tagline}</p>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-          <a
-            href={show.spotifyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md bg-[var(--color-amber)] px-3 py-1.5 font-medium text-[var(--color-void)] transition hover:opacity-90"
-          >
-            Listen on Spotify ↗
-          </a>
+          {show.spotifyUrl && (
+            <a
+              href={show.spotifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md bg-[var(--color-amber)] px-3 py-1.5 font-medium text-[var(--color-void)] transition hover:opacity-90"
+            >
+              Listen on Spotify ↗
+            </a>
+          )}
           <a
             href={show.pagePath}
             className="rounded-md border border-[var(--color-border)] px-3 py-1.5 text-[var(--color-text)] transition hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]"

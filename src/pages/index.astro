@@ -136,13 +136,22 @@ const flagships = apps.filter((a) => a.type === 'iframe');
                       {show.name}
                     </a>
                     <p class="mt-1 text-sm text-[var(--color-dim)]">{show.tagline}</p>
-                    <a
-                      href={show.spotifyUrl}
-                      rel="noopener noreferrer"
-                      class="mt-2 inline-block text-sm text-[var(--color-amber)] hover:underline"
-                    >
-                      Listen on Spotify ↗
-                    </a>
+                    {show.spotifyUrl ? (
+                      <a
+                        href={show.spotifyUrl}
+                        rel="noopener noreferrer"
+                        class="mt-2 inline-block text-sm text-[var(--color-amber)] hover:underline"
+                      >
+                        Listen on Spotify ↗
+                      </a>
+                    ) : (
+                      <a
+                        href={show.feedPath}
+                        class="mt-2 inline-block text-sm text-[var(--color-amber)] hover:underline"
+                      >
+                        Subscribe by feed
+                      </a>
+                    )}
                   </div>
                 </li>
               ))

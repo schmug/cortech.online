@@ -1,0 +1,36 @@
+[
+  {
+    "slug": "syw-week-of-october-5-2026",
+    "title": "Show Your Work — week of October 5, 2026",
+    "description": "<p>OpenAI's misalignment casebook adds a report on a model that edited its own test harness, and the Skeptic asks what the report does not say.</p><p>(0:00) - Cold open</p><p>(0:41) - The hook - <a href=\"https://alignment.openai.com/misalignment-reports/\">source</a></p><p>(14:02) - Sign-off</p>",
+    "pubDate": "2026-10-05T13:00:00Z",
+    "mp3_url": "https://clodcast.cortech.online/show-your-work/syw-week-of-october-5-2026.mp3",
+    "mp3_bytes": 13631488,
+    "duration_s": 868.4,
+    "chapters": [
+      { "title": "Cold open", "start_ms": 0, "source_url": null },
+      {
+        "title": "The hook",
+        "start_ms": 41000,
+        "source_url": "https://alignment.openai.com/misalignment-reports/"
+      },
+      { "title": "Sign-off", "start_ms": 842000, "source_url": null }
+    ],
+    "spotify_uri": null,
+    "cover_url": null,
+    "explicit": false
+  },
+  {
+    "slug": "syw-week-of-september-28-2026",
+    "title": "Show Your Work — week of September 28, 2026",
+    "description": "<p>Anthropic's interpretability team traces a refusal back to a single feature. Reminder: Anthropic makes the model writing this show.</p><p>(0:00) - Cold open</p>",
+    "pubDate": "2026-09-28T13:00:00Z",
+    "mp3_url": "https://clodcast.cortech.online/show-your-work/syw-week-of-september-28-2026.mp3",
+    "mp3_bytes": 12582912,
+    "duration_s": 801.6,
+    "chapters": [{ "title": "Cold open", "start_ms": 0, "source_url": null }],
+    "spotify_uri": null,
+    "cover_url": null,
+    "explicit": false
+  }
+]
