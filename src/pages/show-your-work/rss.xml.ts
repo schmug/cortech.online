@@ -33,9 +33,9 @@ const CATEGORIES: ReadonlyArray<{ text: string; sub?: string }> = [
   { text: 'Education' },
 ];
 
-// Apple Podcasts & Spotify require square art, 1400–3000px. Cut at 3000px by
-// scripts/generate-show-your-work-cover.mjs — a placeholder until clodcast's
-// show art lands (docs/podcast-metadata.md).
+// Apple Podcasts & Spotify require square art, 1400–3000px. The 3000px show art
+// is a copy of clodcast's skills/show-your-work/refs/cover.jpg, which that repo's
+// refs/make_cover.py regenerates; change the art there, then copy it here.
 const COVER_URL = 'https://cortech.online/show-your-work-cover.jpg';
 
 // No <itunes:episode> here, deliberately — the same reasoning as Frontier
