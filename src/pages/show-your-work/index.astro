@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { formatChapterTimestamp, summaryText } from '../../lib/episodes';
 import { fetchShowYourWorkEpisodes } from '../../lib/showYourWorkEpisodes';
+import ListenLinks from '../../components/ListenLinks.astro';
 import { showById } from '../../lib/shows';
 
 const episodes = await fetchShowYourWorkEpisodes();
@@ -56,15 +57,13 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
       </div>
     </div>
 
-    <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2">
-      <a
-        href={show.feedPath}
-        class="rounded-md bg-[var(--color-amber)] px-4 py-2 text-sm font-medium text-[var(--color-void)] transition hover:opacity-90"
-        >Subscribe by feed</a
-      >
-      <p class="text-sm text-[var(--color-muted)]">
-        Paste <code class="font-mono text-xs break-all text-[var(--color-text)]">{feedUrl}</code> into
-        any podcast player — it carries the audio.
+    <div class="mt-6">
+      <ListenLinks show={show} />
+      <p class="mt-2 text-sm text-[var(--color-muted)]">
+        or subscribe in any player by pasting the <a
+          href={show.feedPath}
+          class="text-[var(--color-amber)] hover:underline">show feed</a
+        >: <code class="font-mono text-xs break-all text-[var(--color-text)]">{feedUrl}</code>
       </p>
     </div>
 

@@ -1,0 +1,26 @@
+---
+// The "Listen on" row for a show: one button per platform it is listed on.
+// Renders nothing for a show listed nowhere — the caller leads with the feed.
+import { listenLinks, type Show } from '../lib/shows';
+
+type Props = { show: Show };
+
+const links = listenLinks(Astro.props.show);
+---
+
+{
+  links.length > 0 && (
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-sm text-[var(--color-muted)]">Listen on</span>
+      {links.map((link) => (
+        <a
+          href={link.url}
+          rel="noopener noreferrer"
+          class="rounded-md bg-[var(--color-amber)] px-3 py-1.5 text-sm font-medium text-[var(--color-void)] transition hover:opacity-90"
+        >
+          {link.label} ↗
+        </a>
+      ))}
+    </div>
+  )
+}
