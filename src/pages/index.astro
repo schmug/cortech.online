@@ -58,14 +58,22 @@ const flagships = apps.filter((a) => a.type === 'iframe');
         <div class="mx-auto flex max-w-4xl items-center justify-between px-6 py-4 text-sm">
           <span class="font-mono font-semibold">cortech.online</span>
           <nav class="flex items-center gap-5 text-[var(--color-muted)]">
-            <a href="/about" class="hover:text-[var(--color-text)]">About</a>
-            <a href="/projects" class="hover:text-[var(--color-text)]">Projects</a>
-            <a href="/podcasts" class="hover:text-[var(--color-text)]">Podcasts</a>
+            <a href="/about" class="hover:text-[var(--color-text)]">
+              About
+            </a>
+            <a href="/projects" class="hover:text-[var(--color-text)]">
+              Projects
+            </a>
+            <a href="/podcasts" class="hover:text-[var(--color-text)]">
+              Podcasts
+            </a>
             <a
               href="https://github.com/schmug"
               rel="noopener noreferrer"
-              class="hover:text-[var(--color-text)]">GitHub</a
+              class="hover:text-[var(--color-text)]"
             >
+              GitHub
+            </a>
           </nav>
         </div>
       </header>
@@ -79,9 +87,9 @@ const flagships = apps.filter((a) => a.type === 'iframe');
         </h1>
         <p class="mt-5 max-w-2xl text-lg text-[var(--color-dim)]">
           Email security, contact-card utilities, AI tooling, and the occasional piece of generative
-          art. Enable JavaScript to boot into <span class="font-mono text-[var(--color-amber)]"
-            >CortechOS</span
-          > — a tiny desktop where you can open each project in a window.
+          art. Enable JavaScript to boot into{' '}
+          <span class="font-mono text-[var(--color-amber)]">CortechOS</span> — a tiny desktop where
+          you can open each project in a window.
         </p>
 
         <section class="mt-10">
@@ -89,27 +97,25 @@ const flagships = apps.filter((a) => a.type === 'iframe');
             Products
           </h2>
           <ul class="mt-4 grid gap-3 sm:grid-cols-2">
-            {
-              flagships.map((app) => (
-                <li class="rounded-[var(--ct-radius)] border border-[var(--color-border)] p-4">
-                  <div class="flex items-center gap-2">
-                    {typeof app.icon === 'string' && app.icon.startsWith('/') ? (
-                      <img src={app.icon} alt="" class="h-6 w-6" />
-                    ) : (
-                      <span class="text-xl">{app.icon}</span>
-                    )}
-                    <a
-                      href={app.url}
-                      rel="noopener noreferrer"
-                      class="font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]"
-                    >
-                      {app.name}
-                    </a>
-                  </div>
-                  <p class="mt-1 text-sm text-[var(--color-dim)]">{app.description}</p>
-                </li>
-              ))
-            }
+            {flagships.map((app) => (
+              <li class="rounded-[var(--ct-radius)] border border-[var(--color-border)] p-4">
+                <div class="flex items-center gap-2">
+                  {typeof app.icon === 'string' && app.icon.startsWith('/') ? (
+                    <img src={app.icon} alt="" class="h-6 w-6" />
+                  ) : (
+                    <span class="text-xl">{app.icon}</span>
+                  )}
+                  <a
+                    href={app.url}
+                    rel="noopener noreferrer"
+                    class="font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]"
+                  >
+                    {app.name}
+                  </a>
+                </div>
+                <p class="mt-1 text-sm text-[var(--color-dim)]">{app.description}</p>
+              </li>
+            ))}
           </ul>
         </section>
 
@@ -118,48 +124,46 @@ const flagships = apps.filter((a) => a.type === 'iframe');
             Podcasts
           </h2>
           <ul class="mt-4 grid gap-3 sm:grid-cols-2">
-            {
-              SHOWS.map((show) => (
-                <li class="flex gap-3 rounded-[var(--ct-radius)] border border-[var(--color-border)] p-4">
-                  <img
-                    src={show.coverSrc}
-                    alt={`${show.name} cover art`}
-                    width="1400"
-                    height="1400"
-                    class="h-12 w-12 shrink-0 rounded-md border border-[var(--color-border)]"
-                  />
-                  <div class="min-w-0">
+            {SHOWS.map((show) => (
+              <li class="flex gap-3 rounded-[var(--ct-radius)] border border-[var(--color-border)] p-4">
+                <img
+                  src={show.coverSrc}
+                  alt={`${show.name} cover art`}
+                  width="1400"
+                  height="1400"
+                  class="h-12 w-12 shrink-0 rounded-md border border-[var(--color-border)]"
+                />
+                <div class="min-w-0">
+                  <a
+                    href={show.pagePath}
+                    class="font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]"
+                  >
+                    {show.name}
+                  </a>
+                  <p class="mt-1 text-sm text-[var(--color-dim)]">{show.tagline}</p>
+                  {listenLinks(show).length > 0 ? (
+                    <p class="mt-2 flex flex-wrap gap-x-3 text-sm">
+                      {listenLinks(show).map((link) => (
+                        <a
+                          href={link.url}
+                          rel="noopener noreferrer"
+                          class="text-[var(--color-amber)] hover:underline"
+                        >
+                          {link.label} ↗
+                        </a>
+                      ))}
+                    </p>
+                  ) : (
                     <a
-                      href={show.pagePath}
-                      class="font-medium text-[var(--color-text)] hover:text-[var(--color-amber)]"
+                      href={show.feedPath}
+                      class="mt-2 inline-block text-sm text-[var(--color-amber)] hover:underline"
                     >
-                      {show.name}
+                      Subscribe by feed
                     </a>
-                    <p class="mt-1 text-sm text-[var(--color-dim)]">{show.tagline}</p>
-                    {listenLinks(show).length > 0 ? (
-                      <p class="mt-2 flex flex-wrap gap-x-3 text-sm">
-                        {listenLinks(show).map((link) => (
-                          <a
-                            href={link.url}
-                            rel="noopener noreferrer"
-                            class="text-[var(--color-amber)] hover:underline"
-                          >
-                            {link.label} ↗
-                          </a>
-                        ))}
-                      </p>
-                    ) : (
-                      <a
-                        href={show.feedPath}
-                        class="mt-2 inline-block text-sm text-[var(--color-amber)] hover:underline"
-                      >
-                        Subscribe by feed
-                      </a>
-                    )}
-                  </div>
-                </li>
-              ))
-            }
+                  )}
+                </div>
+              </li>
+            ))}
           </ul>
         </section>
 
@@ -172,21 +176,21 @@ const flagships = apps.filter((a) => a.type === 'iframe');
               href="https://github.com/sponsors/schmug"
               rel="noopener noreferrer"
               class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)]"
-              >GitHub Sponsors</a
             >
+              GitHub Sponsors
+            </a>
             <a
               href="https://github.com/schmug"
               rel="noopener noreferrer"
               class="rounded-md border border-[var(--color-border)] px-4 py-2 text-[var(--color-text)]"
-              >Star on GitHub</a
             >
+              Star on GitHub
+            </a>
           </div>
         </section>
       </main>
 
-      <footer
-        class="border-t border-[var(--color-border)] px-6 py-6 text-xs text-[var(--color-muted)]"
-      >
+      <footer class="border-t border-[var(--color-border)] px-6 py-6 text-xs text-[var(--color-muted)]">
         <div class="mx-auto max-w-4xl">
           © {new Date().getFullYear()} Schmug · cortech.online · CortechOS v1.0
         </div>
