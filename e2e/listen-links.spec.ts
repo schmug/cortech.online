@@ -1,21 +1,25 @@
 import { test, expect } from '@playwright/test';
-import { SHOWS } from '../src/lib/shows';
+import { SHOWS, listenLinks } from '../src/lib/shows';
 
-// Both shows are listed on Spotify, which is where listeners actually are. The
-// link is the whole point of the surface, so assert the exact href rather than
-// just "a link exists" — a `?si=` share token or a stale show id would still
-// render a perfectly clickable, wrong link.
+// Each show is listed on Spotify, Apple Podcasts, and YouTube, which is where
+// listeners actually are. The links are the whole point of the surface, so
+// assert the exact href rather than just "a link exists" — a `?si=` share token
+// or a stale show id would still render a perfectly clickable, wrong link. A
+// show listed nowhere (RSS-first) renders no listen links and leads with its
+// feed; shows.test.ts covers that path, since no current show takes it.
 
-test.describe('show pages link Spotify', () => {
+test.describe('show pages link every platform', () => {
   for (const show of SHOWS) {
-    test(`${show.pagePath} links ${show.name} on Spotify, feed intact`, async ({ page }) => {
+    test(`${show.pagePath} links ${show.name} on each platform, feed intact`, async ({ page }) => {
       await page.goto(show.pagePath);
 
-      const spotify = page.getByRole('link', { name: /listen on spotify/i });
-      await expect(spotify).toBeVisible();
-      await expect(spotify).toHaveAttribute('href', show.spotifyUrl);
+      for (const { label, url } of listenLinks(show)) {
+        const link = page.locator(`main a[href="${url}"]`);
+        await expect(link, `${show.name} ${label} link`).toBeVisible();
+        await expect(link).toHaveText(new RegExp(label));
+      }
 
-      // Spotify leads, but the feed is what a podcast client subscribes to.
+      // The platforms lead, but the feed is what any other client subscribes to.
       await expect(page.locator(`main a[href="${show.feedPath}"]`).first()).toBeVisible();
     });
   }
@@ -36,10 +40,9 @@ test.describe('/podcasts index', () => {
         'href',
         show.pagePath,
       );
-      await expect(
-        card.locator(`a[href="${show.spotifyUrl}"]`),
-        `${show.name} Spotify link`,
-      ).toBeVisible();
+      for (const { label, url } of listenLinks(show)) {
+        await expect(card.locator(`a[href="${url}"]`), `${show.name} ${label} link`).toBeVisible();
+      }
       await expect(
         card.locator(`a[href="${show.feedPath}"]`),
         `${show.name} feed link`,
@@ -72,7 +75,7 @@ test.describe('homepage static layer', () => {
   // with JS off — which is also exactly how crawlers and no-JS visitors see it.
   test.use({ javaScriptEnabled: false });
 
-  test('lists both shows with their Spotify links', async ({ page }) => {
+  test('lists every show with its listen links or, failing that, its feed', async ({ page }) => {
     await page.goto('/');
 
     const podcasts = page.locator('#static-layer section', { hasText: 'Podcasts' }).first();
@@ -83,10 +86,11 @@ test.describe('homepage static layer', () => {
         'href',
         show.pagePath,
       );
-      await expect(
-        podcasts.locator(`a[href="${show.spotifyUrl}"]`),
-        `${show.name} Spotify link`,
-      ).toBeVisible();
+      const links = listenLinks(show);
+      const hrefs = links.length > 0 ? links.map((l) => l.url) : [show.feedPath];
+      for (const href of hrefs) {
+        await expect(podcasts.locator(`a[href="${href}"]`), `${show.name} ${href}`).toBeVisible();
+      }
       await expect(podcasts.getByRole('img', { name: `${show.name} cover art` })).toBeVisible();
     }
   });
@@ -109,7 +113,7 @@ test.describe('CortechOS Podcasts app', () => {
     );
   });
 
-  test('opens from its desktop icon and links both shows out to Spotify', async ({ page }) => {
+  test('opens from its desktop icon and links every show to its page', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const splash = page.locator('[aria-label="CortechOS booting"]');
@@ -124,7 +128,9 @@ test.describe('CortechOS Podcasts app', () => {
 
     for (const show of SHOWS) {
       await expect(win.getByRole('heading', { name: show.name })).toBeVisible();
-      await expect(win.locator(`a[href="${show.spotifyUrl}"]`)).toHaveCount(1);
+      for (const { url } of listenLinks(show)) {
+        await expect(win.locator(`a[href="${url}"]`)).toHaveCount(1);
+      }
       await expect(win.locator(`a[href="${show.pagePath}"]`)).toHaveCount(1);
     }
   });

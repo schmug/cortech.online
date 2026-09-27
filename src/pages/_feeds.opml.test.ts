@@ -29,7 +29,7 @@ describe('feeds.opml route', () => {
   it('lists every syndication feed as an rss outline', async () => {
     const xml = await getOpml();
     const outlines = xml.match(/<outline\b[^>]*type="rss"[^>]*\/>/g) ?? [];
-    expect(outlines.length).toBe(4);
+    expect(outlines.length).toBe(5);
   });
 
   it('points each outline at the absolute feed and page URLs', async () => {
@@ -38,10 +38,12 @@ describe('feeds.opml route', () => {
     expect(xml).toContain('xmlUrl="https://cortech.online/mythos/rss.xml"');
     expect(xml).toContain('xmlUrl="https://cortech.online/podcast/rss.xml"');
     expect(xml).toContain('xmlUrl="https://cortech.online/frontier-commits/rss.xml"');
+    expect(xml).toContain('xmlUrl="https://cortech.online/show-your-work/rss.xml"');
     expect(xml).toContain('htmlUrl="https://cortech.online/"');
     expect(xml).toContain('htmlUrl="https://cortech.online/mythos"');
     expect(xml).toContain('htmlUrl="https://cortech.online/podcast"');
     expect(xml).toContain('htmlUrl="https://cortech.online/frontier-commits"');
+    expect(xml).toContain('htmlUrl="https://cortech.online/show-your-work"');
   });
 
   it('escapes the em dash in feed titles without corrupting the attribute', async () => {

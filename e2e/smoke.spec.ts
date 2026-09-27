@@ -373,3 +373,25 @@ test.describe('DMarcus rickroll app', () => {
     expect(filterNoise(messages)).toEqual([]);
   });
 });
+
+test.describe('feed autodiscovery', () => {
+  // Base.astro renders the section feed first and the global firehose second, so a
+  // podcast/reader client picking the first <link> gets the enclosure-carrying feed
+  // rather than /rss.xml. Asserting the exact array guards presence AND that order.
+  const SECTION_FEEDS = [
+    { path: '/podcast', feed: '/podcast/rss.xml' },
+    { path: '/mythos', feed: '/mythos/rss.xml' },
+  ] as const;
+
+  for (const { path, feed } of SECTION_FEEDS) {
+    test(`${path} advertises ${feed} ahead of the global /rss.xml`, async ({ page }) => {
+      await page.goto(path, { waitUntil: 'domcontentloaded' });
+
+      const hrefs = await page
+        .locator('link[rel="alternate"][type="application/rss+xml"]')
+        .evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+
+      expect(hrefs).toEqual([feed, '/rss.xml']);
+    });
+  }
+});

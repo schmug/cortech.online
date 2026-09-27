@@ -7,9 +7,9 @@ const NARROW = { width: 320, height: 640 };
 
 // Content pages that render the shared header/footer from src/layouts/Base.astro.
 // `/` is excluded — it hydrates the OS shell, which owns its own layout. Episode
-// detail pages (`/podcast/<slug>`, `/frontier-commits/<slug>`) are excluded
-// because their slugs come from a remote manifest at build time; both show
-// indexes are deterministic (the fetch degrades to an empty list) so they are
+// detail pages (`/podcast/<slug>`, `/frontier-commits/<slug>`,
+// `/show-your-work/<slug>`) are excluded because their slugs come from a remote
+// manifest at build time; every show index is deterministic (the fetch degrades to an empty list) so they are
 // covered here.
 const BASE_LAYOUT_PAGES = [
   '/about',
@@ -20,10 +20,16 @@ const BASE_LAYOUT_PAGES = [
   '/podcasts',
   '/podcast',
   '/frontier-commits',
+  '/show-your-work',
 ];
 
 /** Elements whose right edge sticks out past the viewport, with a 1px slack for
- * subpixel rounding. Returns tag + class so a failure names the culprit. */
+ * subpixel rounding. Returns tag + class so a failure names the culprit.
+ *
+ * Callers must navigate with `waitUntil: 'load'`, not 'domcontentloaded': at
+ * DOMContentLoaded `document.styleSheets` is still empty, so cover images render
+ * at their intrinsic width (1400px) and every page with one reports a bogus
+ * overflow. That race is why this suite failed intermittently under load. */
 async function overflowingElements(page: import('@playwright/test').Page) {
   return page.evaluate(() => {
     const clientWidth = document.documentElement.clientWidth;
@@ -41,9 +47,18 @@ async function overflowingElements(page: import('@playwright/test').Page) {
 test.describe('320px viewport', () => {
   test.use({ viewport: NARROW });
 
+  // Block the external font CDN so `load` below can't hang waiting on
+  // fonts.googleapis.com. Fulfill (vs abort) keeps the console clean —
+  // same treatment as e2e/smoke.spec.ts.
+  test.beforeEach(async ({ page }) => {
+    await page.route(/fonts\.(googleapis|gstatic)\.com/, (route) =>
+      route.fulfill({ status: 200, contentType: 'text/css', body: '' }),
+    );
+  });
+
   for (const path of BASE_LAYOUT_PAGES) {
     test(`${path} has no horizontal overflow`, async ({ page }) => {
-      await page.goto(path, { waitUntil: 'domcontentloaded' });
+      await page.goto(path, { waitUntil: 'load' });
       const { clientWidth, scrollWidth, offenders } = await overflowingElements(page);
       expect(offenders, `elements wider than the ${clientWidth}px viewport`).toEqual([]);
       expect(scrollWidth).toBeLessThanOrEqual(clientWidth);
@@ -51,7 +66,7 @@ test.describe('320px viewport', () => {
   }
 
   test('header nav links stay inside the viewport', async ({ page }) => {
-    await page.goto('/about', { waitUntil: 'domcontentloaded' });
+    await page.goto('/about', { waitUntil: 'load' });
     const nav = page.locator('header nav[aria-label="Primary"]');
     const clientWidth = await page.evaluate(() => document.documentElement.clientWidth);
 

@@ -1,0 +1,22 @@
+[
+  {
+    "slug": "syw-week-of-january-5-2026",
+    "title": "Show Your Work — E2E Fixture Week",
+    "description": "<p>A fixture episode built for the Playwright suite: one alignment post explained in a week that never happened.</p><p>(0:00) - Cold open</p>",
+    "pubDate": "2026-01-05T13:00:00.000Z",
+    "mp3_url": "https://example.com/show-your-work/syw-week-of-january-5-2026.mp3",
+    "mp3_bytes": 13631488,
+    "duration_s": 868.4,
+    "spotify_uri": null,
+    "explicit": false,
+    "chapters": [
+      { "title": "Cold open", "start_ms": 0, "source_url": null },
+      {
+        "title": "A chapter whose source URL is longer than the column",
+        "start_ms": 41000,
+        "source_url": "https://alignment.anthropic.com/2026/some-post-with-a-deliberately-long-name-for-the-layout/"
+      },
+      { "title": "Sign-off", "start_ms": 842000, "source_url": null }
+    ]
+  }
+]

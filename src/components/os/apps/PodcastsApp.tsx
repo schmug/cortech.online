@@ -1,4 +1,4 @@
-import { SHOWS, type Show } from '../../../lib/shows';
+import { SHOWS, listenLinks, type Show } from '../../../lib/shows';
 
 export default function PodcastsApp() {
   return (
@@ -8,11 +8,11 @@ export default function PodcastsApp() {
           Podcasts
         </div>
         <h1 className="mt-1 text-2xl font-[var(--font-display)] font-semibold tracking-tight">
-          Two shows, both AI-narrated.
+          Three shows, all AI-narrated.
         </h1>
         <p className="mt-2 text-sm text-[var(--color-muted)]">
-          Written and produced by Schmug. Both are on Spotify — or paste the feed into whatever
-          player you already use.
+          Produced by Schmug. Every show is on Spotify, Apple Podcasts, and YouTube, or paste its
+          feed into whatever player you already use.
         </p>
       </header>
 
@@ -41,14 +41,17 @@ function ShowCard({ show }: { show: Show }) {
         </h2>
         <p className="mt-1 text-sm text-[var(--color-muted)]">{show.tagline}</p>
         <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
-          <a
-            href={show.spotifyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-md bg-[var(--color-amber)] px-3 py-1.5 font-medium text-[var(--color-void)] transition hover:opacity-90"
-          >
-            Listen on Spotify ↗
-          </a>
+          {listenLinks(show).map((link) => (
+            <a
+              key={link.id}
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-md bg-[var(--color-amber)] px-3 py-1.5 font-medium text-[var(--color-void)] transition hover:opacity-90"
+            >
+              {link.label} ↗
+            </a>
+          ))}
           <a
             href={show.pagePath}
             className="rounded-md border border-[var(--color-border)] px-3 py-1.5 text-[var(--color-text)] transition hover:border-[var(--color-amber)] hover:text-[var(--color-amber)]"

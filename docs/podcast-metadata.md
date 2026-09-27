@@ -1,8 +1,8 @@
 # Podcast show metadata — decisions and rationale
 
-The site publishes two shows. Everything above the "Frontier Commits" heading is about
-**Cortech Daily** ([src/pages/podcast/](../src/pages/podcast/)); the second show has its own
-section at the bottom.
+The site publishes three shows. Everything above the "Frontier Commits" heading is about
+**Cortech Daily** ([src/pages/podcast/](../src/pages/podcast/)); Frontier Commits and Show Your
+Work each have their own section at the bottom.
 
 The channel block in [src/pages/podcast/rss.xml.ts](../src/pages/podcast/rss.xml.ts) stopped
 being page metadata on **2026-08-23**, when the feed became the source of record for a public
@@ -122,3 +122,60 @@ production path on merge day, not an edge case, and
 [frontierEpisodes.test.ts](../src/lib/frontierEpisodes.test.ts) pins it. The env var exists to
 point a build at a fixture (the Playwright suite does) or, set empty, to opt a build out of the
 fetch entirely.
+
+---
+
+# Show Your Work
+
+The fourth clodcast show, and the third on this site — weekly, explaining the frontier labs'
+alignment and safety research (Anthropic, OpenAI including its misalignment reports, Google
+DeepMind) to people who don't read papers. Each episode is one feature explained in five
+Explainer/Skeptic dialogue scenes, plus short briefs. Page and feed:
+[src/pages/show-your-work/](../src/pages/show-your-work/); manifest loader:
+[src/lib/showYourWorkEpisodes.ts](../src/lib/showYourWorkEpisodes.ts). Added by
+[#256](https://github.com/schmug/cortech.online/issues/256). Upstream design: clodcast's
+[show-your-work design spec](https://github.com/schmug/clodcast/blob/91eeeb6aafdd911f82b06fa67d856254d0ab7be6/docs/superpowers/specs/2026-09-26-show-your-work-design.md).
+
+**This show is RSS-first.** Nothing publishes it to a directory on its behalf, so `rss.xml` _is_
+the show: the URL Spotify, Apple Podcasts, and YouTube ingest it from. Its listings live in the
+`listen` field of its `SHOWS` entry in `src/lib/shows.ts`, alongside the other two shows'. The
+one-way door applies — once a directory has polled the feed, `<title>` renames a public show.
+
+## Decisions
+
+| Field                   | Value                                                            | Why                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| ----------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PODCAST_TITLE`         | `Show Your Work`                                                 | The show's locked name. It is the plain-language form of chain-of-thought transparency, and it is what the Skeptic demands of every claim. Three words, no special characters, no generic "podcast"/"pod" — the same SEO checklist the other two titles were written against.                                                                                                                                                                                                                                                                                                                                                                 |
+| `PODCAST_DESCRIPTION`   | see source                                                       | Leads with listener value (research nobody translates), names the three labs so search has keywords to match, and states the format and the promise (weekly, sourced). **The disclosure sentence is a locked editorial decision and must stay**: the show is written and voiced by Claude, an Anthropic model, and Anthropic is one of the labs it covers. Frontier Commits' "written and produced by Schmug, narrated by AI" credit is deliberately not reused — neither half is true here. The description also names the check on that conflict: every pushback traces to the post's own stated limitations or to independent researchers. |
+| `AUTHOR` / `OWNER_NAME` | `Schmug`                                                         | Same as the other two shows. Schmug is the site-owner name [CLAUDE.md](../CLAUDE.md) fixes, and the person who built and runs the pipeline; the description credits Schmug as producer and Claude as writer and voice.                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `OWNER_EMAIL`           | `clodcast@cortech.online`                                        | Shared with both other shows, so one address receives all show mail. **Must stay deliverable**: any directory this show is later submitted to verifies ownership through it, and one broken Cloudflare Email Routing rule now affects three shows.                                                                                                                                                                                                                                                                                                                                                                                            |
+| `COPYRIGHT`             | `© 2026 Schmug`                                                  | Matches the other two shows.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `CATEGORIES`            | `Technology`; `Science`; `Education`                             | Exact Apple strings; invented ones are silently dropped. `Technology` first because the subject is AI. `Science` because each episode explains a research post. `Education` because the format is an explainer for newcomers. All three are bare parents: Apple has no subcategory for machine-learning research, and `Education > How To` (rejected for Frontier Commits too) does not describe an explainer. `News > Tech News` is left to the two news-shaped shows.                                                                                                                                                                       |
+| `COVER_URL`             | [`show-your-work-cover.jpg`](../public/show-your-work-cover.jpg) | The show art, 3000×3000 RGB JPEG. It is a copy of clodcast's `skills/show-your-work/refs/cover.jpg` (regenerated by that repo's `refs/make_cover.py`, approved by Cory 2026-09-26); change it there, then copy it here. It replaced the generated placeholder and its script. The art's tagline, _alignment research, explained and questioned_, carries the subject the name does not.                                                                                                                                                                                                                                                       |
+| `language`              | `en-us`                                                          | Matches the other two shows.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `itunes:explicit`       | `false`                                                          | Research explainers; nothing warrants the flag. An episode can still set its own via the manifest's `explicit`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `itunes:type`           | `episodic`                                                       | Each week stands alone; the feed is newest-first, not a serial meant to be heard in order.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+
+## Slugs and guids
+
+Episode slugs are `syw-week-of-<month>-<d>-<yyyy>`, minted upstream by clodcast from the episode
+date with `slug_prefix: "syw-week-of"`. Each item's `<guid isPermaLink="true">` is its page URL,
+`https://cortech.online/show-your-work/<slug>/`, so a slug is **immutable once published**. The feed
+builds that URL from `slug` and never from `title`; `_rss.xml.test.ts` retitles the fixture and
+proves the guid does not move.
+
+## No `itunes:episode`
+
+Same reasoning as Frontier Commits: the tag is optional for an `episodic` show, a weekly number
+needs an epoch, and the first episode has not shipped. Add numbering when episode 1 has a publish
+date — never from position in the feed.
+
+## Until the first episode ships
+
+`SHOW_YOUR_WORK_MANIFEST_URL` defaults to
+`https://clodcast.cortech.online/manifest-show-your-work.json`, which **404s until clodcast
+publishes**, so every build until then renders `/show-your-work/` with an empty state and a
+zero-item feed. That is the production path on merge day, and
+[showYourWorkEpisodes.test.ts](../src/lib/showYourWorkEpisodes.test.ts) pins it. Set the variable
+to point a build at a fixture (the Playwright suite does), or set it empty to opt a build out of
+the fetch entirely.

@@ -1,12 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { formatChapterTimestamp, summaryText } from '../../lib/episodes';
-import { fetchFrontierEpisodes } from '../../lib/frontierEpisodes';
+import { fetchShowYourWorkEpisodes } from '../../lib/showYourWorkEpisodes';
 import ListenLinks from '../../components/ListenLinks.astro';
 import { showById } from '../../lib/shows';
 
-const episodes = await fetchFrontierEpisodes();
-const show = showById('frontier-commits')!;
+const episodes = await fetchShowYourWorkEpisodes();
+const show = showById('show-your-work')!;
+const feedUrl = new URL(show.feedPath, Astro.site ?? 'https://cortech.online').toString();
 
 // pubDate comes from the feed in UTC. Without pinning the zone the rendered
 // date is a property of the build host rather than of the episode.
@@ -19,17 +20,17 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
 ---
 
 <Base
-  title="Frontier Commits"
-  description="Frontier Commits — a weekly read of what Anthropic, OpenAI, Google DeepMind, and xAI actually shipped on GitHub. By Schmug."
-  canonical="https://cortech.online/frontier-commits"
-  feedUrl="/frontier-commits/rss.xml"
-  feedTitle="Frontier Commits"
+  title="Show Your Work"
+  description="Show Your Work — a weekly plain-language explainer of alignment research from Anthropic, OpenAI, and Google DeepMind, written and voiced by Claude."
+  canonical="https://cortech.online/show-your-work"
+  feedUrl={show.feedPath}
+  feedTitle="Show Your Work"
 >
   <section class="mx-auto max-w-2xl px-6 pt-16 pb-10">
     <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
       <img
-        src="/frontier-commits-cover.jpg"
-        alt="Frontier Commits cover art"
+        src={show.coverSrc}
+        alt="Show Your Work cover art"
         width="1400"
         height="1400"
         class="h-28 w-28 shrink-0 rounded-lg border border-[var(--color-border)] sm:h-32 sm:w-32"
@@ -39,13 +40,19 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
           Podcast
         </p>
         <h1 class="mt-2 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl">
-          Frontier Commits
+          Show Your Work
         </h1>
         <p class="mt-3 text-sm text-[var(--color-muted)]">
-          The frontier AI labs build in public, and most of it never makes the news. Every week, a
-          short walk through what Anthropic, OpenAI, Google DeepMind, and xAI actually shipped on
-          GitHub — new repositories, releases, quiet archivals, and the trends underneath them.
-          Narrated by AI, written and produced by Schmug.
+          The frontier AI labs publish a steady stream of alignment and safety research, and almost
+          none of it is written for people who don't read papers. Every week, one post from
+          Anthropic, OpenAI, or Google DeepMind, explained as a conversation: an Explainer states
+          the claim the way the lab states it, and a Skeptic asks what a newcomer would ask, then
+          pushes back. Short briefs cover the rest of the week.
+        </p>
+        <p class="mt-3 text-sm text-[var(--color-muted)]">
+          <strong class="font-medium text-[var(--color-text)]">A disclosure:</strong> the show is written
+          and voiced by Claude, an Anthropic model, and Anthropic is one of the labs it covers. Every
+          pushback traces to the post's own stated limitations or to independent researchers.
         </p>
       </div>
     </div>
@@ -53,10 +60,10 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
     <div class="mt-6">
       <ListenLinks show={show} />
       <p class="mt-2 text-sm text-[var(--color-muted)]">
-        or subscribe in any player with the <a
-          href="/frontier-commits/rss.xml"
+        or subscribe in any player by pasting the <a
+          href={show.feedPath}
           class="text-[var(--color-amber)] hover:underline">show feed</a
-        > — it carries the audio.
+        >: <code class="font-mono text-xs break-all text-[var(--color-text)]">{feedUrl}</code>
       </p>
     </div>
 
@@ -71,7 +78,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
           {episodes.map((ep) => (
             <li class="py-5">
               <a
-                href={`/frontier-commits/${ep.slug}/`}
+                href={`/show-your-work/${ep.slug}/`}
                 class="group block transition hover:text-[var(--color-amber)]"
               >
                 <div class="flex items-baseline gap-3 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
@@ -101,9 +108,9 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
         nine minutes each morning on AI, security, and Cloudflare, every item linked to its source.
       </p>
       <p class="mt-2 max-w-xl text-sm text-[var(--color-muted)]">
-        <a href="/show-your-work" class="text-[var(--color-amber)] hover:underline"
-          >Show Your Work</a
-        > — weekly, the frontier labs' alignment research explained, written and voiced by Claude.
+        <a href="/frontier-commits" class="text-[var(--color-amber)] hover:underline"
+          >Frontier Commits</a
+        > — weekly, on what Anthropic, OpenAI, Google DeepMind, and xAI actually shipped on GitHub.
       </p>
     </aside>
   </section>
