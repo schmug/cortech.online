@@ -1,7 +1,7 @@
 import { describe, it, expect, afterEach } from 'vitest';
 import { render, screen, within, cleanup } from '@testing-library/react';
 import PodcastsApp from './PodcastsApp';
-import { SHOWS, type Show } from '../../../lib/shows';
+import { SHOWS, listenLinks, type Show } from '../../../lib/shows';
 
 afterEach(cleanup);
 
@@ -30,19 +30,16 @@ describe('PodcastsApp', () => {
     expect(feed.getAttribute('href')).toBe(show.feedPath);
   });
 
-  it.each(SHOWS.filter((s) => s.spotifyUrl !== null))('$name links out to Spotify', (show) => {
+  it.each(SHOWS)('$name links out to every platform it is listed on', (show) => {
     render(<PodcastsApp />);
-    const spotify = within(cardFor(show)).getByRole('link', { name: /spotify/i });
-    expect(spotify.getAttribute('href')).toBe(show.spotifyUrl);
-    // Cross-origin target=_blank without noopener hands the opened tab a live
-    // window.opener handle back into CortechOS.
-    expect(spotify.getAttribute('rel')).toContain('noopener');
-  });
-
-  // An RSS-first show has no Spotify page; the feed is its way in.
-  it.each(SHOWS.filter((s) => s.spotifyUrl === null))('$name offers no Spotify link', (show) => {
-    render(<PodcastsApp />);
-    expect(within(cardFor(show)).queryByRole('link', { name: /spotify/i })).toBeNull();
+    const card = cardFor(show);
+    for (const { label, url } of listenLinks(show)) {
+      const link = within(card).getByRole('link', { name: new RegExp(label, 'i') });
+      expect(link.getAttribute('href')).toBe(url);
+      // Cross-origin target=_blank without noopener hands the opened tab a live
+      // window.opener handle back into CortechOS.
+      expect(link.getAttribute('rel')).toContain('noopener');
+    }
   });
 
   it.each(SHOWS)('$name shows its cover art with a non-decorative alt', (show) => {

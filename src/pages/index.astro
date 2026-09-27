@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import RootShell from '../components/RootShell.tsx';
 import { apps } from '../apps/registry.ts';
-import { SHOWS } from '../lib/shows.ts';
+import { SHOWS, listenLinks } from '../lib/shows.ts';
 
 const flagships = apps.filter((a) => a.type === 'iframe');
 ---
@@ -136,14 +136,18 @@ const flagships = apps.filter((a) => a.type === 'iframe');
                       {show.name}
                     </a>
                     <p class="mt-1 text-sm text-[var(--color-dim)]">{show.tagline}</p>
-                    {show.spotifyUrl ? (
-                      <a
-                        href={show.spotifyUrl}
-                        rel="noopener noreferrer"
-                        class="mt-2 inline-block text-sm text-[var(--color-amber)] hover:underline"
-                      >
-                        Listen on Spotify ↗
-                      </a>
+                    {listenLinks(show).length > 0 ? (
+                      <p class="mt-2 flex flex-wrap gap-x-3 text-sm">
+                        {listenLinks(show).map((link) => (
+                          <a
+                            href={link.url}
+                            rel="noopener noreferrer"
+                            class="text-[var(--color-amber)] hover:underline"
+                          >
+                            {link.label} ↗
+                          </a>
+                        ))}
+                      </p>
                     ) : (
                       <a
                         href={show.feedPath}

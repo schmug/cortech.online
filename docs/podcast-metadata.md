@@ -136,10 +136,10 @@ Explainer/Skeptic dialogue scenes, plus short briefs. Page and feed:
 [#256](https://github.com/schmug/cortech.online/issues/256). Upstream design: clodcast's
 [show-your-work design spec](https://github.com/schmug/clodcast/blob/91eeeb6aafdd911f82b06fa67d856254d0ab7be6/docs/superpowers/specs/2026-09-26-show-your-work-design.md).
 
-**This show is RSS-first and not on Spotify.** Nothing publishes it to a directory, so `rss.xml`
-_is_ the show. Its `SHOWS` entry carries `spotifyUrl: null`, which is what makes `/podcasts`, the
-homepage and the Podcasts app drop the Spotify link for it and lead with the feed. The one-way door
-still applies — once a player or directory has polled the feed, `<title>` renames a public show.
+**This show is RSS-first.** Nothing publishes it to a directory on its behalf, so `rss.xml` _is_
+the show: the URL Spotify, Apple Podcasts, and YouTube ingest it from. Its listings live in the
+`listen` field of its `SHOWS` entry in `src/lib/shows.ts`, alongside the other two shows'. The
+one-way door applies — once a directory has polled the feed, `<title>` renames a public show.
 
 ## Decisions
 

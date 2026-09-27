@@ -1,14 +1,25 @@
 // The podcasts, as one list. Every show surfaces in four places — its own show
 // page, the homepage static layer, the CortechOS Podcasts app, and /podcasts —
-// and the Spotify URL is the piece most likely to be pasted in wrong, so it
-// lives here once.
+// and the platform URLs are the pieces most likely to be pasted in wrong, so
+// they live here once.
 //
-// Spotify's share sheet appends a `?si=` token that attributes every click to
-// the device that copied the link. The canonical form is the bare show URL;
-// shows.test.ts fails the build if a tracked one lands here.
+// Share sheets paste the wrong URL: Spotify appends a `?si=` token that
+// attributes every click to the copying device, and YouTube hands out one
+// episode's watch URL with the playlist appended. Store the canonical show URL
+// (bare Spotify show, bare Apple id, YouTube `/playlist?list=`);
+// shows.test.ts fails the build on anything else.
 //
 // This is the *shows* list. src/pages/feeds.opml.ts is the feeds list — it
 // covers every feed the site publishes, podcasts included.
+
+/** Surfaces render listen links in this order. */
+export const PLATFORMS = [
+  { id: 'spotify', label: 'Spotify' },
+  { id: 'apple', label: 'Apple Podcasts' },
+  { id: 'youtube', label: 'YouTube' },
+] as const;
+
+export type Platform = (typeof PLATFORMS)[number]['id'];
 
 export type Show = {
   id: string;
@@ -20,10 +31,10 @@ export type Show = {
   feedPath: string;
   /** Square cover art under /public, 1400px source. */
   coverSrc: string;
-  /** Null for an RSS-first show nothing publishes to Spotify; every surface
-   * then drops the Spotify link and leads with the feed. Null rather than
-   * optional, so a new entry has to say which it is. */
-  spotifyUrl: string | null;
+  /** Null where the show is not listed. A show listed nowhere is RSS-first:
+   * every surface then leads with the feed. Null rather than optional, so a
+   * new entry has to say which it is for each platform. */
+  listen: Record<Platform, string | null>;
 };
 
 export const SHOWS: Show[] = [
@@ -35,7 +46,11 @@ export const SHOWS: Show[] = [
     pagePath: '/podcast',
     feedPath: '/podcast/rss.xml',
     coverSrc: '/podcast-cover.png',
-    spotifyUrl: 'https://open.spotify.com/show/2r9MIeNT0aVkbcaLRUeMqM',
+    listen: {
+      spotify: 'https://open.spotify.com/show/2r9MIeNT0aVkbcaLRUeMqM',
+      apple: 'https://podcasts.apple.com/us/podcast/cortech-daily/id6816492260',
+      youtube: 'https://www.youtube.com/playlist?list=PLT3WHek-cV54',
+    },
   },
   {
     id: 'frontier-commits',
@@ -45,7 +60,11 @@ export const SHOWS: Show[] = [
     pagePath: '/frontier-commits',
     feedPath: '/frontier-commits/rss.xml',
     coverSrc: '/frontier-commits-cover.jpg',
-    spotifyUrl: 'https://open.spotify.com/show/1F8PcfKYdslkqwhKHt9jLV',
+    listen: {
+      spotify: 'https://open.spotify.com/show/1F8PcfKYdslkqwhKHt9jLV',
+      apple: 'https://podcasts.apple.com/us/podcast/frontier-commits/id6816492264',
+      youtube: 'https://www.youtube.com/playlist?list=PLQvBIRYzLbbI',
+    },
   },
   {
     id: 'show-your-work',
@@ -55,8 +74,20 @@ export const SHOWS: Show[] = [
     pagePath: '/show-your-work',
     feedPath: '/show-your-work/rss.xml',
     coverSrc: '/show-your-work-cover.jpg',
-    spotifyUrl: null,
+    listen: {
+      spotify: 'https://open.spotify.com/show/7F0dlzSs2YDdaytIwH2lAX',
+      apple: 'https://podcasts.apple.com/us/podcast/show-your-work/id6816747069',
+      youtube: 'https://www.youtube.com/playlist?list=PLJOeXQ7jb5Og',
+    },
   },
 ];
 
 export const showById = (id: string): Show | undefined => SHOWS.find((s) => s.id === id);
+
+export type ListenLink = { id: Platform; label: string; url: string };
+
+export const listenLinks = (show: Show): ListenLink[] =>
+  PLATFORMS.flatMap(({ id, label }) => {
+    const url = show.listen[id];
+    return url ? [{ id, label, url }] : [];
+  });
