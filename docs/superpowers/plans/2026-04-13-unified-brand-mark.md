@@ -509,7 +509,15 @@ Replace the `<svg>` block:
 
 ```astro
 <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-  <rect x="3" y="3" width="26" height="26" rx="4" fill="#0b0d12" stroke="#f6c34a" stroke-width="2"
+  <rect
+    x="3"
+    y="3"
+    width="26"
+    height="26"
+    rx="4"
+    fill="#0b0d12"
+    stroke="#f6c34a"
+    stroke-width="2"
   ></rect>
   <path d="M3 10 H29" stroke="#f6c34a" stroke-width="2"></path>
   <circle cx="7" cy="6.5" r="1.25" fill="#f6c34a"></circle>
@@ -522,7 +530,15 @@ With:
 
 ```astro
 <svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-  <rect x="2" y="2" width="28" height="28" rx="6" fill="#0b0d12" stroke="#f6c34a" stroke-width="2"
+  <rect
+    x="2"
+    y="2"
+    width="28"
+    height="28"
+    rx="6"
+    fill="#0b0d12"
+    stroke="#f6c34a"
+    stroke-width="2"
   ></rect>
   <text
     x="16"
@@ -531,8 +547,10 @@ With:
     font-size="20"
     font-weight="900"
     fill="#f6c34a"
-    text-anchor="middle">S</text
+    text-anchor="middle"
   >
+    S
+  </text>
 </svg>
 ```
 
@@ -639,13 +657,11 @@ Replace:
 With:
 
 ```astro
-{
-  typeof app.icon === 'string' && app.icon.startsWith('/') ? (
-    <img src={app.icon} alt="" class="h-6 w-6" />
-  ) : (
-    <span class="text-xl">{app.icon}</span>
-  )
-}
+{typeof app.icon === 'string' && app.icon.startsWith('/') ? (
+  <img src={app.icon} alt="" class="h-6 w-6" />
+) : (
+  <span class="text-xl">{app.icon}</span>
+)}
 ```
 
 Note: `flagships` on line 6 filters to iframe apps only, so About isn't in the static layer today. This change is defensive — keeps the static layer robust if/when a path-based icon ends up there.
