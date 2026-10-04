@@ -65,6 +65,15 @@ export type RenderOpts = {
   now?: Date;
 };
 
+function dedupeIds(ids: string[]): string[] {
+  const seen = new Map<string, string>();
+  for (const id of ids) {
+    const key = id.toLowerCase();
+    if (!seen.has(key)) seen.set(key, id);
+  }
+  return Array.from(seen.values());
+}
+
 export async function renderPost(opts: RenderOpts): Promise<Post> {
   const now = opts.now ?? new Date();
   if (opts.triggers.length === 0) {
@@ -111,6 +120,7 @@ export async function renderPost(opts: RenderOpts): Promise<Post> {
       lastError = `hallucinated CVEs not present in payload: ${hallucinated.join(', ')}`;
       continue;
     }
+    const citedIds = dedupeIds(mentionedCves);
     // Validate against the base prompt, never `userPrompt + corrective`: the
     // corrective quotes the numbers that were just rejected, and admitting
     // those would let a bad figure pass on the retry that names it.
@@ -134,7 +144,10 @@ export async function renderPost(opts: RenderOpts): Promise<Post> {
         description: deriveDescription(opts.triggers, opts.newDigest),
         pubDate: now.toISOString(),
         triggers: Array.from(new Set(opts.triggers.map((t) => t.kind))),
-        cve_ids: requiredCves,
+        // Every CVE/GHSA identifier the body cites (revealed this run or earlier),
+        // deduplicated case-insensitively. Superset of the `revealed`-trigger CVEs,
+        // which the required-coverage check guarantees are cited. Feeds /api/mythos.json.
+        cve_ids: citedIds,
         projects: collectProjects(opts.triggers),
         headline_snapshot: {
           disclosed: opts.newDigest.headline.disclosed,

@@ -26,6 +26,7 @@ const mythos = defineCollection({
     // True on the ten posts reconstructed from the payload's revealed_at dates
     // by scripts/mythos/backfill.ts; live tracker posts omit it.
     backfilled: z.boolean().default(false),
+    // Every CVE/GHSA identifier the post body cites, not only those revealed this run.
     cve_ids: z.array(z.string()).default([]),
     projects: z.array(z.string()).default([]),
     headline_snapshot: z.object({

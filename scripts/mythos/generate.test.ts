@@ -81,6 +81,43 @@ describe('renderPost()', () => {
     vi.useRealTimers();
   });
 
+  it('lists every cited CVE and GHSA in cve_ids, once each', async () => {
+    const known = [...allKnownCves, 'GHSA-85fq-fc5f-7j7g'];
+    const callLlm = vi
+      .fn()
+      .mockResolvedValue(
+        `wolfSSL CVE-2026-0002 is newly revealed. Earlier CVE-2026-0001 and GHSA-85fq-fc5f-7j7g ` +
+          `were already public; CVE-2026-0001 is cited again. ${padding}.`,
+      );
+    const post = await renderPost({
+      oldDigest,
+      newDigest,
+      triggers,
+      allKnownCves: known,
+      callLlm,
+    });
+    expect([...post.frontmatter.cve_ids].sort()).toEqual(
+      ['CVE-2026-0001', 'CVE-2026-0002', 'GHSA-85fq-fc5f-7j7g'].sort(),
+    );
+  });
+
+  it('collapses identifiers that differ only by case', async () => {
+    const known = [...allKnownCves, 'cve-2026-0001'];
+    const callLlm = vi
+      .fn()
+      .mockResolvedValue(
+        `wolfSSL CVE-2026-0002 is newly revealed. CVE-2026-0001 and cve-2026-0001 are older. ${padding}.`,
+      );
+    const post = await renderPost({
+      oldDigest,
+      newDigest,
+      triggers,
+      allKnownCves: known,
+      callLlm,
+    });
+    expect(post.frontmatter.cve_ids).toHaveLength(2);
+  });
+
   it('passes when guardrails are satisfied', async () => {
     const callLlm = vi
       .fn()
