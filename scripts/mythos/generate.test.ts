@@ -180,6 +180,23 @@ describe('renderPost()', () => {
     expect(callLlm).not.toHaveBeenCalled();
   });
 
+  it('retries by revising the rejected draft, naming the missing identifiers', async () => {
+    const draft = `wolfSSL had a busy day of fixes. ${padding}.`;
+    const callLlm = vi
+      .fn()
+      .mockResolvedValueOnce(draft)
+      .mockResolvedValueOnce(`wolfSSL CVE-2026-0002 had a busy day of fixes. ${padding}.`);
+    const [result] = await Promise.allSettled([
+      renderPost({ oldDigest, newDigest, triggers, allKnownCves, callLlm }),
+      vi.runAllTimersAsync(),
+    ]);
+    expect(result.status).toBe('fulfilled');
+    const retryPrompt = callLlm.mock.calls[1][1] as string;
+    expect(retryPrompt).toContain(draft);
+    expect(retryPrompt).toContain('CVE-2026-0002');
+    expect(retryPrompt).toMatch(/revise/i);
+  });
+
   it('retries once then throws GenerationError when callLlm rejects', async () => {
     const callLlm = vi.fn().mockRejectedValue(new Error('API down'));
     const [result] = await Promise.allSettled([
@@ -336,6 +353,23 @@ describe('buildUserPrompt()', () => {
     expect(brief).toContain('50 days over 193 findings');
     // The excluded negatives are disclosed, not silently dropped.
     expect(brief).toContain('18 further findings were excluded');
+  });
+
+  it('lists every revealed identifier the post must cite, one per line', () => {
+    const many: Trigger[] = [
+      ...triggers,
+      {
+        kind: 'revealed',
+        cve_id: 'GHSA-85fq-fc5f-7j7g',
+        project: 'jetty/jetty.project',
+        bug_class: 'denial-of-service',
+        ecosystem: 'Maven',
+      },
+    ];
+    const brief = buildUserPrompt(oldDigest, newDigest, many);
+    const section = brief.slice(brief.indexOf('Required identifiers'));
+    expect(section).toContain('\n- CVE-2026-0002\n');
+    expect(section).toContain('\n- GHSA-85fq-fc5f-7j7g');
   });
 
   it('omits the ledger section entirely when the digest carries no aggregates', () => {
