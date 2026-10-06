@@ -94,7 +94,16 @@ export async function renderPost(opts: RenderOpts): Promise<Post> {
       // Brief backoff before retry to reduce pressure on the LLM API.
       await new Promise((r) => setTimeout(r, 2000));
     }
-    const corrective = attempt === 0 ? '' : `\n\nPrior attempt failed: ${lastError}. Try again.`;
+    // A fresh draft from scratch re-rolls every identifier and tends to drop a
+    // different one, so the retry revises the rejected draft instead.
+    const corrective =
+      attempt === 0
+        ? ''
+        : lastDraft
+          ? `\n\nYour previous draft was rejected: ${lastError}. Revise it to fix exactly that, ` +
+            `changing nothing else that already passes, and output the full revised body.\n\n` +
+            `Previous draft:\n${lastDraft}`
+          : `\n\nPrior attempt failed: ${lastError}. Try again.`;
     let body: string;
     try {
       body = (await opts.callLlm(SYSTEM_PROMPT, userPrompt + corrective)).trim();
@@ -173,7 +182,22 @@ export function buildUserPrompt(oldD: Digest, newD: Digest, triggers: Trigger[])
     ``,
     `Today's triggers to cover:`,
     JSON.stringify(triggers, null, 2),
+    ...requiredIdsBrief(triggers),
   ].join('\n');
+}
+
+// Large backlogs bury the revealed IDs in the trigger JSON, and the post is
+// rejected if any one is missing, so they are restated as a checklist.
+function requiredIdsBrief(triggers: Trigger[]): string[] {
+  const ids = triggers
+    .filter((t): t is Extract<Trigger, { kind: 'revealed' }> => t.kind === 'revealed')
+    .map((t) => t.cve_id);
+  if (ids.length === 0) return [];
+  return [
+    ``,
+    `Required identifiers — cite every one of these ${ids.length} verbatim at least once:`,
+    ...ids.map((id) => `- ${id}`),
+  ];
 }
 
 /**
