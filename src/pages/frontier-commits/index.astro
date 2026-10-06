@@ -53,57 +53,58 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
     <div class="mt-6">
       <ListenLinks show={show} />
       <p class="mt-2 text-sm text-[var(--color-muted)]">
-        or subscribe in any player with the <a
-          href="/frontier-commits/rss.xml"
-          class="text-[var(--color-amber)] hover:underline">show feed</a
-        > — it carries the audio.
+        or subscribe in any player with the{' '}
+        <a href="/frontier-commits/rss.xml" class="text-[var(--color-amber)] hover:underline">
+          show feed
+        </a>{' '}
+        — it carries the audio.
       </p>
     </div>
 
-    {
-      episodes.length === 0 ? (
-        <p class="mt-12 rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-6 text-sm text-[var(--color-muted)]">
-          No episodes yet — the first one is still in production. The feed above is live and already
-          subscribable, so a new episode will land in your player the week it ships.
-        </p>
-      ) : (
-        <ul class="mt-10 divide-y divide-[var(--color-border)]">
-          {episodes.map((ep) => (
-            <li class="py-5">
-              <a
-                href={`/frontier-commits/${ep.slug}/`}
-                class="group block transition hover:text-[var(--color-amber)]"
-              >
-                <div class="flex items-baseline gap-3 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
-                  <time datetime={ep.pubDate.toISOString()}>
-                    {dateFormatter.format(ep.pubDate)}
-                  </time>
-                  <span>{formatChapterTimestamp(Math.round(ep.duration_s * 1000))}</span>
-                  <span>{ep.chapters.length} chapters</span>
-                </div>
-                <h2 class="mt-1 text-xl font-[var(--font-display)] font-semibold text-[var(--color-text)] group-hover:text-[var(--color-amber)]">
-                  {ep.title}
-                </h2>
-                <p class="mt-1 text-sm text-[var(--color-dim)]">{summaryText(ep.description)}</p>
-              </a>
-            </li>
-          ))}
-        </ul>
-      )
-    }
+    {episodes.length === 0 ? (
+      <p class="mt-12 rounded-md border border-[var(--color-border)] bg-[var(--color-panel)]/60 p-6 text-sm text-[var(--color-muted)]">
+        No episodes yet — the first one is still in production. The feed above is live and already
+        subscribable, so a new episode will land in your player the week it ships.
+      </p>
+    ) : (
+      <ul class="mt-10 divide-y divide-[var(--color-border)]">
+        {episodes.map((ep) => (
+          <li class="py-5">
+            <a
+              href={`/frontier-commits/${ep.slug}/`}
+              class="group block transition hover:text-[var(--color-amber)]"
+            >
+              <div class="flex items-baseline gap-3 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
+                <time datetime={ep.pubDate.toISOString()}>{dateFormatter.format(ep.pubDate)}</time>
+                <span>{formatChapterTimestamp(Math.round(ep.duration_s * 1000))}</span>
+                <span>{ep.chapters.length} chapters</span>
+              </div>
+              <h2 class="mt-1 text-xl font-[var(--font-display)] font-semibold text-[var(--color-text)] group-hover:text-[var(--color-amber)]">
+                {ep.title}
+              </h2>
+              <p class="mt-1 text-sm text-[var(--color-dim)]">{summaryText(ep.description)}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )}
 
     <aside class="mt-14 border-t border-[var(--color-border)] pt-6">
       <p class="font-mono text-[11px] tracking-[0.25em] text-[var(--color-muted)] uppercase">
         Also from Cortech
       </p>
       <p class="mt-2 max-w-xl text-sm text-[var(--color-muted)]">
-        <a href="/podcast" class="text-[var(--color-amber)] hover:underline">Cortech Daily</a> — about
-        nine minutes each morning on AI, security, and Cloudflare, every item linked to its source.
+        <a href="/podcast" class="text-[var(--color-amber)] hover:underline">
+          Cortech Daily
+        </a>{' '}
+        — about nine minutes each morning on AI, security, and Cloudflare, every item linked to its
+        source.
       </p>
       <p class="mt-2 max-w-xl text-sm text-[var(--color-muted)]">
-        <a href="/show-your-work" class="text-[var(--color-amber)] hover:underline"
-          >Show Your Work</a
-        > — weekly, the frontier labs' alignment research explained, written and voiced by Claude.
+        <a href="/show-your-work" class="text-[var(--color-amber)] hover:underline">
+          Show Your Work
+        </a>{' '}
+        — weekly, the frontier labs' alignment research explained, written and voiced by Claude.
       </p>
     </aside>
   </section>
