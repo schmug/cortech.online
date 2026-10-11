@@ -39,22 +39,18 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
     </a>
 
     <header class="mt-6">
-      <div
-        class="flex flex-wrap items-baseline gap-3 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase"
-      >
+      <div class="flex flex-wrap items-baseline gap-3 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
         <time datetime={post.data.pubDate.toISOString()}>
           {dateFormatter.format(post.data.pubDate)}
         </time>
-        {
-          post.data.updatedDate && (
-            <span>
-              updated{' '}
-              <time datetime={post.data.updatedDate.toISOString()}>
-                {dateFormatter.format(post.data.updatedDate)}
-              </time>
-            </span>
-          )
-        }
+        {post.data.updatedDate && (
+          <span>
+            updated{' '}
+            <time datetime={post.data.updatedDate.toISOString()}>
+              {dateFormatter.format(post.data.updatedDate)}
+            </time>
+          </span>
+        )}
         {post.data.tags.length > 0 && <span>{post.data.tags.join(' · ')}</span>}
       </div>
       <h1 class="mt-2 text-3xl font-[var(--font-display)] font-bold tracking-tight sm:text-4xl">

@@ -36,9 +36,7 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
     </a>
 
     <header class="mt-6">
-      <div
-        class="flex flex-wrap items-baseline gap-3 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase"
-      >
+      <div class="flex flex-wrap items-baseline gap-3 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
         <time datetime={post.data.pubDate.toISOString()}>
           {dateFormatter.format(post.data.pubDate)}
         </time>

@@ -45,9 +45,7 @@ const summary = summaryText(episode.description);
     </a>
 
     <header class="mt-6">
-      <div
-        class="flex flex-wrap items-baseline gap-3 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase"
-      >
+      <div class="flex flex-wrap items-baseline gap-3 font-mono text-[10px] tracking-wider text-[var(--color-muted)] uppercase">
         <time datetime={episode.pubDate.toISOString()}>
           {dateFormatter.format(episode.pubDate)}
         </time>
@@ -65,51 +63,51 @@ const summary = summaryText(episode.description);
         Your browser does not support the audio element.
         <a href={episode.mp3_url} class="text-[var(--color-amber)] hover:underline">
           Download the MP3
-        </a>.
+        </a>
+        .
       </audio>
     </div>
 
-    {
-      episode.chapters.length > 0 && (
-        <section class="mt-10">
-          <h2 class="font-mono text-[11px] tracking-[0.25em] text-[var(--color-amber)] uppercase">
-            Chapters
-          </h2>
-          <ol class="mt-4 divide-y divide-[var(--color-border)]">
-            {episode.chapters.map((chapter) => (
-              <li class="flex items-baseline gap-4 py-3">
-                <button
-                  type="button"
-                  data-start-ms={chapter.start_ms}
-                  class="chapter-jump shrink-0 font-mono text-xs text-[var(--color-muted)] tabular-nums transition hover:text-[var(--color-amber)]"
-                  aria-label={`Jump to ${chapter.title}`}
-                >
-                  {formatChapterTimestamp(chapter.start_ms)}
-                </button>
-                <div class="min-w-0 flex-1">
-                  <p class="text-sm text-[var(--color-text)]">{chapter.title}</p>
-                  {chapter.source_url && (
-                    <a
-                      href={chapter.source_url}
-                      rel="noopener"
-                      class="mt-0.5 inline-block text-xs break-all text-[var(--color-dim)] hover:text-[var(--color-amber)]"
-                    >
-                      {chapter.source_url}
-                    </a>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-      )
-    }
+    {episode.chapters.length > 0 && (
+      <section class="mt-10">
+        <h2 class="font-mono text-[11px] tracking-[0.25em] text-[var(--color-amber)] uppercase">
+          Chapters
+        </h2>
+        <ol class="mt-4 divide-y divide-[var(--color-border)]">
+          {episode.chapters.map((chapter) => (
+            <li class="flex items-baseline gap-4 py-3">
+              <button
+                type="button"
+                data-start-ms={chapter.start_ms}
+                class="chapter-jump shrink-0 font-mono text-xs text-[var(--color-muted)] tabular-nums transition hover:text-[var(--color-amber)]"
+                aria-label={`Jump to ${chapter.title}`}
+              >
+                {formatChapterTimestamp(chapter.start_ms)}
+              </button>
+              <div class="min-w-0 flex-1">
+                <p class="text-sm text-[var(--color-text)]">{chapter.title}</p>
+                {chapter.source_url && (
+                  <a
+                    href={chapter.source_url}
+                    rel="noopener"
+                    class="mt-0.5 inline-block text-xs break-all text-[var(--color-dim)] hover:text-[var(--color-amber)]"
+                  >
+                    {chapter.source_url}
+                  </a>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+    )}
 
     <p class="mt-10 text-xs text-[var(--color-muted)]">
-      Subscribe to <a
-        href="/frontier-commits/rss.xml"
-        class="text-[var(--color-amber)] hover:underline">the show feed</a
-      > to get each week's episode in your player.
+      Subscribe to{' '}
+      <a href="/frontier-commits/rss.xml" class="text-[var(--color-amber)] hover:underline">
+        the show feed
+      </a>{' '}
+      to get each week's episode in your player.
     </p>
   </article>
 
